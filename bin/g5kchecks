@@ -1,0 +1,58 @@
+#!/usr/bin/ruby -w
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'optparse'
+require 'optparse/time'
+
+require 'g5kchecks'
+
+CONFIG_PATH = '/etc/g5kchecks'
+
+# Options parsing
+
+$configpath   = CONFIG_PATH
+
+USAGE = "Usage: #{$0} [options]"
+
+optparse = OptionParser.new(USAGE) do |opts|
+
+  opts.banner << " argv..."
+
+  # separator
+  opts.on_tail
+  opts.on_tail("common options:")
+
+  # no argument, shows at tail
+  opts.on_tail("--help", "show this message") {puts opts; exit}
+
+  opts.on( '-c', '--config-dir <PATH>', "Specify the path to the g5kchecks (new) configuration files directory [default: '#{CONFIG_PATH}']") do |k|
+    $configpath = k
+  end
+
+  # boolean switch(default true)
+  @api = false
+  opts.on("-p", "--populate-api", TrueClass, "generate yaml to populate the api") {|api|@api=api}
+
+  # array
+  @testlist=nil
+  opts.on("-t", "--test-list[=TEST1,TEST2]", Array, "list") {|testlist|@testlist=testlist}
+
+  opts.on_head("specific options:")
+
+  # version
+  opts.on_tail("--version", "show version") do
+    require 'version'
+    puts G5kChecks::VERSION
+    exit
+  end
+
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::InvalidOption => e
+  $stderr.puts e.to_s
+  exit 1
+end
+
+G5kChecks::G5kChecks.new.run(@testlist,@api)
