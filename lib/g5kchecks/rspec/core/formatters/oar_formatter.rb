@@ -5,6 +5,10 @@ module RSpec
     module Formatters
       class OarFormatter < BaseTextFormatter
 
+        def initialize(oardir)
+          super
+        end
+
         def example_failed(example)
           # bypass si l'api est rempli et que g5kcheks ne trouve
           # pas la valeur
@@ -16,7 +20,7 @@ module RSpec
             else
               file_name = example.full_description.gsub(" ","_")
             end
-            File.open("/tmp/" + file_name, 'w') do |f|
+            File.open(RSpec.configuration.oar_dir + file_name, 'w') do |f|
               f.puts example.execution_result.to_yaml
             end
           end

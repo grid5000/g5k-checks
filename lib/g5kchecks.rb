@@ -18,11 +18,11 @@ module G5kChecks
       end
     end
 
-    def run(testlist,api)
+    def run(conf)
       rspec_opts = []
 
-      if testlist
-        testlist.each{|t|
+      if conf[:testlist]
+        conf[:testlist].each{|t|
           rspec_opts << File.dirname(__FILE__) + "/g5kchecks/spec/#{t}/#{t}_spec.rb"
         }
       else
@@ -32,7 +32,7 @@ module G5kChecks
         end
       end
 
-      if !api
+      if !conf[:api]
         require 'g5kchecks/rspec/core/formatters/syslog_formatter'
         require 'g5kchecks/rspec/core/formatters/oar_formatter'
         RSpec.configure do |c|
@@ -47,9 +47,15 @@ module G5kChecks
         end
       end
 
+      if !File.directory?(conf[:checks_for_init_dir])
+        Dir.mkdir(conf[:checks_for_init_dir], 0755)
+      end
+
       RSpec.configure do |config|
         config.add_setting :node
-        config.node = Grid5000::Node.new(api, "https://api.grid5000.fr/sid")
+        config.node = Grid5000::Node.new(conf[:api], "https://api.grid5000.fr/sid")
+        config.add_setting :oar_dir
+        config.oar_dir = conf[:checks_for_init_dir]
       end
 
       RSpec::Core::Runner::run(rspec_opts)

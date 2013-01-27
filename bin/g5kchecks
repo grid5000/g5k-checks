@@ -5,12 +5,16 @@ require 'optparse'
 require 'optparse/time'
 
 require 'g5kchecks'
+require 'g5kchecks/utils/configparser'
 
-CONFIG_PATH = '/etc/g5kchecks'
+CONFIG_PATH = '/etc/g5kchecks.conf'
+OUTPUT_PATH = '/var/lib/g5kchecks'
 
 # Options parsing
 
 $configpath   = CONFIG_PATH
+$outputpath   = OUTPUT_PATH
+$hashconf = {}
 
 USAGE = "Usage: #{$0} [options]"
 
@@ -25,17 +29,21 @@ optparse = OptionParser.new(USAGE) do |opts|
   # no argument, shows at tail
   opts.on_tail("--help", "show this message") {puts opts; exit}
 
-  opts.on( '-c', '--config-dir <PATH>', "Specify the path to the g5kchecks (new) configuration files directory [default: '#{CONFIG_PATH}']") do |k|
+  opts.on( '-c', '--config-file <PATH>', "Specify the path to the g5kchecks (new) configuration files [default: '#{CONFIG_PATH}']") do |k|
     $configpath = k
   end
 
+  opts.on( '-o', '--output-file <PATH>', "Specify the path to the g5kchecks put output files [default: '#{OUTPUT_PATH}']") do |k|
+    $hashconf[:checks_for_init_dir] = k
+  end
+
   # boolean switch(default true)
-  @api = false
-  opts.on("-p", "--populate-api", TrueClass, "generate yaml to populate the api") {|api|@api=api}
+  $hashconf[:api] = false
+  opts.on("-p", "--populate-api", TrueClass, "generate yaml to populate the api") {|api|$hashconf[:api]=api}
 
   # array
-  @testlist=nil
-  opts.on("-t", "--test-list[=TEST1,TEST2]", Array, "list") {|testlist|@testlist=testlist}
+  $hashconf[:testlist]=nil
+  opts.on("-t", "--test-list[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf[:testlist]=testlist}
 
   opts.on_head("specific options:")
 
@@ -55,4 +63,6 @@ rescue OptionParser::InvalidOption => e
   exit 1
 end
 
-G5kChecks::G5kChecks.new.run(@testlist,@api)
+$hashconf = G5kChecks::ConfigParser.new($configpath).parse.merge!($hashconf)
+
+G5kChecks::G5kChecks.new.run($hashconf)
