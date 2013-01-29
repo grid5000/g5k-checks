@@ -12,15 +12,16 @@ module RSpec
         def example_failed(example)
           # bypass si l'api est rempli et que g5kcheks ne trouve
           # pas la valeur
-          if example.exception.message.split(', ')[-2] != nil
+          array = example.exception.message.split(', ')
+          if array[0] != ""
             # pas super beau, pour distinguer plusieurs composants
             # typiquement pour disk et network
-            if example.exception.message.split(', ')[-2] =~ /\d{1,2}/
-              file_name = example.full_description.gsub(" ","_") + "_" + example.exception.message.split(', ')[-2]
+            if array[-2] =~ /\d{1,2}/
+              file_name = example.full_description.gsub(" ","_") + "_" + array[-2]
             else
               file_name = example.full_description.gsub(" ","_")
             end
-            File.open(RSpec.configuration.oar_dir + file_name, 'w') do |f|
+            File.open(RSpec.configuration.oar_dir + "OAR_" + file_name, 'w') do |f|
               f.puts example.execution_result.to_yaml
             end
           end
