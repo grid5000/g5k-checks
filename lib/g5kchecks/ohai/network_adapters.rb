@@ -13,29 +13,29 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
   # accessible from the OS.
   iface[:management] = false
 
-#  iface[:vendor] = nil #FIXME: NOT IMPLEMENTED
-#  iface[:version] = nil #FIXME: NOT IMPLEMENTED
+  #  iface[:vendor] = nil #FIXME: NOT IMPLEMENTED
+  #  iface[:version] = nil #FIXME: NOT IMPLEMENTED
 
   # Get MAC address
   iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}.key({'family'=>'lladdr'})
-popen4("ethtool #{dev}; ethtool -i #{dev}") do |pid, stdin, stdout, stderr|
-        stdin.close
- stdout.each do |line|
-    if line =~ /^[[:blank:]]*Link detected: /
-      iface[:enabled] = ( line.chomp.split(": ").last.eql?('yes') )
-    end
-    if line =~ /^[[:blank:]]*Speed: /
-      if line =~ /Unknown/
-        iface[:rate] = "Unknown"
+  popen4("ethtool #{dev}; ethtool -i #{dev}") do |pid, stdin, stdout, stderr|
+    stdin.close
+    stdout.each do |line|
+      if line =~ /^[[:blank:]]*Link detected: /
+        iface[:enabled] = ( line.chomp.split(": ").last.eql?('yes') )
+      end
+      if line =~ /^[[:blank:]]*Speed: /
+        if line =~ /Unknown/
+          iface[:rate] = "Unknown"
       else
         iface[:rate] = line.chomp.split(": ").last.gsub(/([GMK])b\/s/){'000000'}
       end
-    end
-    if line =~ /^\s*driver: /
-      iface[:driver] = line.chomp.split(": ").last
+      end
+      if line =~ /^\s*driver: /
+        iface[:driver] = line.chomp.split(": ").last
+      end
     end
   end
-end
   begin
     res = Resolv.getaddress(hostname + '-' + dev)
   rescue Exception => e
@@ -74,42 +74,42 @@ interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
   #iface[:rate]    = nil #FIXME: NOT IMPLEMENTED
   #iface[:driver]  = nil #FIXME: NOT IMPLEMENTED
 
-ca = ""
-popen4("ibstat") do |pid, stdin, stdout, stderr|
-        stdin.close
- stdout.each do |line|
-    if line =~ /^[[:blank:]]*CA '/
-      ca = line.gsub("CA","")
-      ca = ca.gsub(" ","")
-      ca = ca.gsub("'","")
+  ca = ""
+  popen4("ibstat") do |pid, stdin, stdout, stderr|
+    stdin.close
+    stdout.each do |line|
+      if line =~ /^[[:blank:]]*CA '/
+        ca = line.gsub("CA","")
+        ca = ca.gsub(" ","")
+        ca = ca.gsub("'","")
+      end
+      if line =~ /^[[:blank:]]*CA type/
+        iface[:version] = line.chomp.split(": ").last
+      end
     end
-    if line =~ /^[[:blank:]]*CA type/
-      iface[:version] = line.chomp.split(": ").last
-    end
- end
-end
+  end
 
-if !ca.empty?
-  num = "#{(iface[:number].to_i)+1}"
-popen4("ibstat #{ca.chomp!} #{num}") do |pid, stdin, stdout, stderr|
-        stdin.close
- stdout.each do |line|
-    if line =~ /^Rate/
-      iface[:rate] = line.chomp.split(": ").last.to_i*1000000000
+  if !ca.empty?
+    num = "#{(iface[:number].to_i)+1}"
+    popen4("ibstat #{ca.chomp!} #{num}") do |pid, stdin, stdout, stderr|
+      stdin.close
+      stdout.each do |line|
+        if line =~ /^Rate/
+          iface[:rate] = line.chomp.split(": ").last.to_i*1000000000
+        end
+        if line =~ /^State/
+          iface[:enabled] = ( line.chomp.split(": ").last.eql?('Active') )
+        end
+      end
     end
-    if line =~ /^State/
-      iface[:enabled] = ( line.chomp.split(": ").last.eql?('Active') )
-    end
-    end
- end
-end
+  end
   begin
     res = Resolv.getaddress(hostname + '-' + dev)
   rescue Exception => e
     # No such entry in DNS => ignoring...
   end
 
-ip = iface[:addresses].select{|key,value| value[:family] == 'inet'}.to_a
+  ip = iface[:addresses].select{|key,value| value[:family] == 'inet'}.to_a
   iface[:ip] = ip[0][0] if ip.size > 0
   ip6 = iface[:addresses].select{|key,value| value[:family] == 'inet6'}.to_a
   iface[:ip6] = ip6[0][0] if ip6.size > 0
@@ -119,13 +119,13 @@ ip = iface[:addresses].select{|key,value| value[:family] == 'inet'}.to_a
 end
 
 popen4("ip -o link list | grep -v \" lo[: ]\"") do |pid, stdin, stdout, stderr|
-        stdin.close
- stdout.each do |line|
+  stdin.close
+  stdout.each do |line|
 
-  line =~ /^\d+: (\w+):.*$/
-  dev = $1
-  interfaces[dev][:up?] = ( line.include?("UP") )
-end
+    line =~ /^\d+: (\w+):.*$/
+    dev = $1
+    interfaces[dev][:up?] = ( line.include?("UP") )
+  end
 end
 
 

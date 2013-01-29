@@ -16,17 +16,17 @@ module Utils
   end
 
   def self.autovivifying_hash
-       Hash.new {|ht,k| ht[k] = autovivifying_hash}
+    Hash.new {|ht,k| ht[k] = autovivifying_hash}
   end
 
   def Utils.interface_name(int)
-   # Ref API: interface
-   case int
-   when "eth"  then  return 'Ethernet'
-   when "br"   then  return 'Bridge'
-   when "ib"   then  return 'InfiniBand'
-   when "myri" then  return 'Myrinet'
-   end
+    # Ref API: interface
+    case int
+    when "eth"  then  return 'Ethernet'
+    when "br"   then  return 'Bridge'
+    when "ib"   then  return 'InfiniBand'
+    when "myri" then  return 'Myrinet'
+    end
   end
 
   # vraiment pas beau mais en ruby 1.9.3 les messages

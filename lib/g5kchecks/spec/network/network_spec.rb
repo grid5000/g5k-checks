@@ -36,11 +36,11 @@ describe "Network" do
 
     if dev[0] =~ /ib/
       it "should have the correct guid" do
-        mac_api = ""
-        mac_api = @net_api[i]['guid'] if @net_api
-        mac_lshw = dev[1][:mac]
-        mac_lshw.should eql(mac_api), "#{mac_lshw}, #{mac_api}, network_adapters, #{i}, guid"
-      end
+      mac_api = ""
+      mac_api = @net_api[i]['guid'] if @net_api
+      mac_lshw = dev[1][:mac]
+      mac_lshw.should eql(mac_api), "#{mac_lshw}, #{mac_api}, network_adapters, #{i}, guid"
+    end
     else
       it "should have the correct Mac Address" do
         mac_api = ""

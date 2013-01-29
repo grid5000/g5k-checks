@@ -31,7 +31,7 @@ module Grid5000
       else
         @api_description ||= JSON.parse RestClient.get(@node_uri, :accept => :json)
       end
-#      @api_description = JSON.parse File.open("files/" + ENV['GRID5000_CHECKS_HOSTNAME'] + ".api","r").read
+      #      @api_description = JSON.parse File.open("files/" + ENV['GRID5000_CHECKS_HOSTNAME'] + ".api","r").read
     end
 
     def ohai_description

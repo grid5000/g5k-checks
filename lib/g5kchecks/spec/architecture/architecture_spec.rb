@@ -15,7 +15,7 @@ describe "Architecture" do
     core_ohai.should eql(core_api), "#{core_ohai}, #{core_api}, architecture, smp_size"
   end
 
-   it "should have the correct number of thread" do
+  it "should have the correct number of thread" do
     threads_api = 0
     if @arch_api
       threads_api = @arch_api['smt_size'].to_i
@@ -24,7 +24,7 @@ describe "Architecture" do
     threads_ohai.to_i.should eql(threads_api), "#{threads_ohai}, #{threads_api}, architecture, smt_size"
   end
 
-   it "should have the correct platform type" do
+  it "should have the correct platform type" do
     plat_api = ""
     if @arch_api
       plat_api = @arch_api['platform_type']

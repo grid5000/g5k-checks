@@ -11,11 +11,11 @@ module RSpec
         end
 
         def example_failed(example)
-#          message = if failure.expectation_not_met?
-#                      "FAILED\t#{failure.header}: #{failure.exception.message}"
-#                    else
-#                      "ERROR\t#{failure.header}: #{failure.exception.message}"
-#                    end
+          #          message = if failure.expectation_not_met?
+          #                      "FAILED\t#{failure.header}: #{failure.exception.message}"
+          #                    else
+          #                      "ERROR\t#{failure.header}: #{failure.exception.message}"
+          #                    end
           log(Syslog::LOG_ERR, "ERROR #{example_group.description} #{example.description}")
         end
 

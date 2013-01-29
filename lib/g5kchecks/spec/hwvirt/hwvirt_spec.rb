@@ -22,9 +22,9 @@ describe "Virtual Hardware" do
     kmod_api = ""
     kmod_api = @proc_api['virtual'] if @proc_api
     kmod.should eql(kmod_api), "#{kmod}, supported_job_types, virtual"
-#  end
-#
-#  it "should have virtual driver could be enable" do
+    #  end
+    #
+    #  it "should have virtual driver could be enable" do
     # test if the module could be enable
     if not @mod_name.empty?
       # rmmod.empty? if the loaded module (for testing) must be removed afterwards.
