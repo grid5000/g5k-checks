@@ -30,7 +30,7 @@ describe "Processor" do
   it "should be of the correct version" do
     version_api = ""
     version_api = @api["version"] if @api
-    version_lshw = @sytem[:cpu][:'0'][:family]
+    version_lshw = @sytem[:cpu][:version]
     version_lshw.should eql(version_api), "#{version_lshw}, #{version_api}, processor, version"
   end
 
@@ -45,7 +45,7 @@ describe "Processor" do
     desc_api = ""
     desc_api = @api["other_description"] if @api
     desc_lshw = @sytem[:cpu][:'0'][:model_name]
-    desc_lshw.to_i.should eql(desc_api), "#{desc_lshw}, #{desc_api}, processor, other_description"
+    desc_lshw.should eql(desc_api), "#{desc_lshw}, #{desc_api}, processor, other_description"
   end
 
   it "should have the correct L1i" do

@@ -7,11 +7,17 @@ if cpu[:'0'][:model_name] =~ /AMD/
   cpu[:vendor] = "AMD"
   if cpu[:'0'][:model_name] =~ /Opteron/
     cpu[:model] = "AMD Opteron"
+    if cpu[:'0'][:model_name] =~ /Processor[^\w]*([^\s]*)/
+      cpu[:version] = $1
+    end
   end
 else
   cpu[:vendor] = "Intel"
   if cpu[:'0'][:model_name] =~ /Xeon/
     cpu[:model] = "Intel Xeon"
+    if cpu[:'0'][:model_name] =~ /CPU[^\w]*([^\s]*)/
+      cpu[:version] = $1
+    end
   end
 end
 
