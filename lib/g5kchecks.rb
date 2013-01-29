@@ -3,6 +3,7 @@
 require 'rspec'
 
 require 'g5kchecks/utils/node'
+require 'g5kchecks/utils/utils'
 
 module G5kChecks
 
