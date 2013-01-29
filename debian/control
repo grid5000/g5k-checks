@@ -11,6 +11,8 @@ Architecture: any
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter,
   rake, ruby-rspec, ntp, ntpdate, nfs-common
-Description:  g5k-checks
-  Tool for check node parameters.
-
+Description:  g5kchecks
+  g5kchecks is expected to be integrated into the production environment of the
+  Grid'5000 computational nodes. It gathers a collection of tests which check
+  that a node meets several basic requirements before it declares itself as
+  available to the OAR server.
