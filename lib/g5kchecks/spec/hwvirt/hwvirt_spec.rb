@@ -18,7 +18,7 @@ describe "Virtual Hardware" do
       kmod = "ivt"
       @mod_name = "kvm_intel"
     else
-      kmod = 'false'
+      kmod = false
     end
     kmod_api = ""
     kmod_api = @api['virtual'] if @api
