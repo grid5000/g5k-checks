@@ -11,7 +11,7 @@ describe "Architecture" do
     if @arch_api
       core_api = @arch_api['smp_size'].to_i
     end
-    core_ohai = @ohai_system[:cpu][:core].to_i
+    core_ohai = @ohai_system[:cpu][:real].to_i
     core_ohai.should eql(core_api), "#{core_ohai}, #{core_api}, architecture, smp_size"
   end
 
@@ -20,7 +20,7 @@ describe "Architecture" do
     if @arch_api
       threads_api = @arch_api['smt_size'].to_i
     end
-    threads_ohai = @ohai_system[:cpu][:thread].to_i*@ohai_system[:cpu][:core].to_i
+    threads_ohai = @ohai_system[:cpu][:total].to_i
     threads_ohai.to_i.should eql(threads_api), "#{threads_ohai}, #{threads_api}, architecture, smt_size"
   end
 
