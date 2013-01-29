@@ -53,7 +53,11 @@ describe "Network" do
     it "should have the correct Rate" do
       rate_api = ""
       rate_api = @api[i]['rate'] if @api
-      rate_lshw = dev[1][:rate].to_i
+      if dev[1][:rate] == "Unknown"
+      rate_lshw = dev[1][:rate]
+      else
+        rate_lshw = dev[1][:rate].to_i
+      end
       rate_lshw.should eql(rate_api), "#{rate_lshw}, #{rate_api}, network_adapters, #{i}, rate"
     end
 
