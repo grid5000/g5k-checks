@@ -1,13 +1,12 @@
 describe "Virtual Hardware" do
 
   before do
-    @proc_api = RSpec.configuration.node.api_description['supported_job_types']
-    #@proc_lshw = RSpec.configuration.node.search_all_in_hw_description("description","CPU")
-    @ohai_system = RSpec.configuration.node.ohai_description
+    @api = RSpec.configuration.node.api_description['supported_job_types']
+    @sytem = RSpec.configuration.node.ohai_description
   end
 
   it "should have the good driver" do
-    vhw_type = @ohai_system[:cpu][:'0'][:flags].select{|i|
+    vhw_type = @sytem[:cpu][:'0'][:flags].select{|i|
       i == "svm" || i == "vmx"
     }
     kmod = ""
@@ -20,10 +19,9 @@ describe "Virtual Hardware" do
       @mod_name = "kvm_intel"
     end
     kmod_api = ""
-    kmod_api = @proc_api['virtual'] if @proc_api
+    kmod_api = @api['virtual'] if @api
     kmod.should eql(kmod_api), "#{kmod}, supported_job_types, virtual"
-    #  end
-    #
+
     #  it "should have virtual driver could be enable" do
     # test if the module could be enable
     if not @mod_name.empty?

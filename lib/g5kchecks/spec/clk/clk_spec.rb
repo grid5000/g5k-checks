@@ -8,4 +8,5 @@ describe "Clock" do
       system( "/sbin/hwclock --systohc" ).should eql(true), "clk error"
     end
   end
+
 end
