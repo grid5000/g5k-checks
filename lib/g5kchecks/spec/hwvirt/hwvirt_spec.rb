@@ -17,10 +17,12 @@ describe "Virtual Hardware" do
     elsif vhw_type[0] == 'vmx'
       kmod = "ivt"
       @mod_name = "kvm_intel"
+    else
+      kmod = 'false'
     end
     kmod_api = ""
     kmod_api = @api['virtual'] if @api
-    kmod.should eql(kmod_api), "#{kmod}, supported_job_types, virtual"
+    kmod.should eql(kmod_api), "#{kmod}, #{kmod_api}, supported_job_types, virtual"
 
     #  it "should have virtual driver could be enable" do
     # test if the module could be enable
@@ -31,5 +33,4 @@ describe "Virtual Hardware" do
       system( "PATH=/usr/sbin:/sbin:$PATH modprobe -rf #{@mod_name}" ) if rmmod.empty?
     end
   end
-
 end
