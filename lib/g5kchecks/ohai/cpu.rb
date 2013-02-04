@@ -28,8 +28,9 @@ if File.exist?("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq")
   file.close
   # frequence en khz
   cpu[:mhz] = (freq.to_i)*1000 if freq
+else
+  cpu[:mhz] = cpu[:'0'][:mhz].to_i*1000000
 end
-#}
 
 popen4("lscpu") do |pid, stdin, stdout, stderr|
   stdin.close

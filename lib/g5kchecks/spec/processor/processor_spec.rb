@@ -8,7 +8,7 @@ describe "Processor" do
   it "should have the correct frequency" do
     freq_api = ""
     freq_api = @api["clock_speed"] if @api
-    freq_lshw = @sytem[:cpu][:'0'][:mhz].to_i*1000000
+    freq_lshw = @sytem[:cpu][:mhz]
     freq_lshw.should eql(freq_api), "#{freq_lshw}, #{freq_api}, processor, clock_speed"
 
   end
