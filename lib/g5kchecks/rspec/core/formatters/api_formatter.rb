@@ -39,6 +39,9 @@ module RSpec
           File.open( "/tmp/cluster.yaml", 'w' ) { |f|
             f.puts @yaml_hash.to_yaml
           }
+          File.open( "/tmp/cluster.json", 'w' ) { |f|
+            f.puts @yaml_hash.to_json
+          }
         end
 
         def add_to_yaml_hash(array, value, hash)
