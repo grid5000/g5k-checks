@@ -19,11 +19,11 @@ describe "OS" do
     kernel_lshw.should eql(kernel_api), "#{kernel_lshw}, #{kernel_api}, operating_system, kernel"
   end
 
-  it "should be the correct release" do
+  it "should be the correct version" do
     release_api = ""
-    release_api = @api['release'] if @api
+    release_api = @api['version'] if @api
     release_lshw = @sytem[:platform_version]
-    release_lshw.should eql(release_api), "#{release_lshw}, #{release_api}, operating_system, release"
+    release_lshw.should eql(release_api), "#{release_lshw}, #{release_api}, operating_system, version"
   end
 
 end
