@@ -26,7 +26,7 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
       end
       if line =~ /^[[:blank:]]*Speed: /
         if line =~ /Unknown/
-          iface[:rate] = "Unknown"
+          iface[:rate] = ""
       else
         iface[:rate] = line.chomp.split(": ").last.gsub(/([GMK])b\/s/){'000000'}
       end

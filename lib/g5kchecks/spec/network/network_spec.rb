@@ -53,7 +53,7 @@ describe "Network" do
     it "should have the correct Rate" do
       rate_api = ""
       rate_api = @api[i]['rate'] if @api
-      if dev[1][:rate] == "Unknown"
+      if dev[1][:rate] == ""
       rate_lshw = dev[1][:rate]
       else
         rate_lshw = dev[1][:rate].to_i
