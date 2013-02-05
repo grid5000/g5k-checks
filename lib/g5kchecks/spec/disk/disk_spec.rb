@@ -19,7 +19,7 @@ describe "Disk" do
       size_lshw = disk[1]["size"].to_i*512
       size_api = 0
       if @api
-        size_api = Utils.convert_storage(@api[i]["size"].to_i)
+        size_api = @api[i]["size"].to_i
       end
       size_lshw.should eql(size_api), "#{size_lshw}, #{size_api}, storage_devices, #{i}, size"
     end
@@ -34,7 +34,7 @@ describe "Disk" do
       model_lshw.should eql(model_api), "#{model_lshw}, #{model_api}, storage_devices, #{i}, model"
     end
 
-    it "should have the correct version" do
+    it "should have the correct revision" do
       version_lshw = disk[1]["rev"]
       version_lshw.force_encoding("UTF-8")
       version_api = ""
