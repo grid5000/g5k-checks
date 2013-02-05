@@ -50,6 +50,11 @@ module G5kChecks
 
       if !File.directory?(conf[:checks_for_init_dir])
         Dir.mkdir(conf[:checks_for_init_dir], 0755)
+      else
+        Dir.foreach(conf[:checks_for_init_dir]) {|f|
+          fn = File.join(conf[:checks_for_init_dir], f);
+          File.delete(fn) if f != '.' && f != '..'
+        }
       end
 
       RSpec.configure do |config|
