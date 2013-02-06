@@ -36,10 +36,10 @@ module RSpec
         end
 
         def close
-          File.open( "/tmp/cluster.yaml", 'w' ) { |f|
+          File.open( "/tmp/" + RSpec.configuration.node.hostname + ".yaml", 'w' ) { |f|
             f.puts @yaml_hash.to_yaml
           }
-          File.open( "/tmp/cluster.json", 'w' ) { |f|
+          File.open( "/tmp/" + RSpec.configuration.node.hostname + ".json", 'w' ) { |f|
             f.puts @yaml_hash.to_json
           }
         end
