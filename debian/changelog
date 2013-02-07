@@ -1,5 +1,5 @@
 g5kchecks (0.1-1) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial release
 
- -- Émile Morel <emile.morel@inria.fr>  Thu, 24 Jan 2013 16:06:31 +0100
+ -- Émile Morel <emile.morel@inria.fr>  Thu, 07 Feb 2013 14:45:00 +0100
