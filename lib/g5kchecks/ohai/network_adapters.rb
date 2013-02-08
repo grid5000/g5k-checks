@@ -118,41 +118,22 @@ interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
   iface[:driver] = "mlx4_core"
 end
 
-popen4("ip -o link list | grep -v \" lo[: ]\"") do |pid, stdin, stdout, stderr|
-  stdin.close
-  stdout.each do |line|
-
-    line =~ /^\d+: (\w+):.*$/
-    dev = $1
-    interfaces[dev][:up?] = ( line.include?("UP") )
-  end
-end
-
-
 # Process management interface
 
 interfaces["mgt"] = Hash.new
 # Get MAC address from ipmitool if possible
 if File.exist?('/usr/bin/ipmitool')
-  interfaces["mgt"][:mac] = %x[ipmitool lan print | grep "MAC Address"].chomp.split(": ").last
-else
-  interfaces["mgt"][:mac] = nil
-end
-interfaces["mgt"][:interface] = "Ethernet"
-# Get IP + try to find MAC address if not found yet
-%w(bmc ipmi mgt rsa).each do |suffix|
-  node_mgt = hostname + "-#{suffix}.#{site}.grid5000.fr"
-  begin
-    ip = Resolv.getaddress( node_mgt )
-    interfaces["mgt"][:ip] = ip
-    interfaces["mgt"][:network_address] = "\#{node_uid}-#{suffix}.\#{site_uid}.grid5000.fr"
-    if interfaces["mgt"][:mac].nil?
-      arp = `ping -c 1 #{node_mgt} && /usr/sbin/arp -a #{node_mgt}`
-      if arp =~ /([a-fA-F0-9]{2}:){5}([a-fA-F0-9]{2})/
-        interfaces["mgt"][:mac] = $~
+
+  popen4("ipmitool lan print") do |pid, stdin, stdout, stderr|
+    stdin.close
+    stdout.each do |line|
+      if line =~ /^[[:blank:]]*MAC Address/
+        interfaces["mgt"][:mac] = line.chomp.split(": ").last
+      end
+      if line =~ /^[[:blank:]]*IP Address/
+        interfaces["mgt"][:ip] = line.chomp.split(": ").last
       end
     end
-  rescue Exception => e
-    # No such entry in DNS => wrong suffix
   end
+
 end
