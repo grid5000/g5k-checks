@@ -1,15 +1,25 @@
 describe "BMC" do
 
   before(:all) do
-    @api = RSpec.configuration.node.api_description["network_adapters"]
-    @sytem = RSpec.configuration.node.ohai_description[:network][:interfaces]
+    @api = RSpec.configuration.node.api_description["network_adapters"].select { |na|
+      na['management'] == true
+    }[0]
+    @ohai = RSpec.configuration.node.ohai_description[:network][:interfaces][:mgt].to_hash
   end
 
-  it "managment card should have the correct MAC" do
-    name_api = ""
-    name_api = @api[i]['interface'] if @api
-    name_lshw = @sytem['mac']
-    name_lshw.should eql(name_api), "#{name_lshw}, #{name_api}, network_adapters, mac"
-  end
+    it "should have the correct IPv4" do
+      ip_api = ""
+      ip_api = @api['ip'] if @api
+      ip_lshw = @ohai[:ip]
+      ip_lshw.should eql(ip_api), "#{ip_lshw}, #{ip_api}, network_adapters, bmc, ip"
+    end
+
+    it "should have the correct Mac Address" do
+      mac_api = ""
+      mac_api = @api['mac'] if @api
+      mac_lshw = @ohai[:mac]
+      mac_lshw.should eql(mac_api), "#{mac_lshw}, #{mac_api}, network_adapters, bmc, mac"
+    end
 
 end
+
