@@ -12,7 +12,7 @@ describe "Disk" do
       if @api
         name_api = @api[i]["device"]
       end
-      name_lshw.should eql(name_api), "#{name_lshw}, #{name_api}, storage_devices, #{i}, device"
+      name_lshw.should eql(name_api), "#{name_lshw}, #{name_api}, storage_devices, #{disk[0]}, device"
     end
 
     it "should have the correct size" do
@@ -21,7 +21,7 @@ describe "Disk" do
       if @api
         size_api = @api[i]["size"].to_i
       end
-      size_lshw.should eql(size_api), "#{size_lshw}, #{size_api}, storage_devices, #{i}, size"
+      size_lshw.should eql(size_api), "#{size_lshw}, #{size_api}, storage_devices, #{disk[0]}, size"
     end
 
     it "should have the correct model" do
@@ -31,7 +31,7 @@ describe "Disk" do
       if @api
         model_api = @api[i]['model']
       end
-      model_lshw.should eql(model_api), "#{model_lshw}, #{model_api}, storage_devices, #{i}, model"
+      model_lshw.should eql(model_api), "#{model_lshw}, #{model_api}, storage_devices, #{disk[0]}, model"
     end
 
     it "should have the correct revision" do
@@ -41,7 +41,7 @@ describe "Disk" do
       if @api
         version_api = @api[i]['rev']
       end
-      version_lshw.should eql(version_api), "#{version_lshw}, #{version_api}, storage_devices, #{i}, rev"
+      version_lshw.should eql(version_api), "#{version_lshw}, #{version_api}, storage_devices, #{disk[0]}, rev"
     end
 
     #  it "should have the correct controller" do
