@@ -33,7 +33,15 @@ module G5kChecks
         end
       end
 
-      if !conf[:api]
+      if conf[:removetestlist]
+        conf[:removetestlist].each{|t|
+          test = File.dirname(__FILE__) + "/g5kchecks/spec/#{t}/#{t}_spec.rb"
+          i = rspec_opts.find_index(test)
+          rspec_opts.delete_at(i)
+        }
+      end
+
+      if conf[:mode] == "oar_checks"
         require 'g5kchecks/rspec/core/formatters/syslog_formatter'
         require 'g5kchecks/rspec/core/formatters/oar_formatter'
         RSpec.configure do |c|
@@ -41,10 +49,15 @@ module G5kChecks
           c.add_formatter(RSpec::Core::Formatters::OarFormatter)
           c.add_formatter(RSpec::Core::Formatters::SyslogFormatter)
         end
-      else
+      elsif conf[:mode] == "api"
         require 'g5kchecks/rspec/core/formatters/api_formatter'
         RSpec.configure do |c|
           c.add_formatter(RSpec::Core::Formatters::APIFormatter)
+        end
+      elsif conf[:mode] == "jenkins"
+        require 'g5kchecks/rspec/core/formatters/jenkins_formatter'
+        RSpec.configure do |c|
+          c.add_formatter(RSpec::Core::Formatters::JenkinsFormatter)
         end
       end
 
@@ -59,7 +72,7 @@ module G5kChecks
 
       RSpec.configure do |config|
         config.add_setting :node
-        config.node = Grid5000::Node.new(conf[:api], "https://api.grid5000.fr/sid")
+        config.node = Grid5000::Node.new(conf[:mode], "https://api.grid5000.fr/sid")
         config.add_setting :oar_dir
         config.oar_dir = conf[:checks_for_init_dir]
       end

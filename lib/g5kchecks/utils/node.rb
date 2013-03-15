@@ -11,11 +11,11 @@ module Grid5000
     attr_reader :node_uid, :cluster_uid, :site_uid, :grid_uid
     attr_reader :api, :node_uri
 
-    def initialize(api, api_url)
+    def initialize(mode, api_url)
       @hostname = Socket.gethostname
       @node_uid, @site_uid, @grid_uid, @ltd = hostname.split(".")
       @cluster_uid = @node_uid.split("-")[0]
-      @api = api
+      @mode = mode
       @node_uri = [
         api_url,
         "sites", site_uid,
@@ -26,7 +26,7 @@ module Grid5000
     end
 
     def api_description
-      if @api
+      if @mode == "api"
         @api_description ||= JSON.parse "{}"
       else
         @api_description ||= JSON.parse RestClient.get(@node_uri, :accept => :json)
