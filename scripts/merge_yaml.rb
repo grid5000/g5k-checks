@@ -20,6 +20,7 @@ class Hash
         end
       else
         self[k] = v
+        puts "add #{k}: #{v}"
       end
     end
   end
@@ -57,14 +58,15 @@ class MergeYaml
 
   def merge!
     checks_yaml = {}
-    Dir.foreach(File.join(ARGV[0],ARGV[1])) {|x|
+    Dir.foreach(File.join(@site,@cluster)) {|x|
       next if x == '.' or x == '..'
       node_name = x.split(".")[0]
-      checks_yaml["#{node_name}"] = YAML.load_file(File.join(ARGV[0],ARGV[1],x))["#{x}"]
-   }
+      checks_yaml["#{node_name}"] = YAML.load_file(File.join(@site,@cluster,x))#["#{x}"]
+      #puts YAML.load_file(File.join(@site,@cluster,x))
+    }
 
-    file_check = File.join(ARGV[0],ARGV[1], "cluster_check.yaml")
-    file_merge = File.join(ARGV[0],ARGV[1], "cluster_merge_with_admin.yaml")
+    file_check = File.join(@site,@cluster, "cluster_check.yaml")
+    file_merge = File.join(@site,@cluster, "cluster_merge_with_admin.yaml")
     File.delete(file_check) if File.exist?(file_check)
     File.delete(file_merge) if File.exist?(file_merge)
     File.open(file_check, 'w') { |f|

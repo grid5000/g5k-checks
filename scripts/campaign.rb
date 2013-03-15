@@ -1,23 +1,12 @@
 #!/usr/bin/env ruby
+$: << File.join(File.dirname(__FILE__))
 require 'grid5000/campaign'
+#require 'cute/taktuk'
 
 class G5kchecksEngine < Grid5000::Campaign::Engine
 
 
   on :install! do |env, *args|
-    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
-        logger.info "enable apt.grid5000.fr and update"
-        ssh.exec "sed -i -e \"s/^# deb /deb /\" /etc/apt/sources.list"
-        ssh.exec "apt-get update -q2"
-    end
-    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
-        logger.info "install grid5000-keyring"
-        ssh.exec "apt-get install grid5000-keyring --force-yes -q2"
-    end
-    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
-        logger.info "install g5kchecks"
-        ssh.exec "apt-get install g5kchecks --force-yes -q2"
-    end
     env
   end
 
@@ -27,8 +16,7 @@ class G5kchecksEngine < Grid5000::Campaign::Engine
     Dir.mkdir(File.join(File.dirname(__FILE__),env[:site])) if !File.directory?(File.join(File.dirname(__FILE__),env[:site]))
     Dir.mkdir(File.join(File.dirname(__FILE__),env[:site],cluster)) if !File.directory?(File.join(File.dirname(__FILE__),env[:site],cluster))
     ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
-        logger.info "execute g5kchecks on all nodes"
-        ssh.exec "g5kchecks -p"
+        ssh.exec "g5kchecks -m api"
     end
     env[:nodes].each { |node|
       ssh(node, "root") do |ssh|
@@ -54,7 +42,7 @@ class G5kchecksCampaign
         ENV['RESTFULLY_CONFIG'] || "~/.restfully/api.grid5000.fr.yml"
       )
     }
-    @options[:environment] = "wheezy-x64-min"
+    @options[:environment] = "http://public.nancy.grid5000.fr/~emorel/g5kchecks/custominstallg5kchecks.dsc"
     @options[:resources] = "nodes=#{nb}"
     @options[:properties] = "cluster='#{cluster}'"
     @options[:walltime] = 3600
@@ -65,6 +53,7 @@ class G5kchecksCampaign
     @options[:no_cancel] = true
     @options[:no_deploy] = true
     @options[:no_submit] = true
+    @options[:gateway] = "access.#{site}.grid5000.fr"
 
     if File.exist?(@options[:restfully_config]) &&
       File.readable?(@options[:restfully_config]) &&
@@ -76,10 +65,9 @@ class G5kchecksCampaign
         :logger => logger
       )
 
-      @options[:gateway] = "access.grid5000.fr"
-
       engine = G5kchecksEngine.new(connection, @options)
       nodes = engine.run!
+      return false if !nodes
       return nodes.size == nb
 #      nodes.each {|node| puts node} unless nodes.nil?
     else
