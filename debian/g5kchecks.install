@@ -1,1 +1,3 @@
 conf/g5kchecks.conf /etc
+conf/oar-node /etc/cron.d/
+conf/start_g5kchecks /etc/oar/check.d/
