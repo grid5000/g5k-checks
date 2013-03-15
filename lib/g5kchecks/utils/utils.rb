@@ -39,4 +39,44 @@ module Utils
     return string.strip
   end
 
+  def Utils.layout
+    layout = {}
+    if File.exist?(File.dirname(__FILE__) + "/../data/layout")
+      file = File.open(File.dirname(__FILE__) + "/../data/layout")
+      cmdline = file.read
+      file.close
+      cmdline.each_line do |line|
+        if line =~ /([^\s]*)\s*[^s]*start=[^\d]*(\d*),[^s]*size=[^\d]*(\d*),[^I]*Id=[^\d]*(\d*)/
+          layout["#{$1}"] = Hash.new
+          layout["#{$1}"][:start] = $2
+          layout["#{$1}"][:size] = $3
+          layout["#{$1}"][:Id] = $4
+        end
+      end
+    end
+    layout
+  end
+
+  def Utils.fstab
+    return {} if !File.exist?(File.dirname(__FILE__) + "/../data/fstab")
+    file_fstab = File.open(File.dirname(__FILE__) + "/../data/fstab")
+    fstab = file_fstab.read
+    file_fstab.close
+    filesystem = Hash.new
+    fstab.each_line do |line|
+      next if line =~ /^#/
+      if line =~ /([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*/
+        filesys = Regexp.last_match(1)
+        filesystem[filesys] = Hash.new
+        filesystem[filesys]["file_system"] = Regexp.last_match(1)
+        filesystem[filesys]["mount_point"] = Regexp.last_match(2)
+        filesystem[filesys]["fs_type"] = Regexp.last_match(3)
+        filesystem[filesys]["options"] = Regexp.last_match(4).split(",")
+        filesystem[filesys]["dump"] = Regexp.last_match(5)
+        filesystem[filesys]["pass"] = Regexp.last_match(6)
+      end
+    end
+    filesystem
+  end
+
 end

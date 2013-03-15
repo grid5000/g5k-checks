@@ -1,0 +1,18 @@
+# Disk device where all our partitions lie
+ROOT_DEVICE=<[ROOT_DEVICE]>
+
+# Swap partition full path
+SWAP_PART=<[SWAP_PART]>
+
+# Reference root (production) partition
+REF_ROOT_PART=<[REF_ROOT_PART]>
+
+# Extended partition that contains the /tmp partition
+#NB: not templated for postinstall, because none define it so far.
+EXT_PART=${ROOT_DEVICE}4
+
+# /tmp partition, filesystem type and formatting options
+TMP_PART=<[TMP_PART]>
+TMP_FSTYPE=<[TMP_FSTYPE]>
+#NB: not templated for postinstall, because none define it so far.
+TMP_FMT_OPT="-b 4096 -O sparse_super,filetype,resize_inode,dir_index"
