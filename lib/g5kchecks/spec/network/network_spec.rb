@@ -1,7 +1,7 @@
 describe "Network" do
 
   before(:all) do
-    @api = RSpec.configuration.node.api_description["network_interfaces"]
+    @api = RSpec.configuration.node.api_description["network_adapters"]
   end
 
   RSpec.configuration.node.ohai_description[:network][:interfaces].to_hash.select { |d,i| %w{ eth br ib myri }.include?(i[:type]) }.each_with_index do |dev,i|
@@ -94,6 +94,13 @@ describe "Network" do
       ven_api = @api[i]['mounted'] if @api
       ven_lshw = dev[1][:mounted]
       ven_lshw.should eql(ven_api), "#{ven_lshw}, #{ven_api}, network_interfaces, #{dev[0]}, mounted"
+    end
+
+    it "should not be a management card" do
+      mgt_api = nil
+      mgt_api = @api[i]['management'] if @api
+      mgt_lshw = dev[1][:management]
+      mgt_lshw.should eql(mgt_api), "#{mgt_lshw}, #{mgt_api}, network_interfaces, #{dev[0]}, management"
     end
 
   end
