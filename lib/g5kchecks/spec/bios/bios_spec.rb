@@ -5,25 +5,25 @@ describe "Bios" do
     @system = RSpec.configuration.node.ohai_description.dmi["bios"]
   end
 
-  it "should be the correct vendor" do
+  it "should have the correct vendor" do
     vendor_api = ""
     vendor_api = @api['vendor'] if @api
-    vendor_lshw = @system['vendor']
-    vendor_lshw.should eql(vendor_api), "#{vendor_lshw}, #{vendor_api}, bios, vendor"
+    vendor_ohai = @system['vendor']
+    vendor_ohai.should eql(vendor_api), "#{vendor_ohai}, #{vendor_api}, bios, vendor"
   end
 
-  it "should be the correct version" do
+  it "should have the correct version" do
     version_api = ""
     version_api = @api['version'] if @api
-    version_lshw = @system['version']
-    version_lshw.should eql(version_api), "#{version_lshw}, #{version_api}, bios, version"
+    version_ohai = @system['version']
+    version_ohai.should eql(version_api), "#{version_ohai}, #{version_api}, bios, version"
   end
 
-  it "should be the correct date release" do
+  it "should have the correct release date" do
     release_api = ""
     release_api = @api['release_date'] if @api
-    release_lshw = @system['release_date']
-    release_lshw.should eql(release_api), "#{release_lshw}, #{release_api}, bios, release_date"
+    release_ohai = @system['release_date']
+    release_ohai.should eql(release_api), "#{release_ohai}, #{release_api}, bios, release_date"
   end
 
 end

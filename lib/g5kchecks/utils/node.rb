@@ -1,3 +1,5 @@
+# retrieve node configuration (with Ohai) and the corresponding API
+# caracteristiques.
 require 'socket'
 require 'restclient'
 require 'json'

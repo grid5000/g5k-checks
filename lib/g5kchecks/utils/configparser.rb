@@ -1,3 +1,4 @@
+# A very tiny configuration parser
 require 'yaml'
 
 module G5kChecks

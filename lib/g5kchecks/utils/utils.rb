@@ -1,3 +1,5 @@
+# provide some useful functions
+
 module Utils
 
   KIBI = 1024;
