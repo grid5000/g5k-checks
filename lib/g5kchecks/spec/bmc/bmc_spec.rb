@@ -20,13 +20,11 @@ describe "BMC" do
       mac_lshw = @ohai['mac']
       mac_lshw.should eql(mac_api), "#{mac_lshw}, #{mac_api}, network_interfaces, bmc, mac"
     end
-
     it "should not be a management card" do
       mgt_api = nil
       mgt_api = @api['management'] if @api
       mgt_lshw = @ohai[:management]
       mgt_lshw.should eql(mgt_api), "#{mgt_lshw}, #{mgt_api}, network_interfaces, bmc, management"
     end
-
 end
 

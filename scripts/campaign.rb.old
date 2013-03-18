@@ -1,0 +1,168 @@
+#!/usr/bin/env ruby
+$: << File.join(File.dirname(__FILE__))
+require 'grid5000/campaign'
+require 'cute/taktuk'
+
+class G5kchecksEngine < Grid5000::Campaign::Engine
+
+
+  on :install! do |env, *args|
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        logger.info "enable apt.grid5000.fr and update"
+#        ssh.exec "sed -i -e \"s/^# deb /deb /\" /etc/apt/sources.list"
+#        ssh.exec "apt-get update -q2"
+#    end
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        logger.info "install grid5000-keyring"
+#        ssh.exec "apt-get install grid5000-keyring --force-yes -q2"
+#    end
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        logger.info "install g5kchecks"
+#        ssh.exec "apt-get install g5kchecks --force-yes -q2"
+#    end
+
+#    gateway = "access.#{env[:site]}.grid5000.fr"
+#
+#    ssh(gateway, ENV['USER']) do |ssh|
+#        logger.info "test"
+#        puts ssh.exec "cat $OAR_NODEFILE"
+#    end
+#
+#    ssh(gateway, ENV['USER']) do |ssh|
+#        logger.info "retrieve g5kchecks"
+#        ssh.exec "taktuk -f $OAR_NODEFILE broadcast exec [ wget -q http://public.nancy.grid5000.fr/~emorel/g5kchecks_0.1-1_amd64.deb ]"
+#    end
+#    ssh(gateway, ENV['USER']) do |ssh|
+#        logger.info "install module for ipmi"
+#        ssh.exec "taktuk -f $OAR_NODEFILE broadcast exec [ modprobe ipmi_devintf && modprobe ipmi_si && modprobe ipmi_msghandler ]"
+#    end
+#    ssh(gateway, ENV['USER']) do |ssh|
+#        logger.info "install dependences"
+#        ssh.exec "taktuk -f $OAR_NODEFILE broadcast exec [ apt-get update -q2 && apt-get install rake ruby-rspec ntp ntpdate nfs-common ipmitool -y ]"
+#    end
+#    ssh(gateway, ENV['USER']) do |ssh|
+#        logger.info "install g5kchecks"
+#        ssh.exec "taktuk -f $OAR_NODEFILE broadcast exec [ dpkg -i g5kchecks_0.1-1_amd64.deb ]"
+#    end
+
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        ssh.exec "wget -q http://public.nancy.grid5000.fr/~emorel/g5kchecks_0.1-1_amd64.deb"
+#    end
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        ssh.exec "modprobe ipmi_devintf && modprobe ipmi_si && modprobe ipmi_msghandler"
+#    end
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        ssh.exec "apt-get update -q2"
+#    end
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        ssh.exec "apt-get install rake ruby-rspec ntp ntpdate nfs-common ipmitool -y "
+#    end
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        ssh.exec "apt-get install -f"
+#    end
+#    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+#        ssh.exec "dpkg -i g5kchecks_0.1-1_amd64.deb"
+#    end
+    env
+  end
+
+  on :execute! do |env, *args|
+    # execute a specific program on your nodes
+    cluster = env[:nodes][0].split(".")[0].split("-")[0]
+    Dir.mkdir(File.join(File.dirname(__FILE__),env[:site])) if !File.directory?(File.join(File.dirname(__FILE__),env[:site]))
+    Dir.mkdir(File.join(File.dirname(__FILE__),env[:site],cluster)) if !File.directory?(File.join(File.dirname(__FILE__),env[:site],cluster))
+    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+        ssh.exec "g5kchecks -m api"
+    end
+
+#    ret = ""
+#    env[:nodes].each do |host|
+#      ret << ' -m '
+#      ret << host
+#    end
+
+#    sshga = Net::SSH::Gateway.new("access.grid5000.fr", ENV['USER'])
+#    Net::SSH.start("#{site}.user", ENV['USER']) do |sshla|
+#      puts sshla.exec!("hostname")
+#      puts sshla.exec!("taktuk -l root #{ret} broadcast exec [ g5kchecks -m api ]")
+#    end
+#    puts env[:nodes], gateway
+#    puts taktuk(env[:nodes], :gateway => gateway).broadcast_exec['hostname'].run!
+#    logger.info "execute g5kchecks on all nodes"
+#    tt.broadcast_exec['g5kchecks -m api']
+#    tt.streams[:info] = TakTuk::ConnectorStream.new(TakTuk::Template[:command,:line])
+#    puts     tt.run!
+#    system("taktuk -m #{env[:nodes][0]} broadcast exec [ g5kchecks -m api ]")
+#    logger.info "get  yaml file"
+#    tt.broadcast_get["/tmp/*.yaml"]["./#{site}/#{cluster}/$rank.yaml"]
+#    tt.run!
+#    ssh("localhost", ENV['User'], :timeout => 10) do |ssh|
+#        logger.info "execute g5kchecks on all nodes"
+#        ssh.exec "taktuk -f $OAR_NODEFILE broadcast exec [ g5kchecks -m api ]"
+#    end
+    # Je ne comprends pas pourquoi le sftp ne marche pas en multi
+    #ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+    env[:nodes].each { |node|
+      ssh(node, "root") do |ssh|
+        logger.info "get [#{node}] yaml file"
+        ssh.sftp.download!("/tmp/#{node}.yaml", "./#{site}/#{cluster}/#{node}.yaml")
+     end
+    }
+    env
+  end
+
+end
+
+class G5kchecksCampaign
+
+  def initialize(site, cluster, nb)
+
+    logger = Logger.new(STDERR)
+    logger.level = Logger.const_get("INFO")
+
+    @options = {
+      :logger => logger,
+      :restfully_config => File.expand_path(
+        ENV['RESTFULLY_CONFIG'] || "~/.restfully/api.grid5000.fr.yml"
+      )
+    }
+    @options[:environment] = "http://public.nancy.grid5000.fr/~emorel/g5kchecks/custominstallg5kchecks.dsc"
+    #@options[:environment] = "/home/emorel/public/g5kchecks/custominstallg5kchecks.dsc"
+    @options[:resources] = "nodes=#{nb}"
+    @options[:properties] = "cluster='#{cluster}'"
+    @options[:walltime] = 3600
+    @options[:site] = site
+    @options[:name] = "Grid5000 Admin - g5kchecks"
+    #@options[:name] = ""
+
+    @options[:no_cleanup] = true
+    @options[:no_cancel] = true
+    @options[:no_deploy] = true
+    @options[:no_submit] = true
+    @options[:gateway] = "access.#{site}.grid5000.fr"
+
+    if File.exist?(@options[:restfully_config]) &&
+      File.readable?(@options[:restfully_config]) &&
+      File.file?(@options[:restfully_config])
+      G5kchecksEngine.logger.info "Using Restfully configuration file located at #{@options[:restfully_config]}"
+
+      connection = Restfully::Session.new(
+        :configuration_file => @options.delete(:restfully_config),
+        :logger => logger
+      )
+
+      #@options[:gateway] = "access.grid5000.fr"
+
+      engine = G5kchecksEngine.new(connection, @options)
+      nodes = engine.run!
+      return false if !nodes
+      return nodes.size == nb
+#      nodes.each {|node| puts node} unless nodes.nil?
+    else
+      STDERR.puts "Restfully configuration file cannot be loaded: #{@options[:restfully_config].inspect} does not exist or cannot be read or is not a file"
+      exit(1)
+    end
+
+  end
+end
+

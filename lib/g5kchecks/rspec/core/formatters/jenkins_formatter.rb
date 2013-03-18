@@ -44,7 +44,7 @@ module RSpec
         end
 
         def close
-          File.open( "/tmp/" + RSpec.configuration.node.hostname + "_Jenkins_output.yaml", 'w' ) { |f|
+          File.open(File.join("/tmp/",RSpec.configuration.node.hostname + "_Jenkins_output.yaml"), 'w' ) { |f|
             f.puts @yaml_hash.to_yaml
           }
         end
