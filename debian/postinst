@@ -24,7 +24,7 @@ for var in `grep -E -o "<\[[_[:alnum:]]+\]>" ${IN} | grep -E -o "[_[:alnum:]]+"`
 done
 eval sed $sed_script $IN > $OUT
 
-sfdisk -G -uS -d $ROOT_DEVICE > /usr/lib/ruby/vendor_ruby/g5kchecks/data/layout
+sfdisk -G -uS -d $ROOT_DEVICE > /usr/lib/ruby/vendor_ruby/g5kchecks/data/layout 2>/dev/null
 
 
 # OAR stuff

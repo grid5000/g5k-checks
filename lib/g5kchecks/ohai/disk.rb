@@ -27,7 +27,7 @@ if File.exist?("/proc/cmdline")
   if cmdline =~ /.*root=([^\d]*)(\d).*/
     root_device = $1
     root_part = $2
-    popen4("sfdisk -uS -d #{root_device}") do |pid, stdin, stdout, stderr|
+    popen4("sfdisk -uS -d #{root_device} 2>/dev/null") do |pid, stdin, stdout, stderr|
       stdin.close
       stdout.each do |line|
         if line =~ /([^\s]*)\s*[^s]*start=[^\d]*(\d*),[^s]*size=[^\d]*(\d*),[^I]*Id=[^\d]*(\d*)/
