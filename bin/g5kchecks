@@ -41,16 +41,11 @@ optparse = OptionParser.new(USAGE) do |opts|
   opts.on( '-m', '--mode MODE', "Specify the functional mode (oar_checks, api, jenkins) [default: 'oar_check']") do |k|
     $hashconf[:mode] = k
   end
-  # boolean switch(default true)
-#  $hashconf[:api] = false
-#  opts.on("-p", "--populate-api", TrueClass, "generate yaml to populate the api") {|api|$hashconf[:api]=api}
 
   # array
-  $hashconf[:testlist]=nil
   opts.on("-t", "--test-list[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf[:testlist]=testlist}
 
   # array
-  $hashconf[:removetestlist]=nil
   opts.on("-r", "--remove-tests[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf[:removetestlist]=testlist}
 
   opts.on_head("specific options:")
