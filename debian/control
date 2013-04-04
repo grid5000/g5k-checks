@@ -7,12 +7,11 @@ Standards-Version: 3.9.3
 XS-Ruby-Versions: all
 
 Package: g5kchecks
-Architecture: any
+Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter,
-  rake, ruby-rspec, ntp, ntpdate, nfs-common
-Description:  g5kchecks
-  g5kchecks is expected to be integrated into the production environment of the
-  Grid'5000 computational nodes. It gathers a collection of tests which check
-  that a node meets several basic requirements before it declares itself as
-  available to the OAR server.
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, rake,
+ ruby-rspec, ntp, ntpdate, nfs-common, ruby-rest-client, ruby-json
+Description: expected to be integrated into the production environment of the
+ Grid'5000 computational nodes. It gathers a collection of tests which check
+ that a node meets several basic requirements before it declares itself as
+ available to the OAR server.
