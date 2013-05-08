@@ -15,7 +15,7 @@ describe "OS" do
   it "should be the correct kernel version" do
     kernel_api = ""
     kernel_api = @api['kernel'] if @api
-    kernel_ohai = @sytem[:kernel][:version]
+    kernel_ohai = @sytem[:kernel][:release]
     kernel_ohai.should eql(kernel_api), "#{kernel_ohai}, #{kernel_api}, operating_system, kernel"
   end
 

@@ -29,7 +29,7 @@ describe "Processor" do
 
   it "should be of the correct version" do
     version_api = ""
-    version_api = @api["version"] if @api
+    version_api = @api["version"].to_s if @api
     version_ohai = @sytem[:cpu][:version]
     version_ohai.should eql(version_api), "#{version_ohai}, #{version_api}, processor, version"
   end
