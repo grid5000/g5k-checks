@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 $: << File.join(File.dirname(__FILE__))
 require 'grid5000/campaign'
-#require 'cute/taktuk'
 
 class G5kchecksEngine < Grid5000::Campaign::Engine
 
@@ -16,7 +15,7 @@ class G5kchecksEngine < Grid5000::Campaign::Engine
     Dir.mkdir(File.join(File.dirname(__FILE__),env[:site])) if !File.directory?(File.join(File.dirname(__FILE__),env[:site]))
     Dir.mkdir(File.join(File.dirname(__FILE__),env[:site],cluster)) if !File.directory?(File.join(File.dirname(__FILE__),env[:site],cluster))
     ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
-        ssh.exec "g5kchecks -m api"
+        ssh.exec "export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks -m api"
     end
     env[:nodes].each { |node|
       ssh(node, "root") do |ssh|
@@ -33,28 +32,34 @@ class G5kchecksCampaign
 
   def initialize(site, cluster, nb)
 
-    logger = Logger.new(STDERR)
-    logger.level = Logger.const_get("INFO")
+    @logger = Logger.new(STDERR)
+    @logger.level = Logger.const_get("INFO")
 
     @options = {
-      :logger => logger,
+      :logger => @logger,
       :restfully_config => File.expand_path(
         ENV['RESTFULLY_CONFIG'] || "~/.restfully/api.grid5000.fr.yml"
       )
     }
-    @options[:environment] = "http://public.nancy.grid5000.fr/~emorel/g5kchecks/custominstallg5kchecks.dsc"
+    @options[:environment] = "http://public.#{site}.grid5000.fr/~emorel/g5kchecks/custominstallg5kchecks.dsc"
+#    @options[:environment] = "/home/emorel/public/g5kchecks/custominstallg5kchecks.dsc"
     @options[:resources] = "nodes=#{nb}"
     @options[:properties] = "cluster='#{cluster}'"
     @options[:walltime] = 3600
     @options[:site] = site
     @options[:name] = "Grid5000 Admin - g5kchecks"
+    @options[:deployment_min_threshold] = 0.5
 
     @options[:no_cleanup] = true
     @options[:no_cancel] = true
-    @options[:no_deploy] = true
+    @options[:no_deploy] = false
     @options[:no_submit] = true
-    @options[:gateway] = "access.#{site}.grid5000.fr"
+    @options[:gateway] = "#{site}.g5k"
+    @nb = nb
 
+  end
+
+  def run!
     if File.exist?(@options[:restfully_config]) &&
       File.readable?(@options[:restfully_config]) &&
       File.file?(@options[:restfully_config])
@@ -62,13 +67,14 @@ class G5kchecksCampaign
 
       connection = Restfully::Session.new(
         :configuration_file => @options.delete(:restfully_config),
-        :logger => logger
+        :logger => @logger
       )
 
       engine = G5kchecksEngine.new(connection, @options)
       nodes = engine.run!
-      return false if !nodes
-      return nodes.size == nb
+      return false if nodes.nil?
+#      return nodes.size == @nb
+      return true
 #      nodes.each {|node| puts node} unless nodes.nil?
     else
       STDERR.puts "Restfully configuration file cannot be loaded: #{@options[:restfully_config].inspect} does not exist or cannot be read or is not a file"
