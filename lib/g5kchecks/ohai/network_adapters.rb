@@ -17,7 +17,10 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
   #  iface[:version] = nil #FIXME: NOT IMPLEMENTED
 
   # Get MAC address
-  iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}.key({'family'=>'lladdr'})
+  # Wheeze
+  #iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}.key({'family'=>'lladdr'})
+  # squeeze
+  iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}[0][0]
   popen4("ethtool #{dev}; ethtool -i #{dev}") do |pid, stdin, stdout, stderr|
     stdin.close
     stdout.each do |line|
