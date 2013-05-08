@@ -48,9 +48,26 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
   iface[:ip] = ip[0][0] if ip.size > 0
   ip6 = iface[:addresses].select{|key,value| value[:family] == 'inet6'}.to_a
   iface[:ip6] = ip6[0][0] if ip6.size > 0
-  iface[:mountable] = ( not res.nil? )
+  if iface[:ip].nil?
+    #bridge?
+    popen4("brctl show") do |pid, stdin, stdout, stderr|
+      stdin.close
+      stdout.each do |line|
+        if line =~ /(\S*)\s*(\S*)\s*(\S*)\s*(\S*)\s*/
+          de = Regexp.last_match(4)
+          br = Regexp.last_match(1)
+          if de == dev
+            ip = interfaces[br][:addresses].select{|key,value| value[:family] == 'inet'}.to_a
+            ip6 = interfaces[br][:addresses].select{|key,value| value == {'family'=>'inet'}}.to_a
+            iface[:ip] = ip[0][0] if ip.size > 0
+            iface[:ip6] = ip6[0][0] if ip6.size > 0
+          end
+        end
+      end
+    end
+  end
   iface[:mounted] = ( not iface[:ip].nil? )
-
+  iface[:mountable] = ( not res.nil? ) || iface[:mounted]
 end
 
 
