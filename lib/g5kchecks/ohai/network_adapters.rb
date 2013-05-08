@@ -118,7 +118,7 @@ interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
           iface[:rate] = line.chomp.split(": ").last.to_i*1000000000
         end
         if line =~ /^State/
-          iface[:enabled] = ( line.chomp.split(": ").last.eql?('Active') )
+          iface[:enabled] = ( line.chomp.split(": ").last.eql?('Active') or line.chomp.split(": ").last.eql?('Initializing'))
         end
       end
     end
@@ -134,7 +134,7 @@ interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
   ip6 = iface[:addresses].select{|key,value| value[:family] == 'inet6'}.to_a
   iface[:ip6] = ip6[0][0] if ip6.size > 0
   iface[:mountable] = ( not res.nil? )
-  iface[:mounted] = ( not iface[ip].nil? )
+  iface[:mounted] = ( not iface[:ip].nil? )
   iface[:driver] = "mlx4_core"
 end
 
