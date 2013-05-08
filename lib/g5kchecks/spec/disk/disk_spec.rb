@@ -33,6 +33,8 @@ describe "Disk" do
       version_ohai.force_encoding("UTF-8")
       version_api = ""
       version_api = @api[i]['rev'] if @api
+      version_api = version_api.to_f if version_api.to_f != 0.0
+      version_ohai = version_ohai.to_f if version_ohai.to_f != 0.0
       version_ohai.should eql(version_api), "#{version_ohai}, #{version_api}, block_devices, #{disk[0]}, rev"
     end
 
