@@ -10,7 +10,7 @@ Package: g5kchecks
 Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, rake,
- ruby-rspec, ntp, ntpdate, nfs-common, ruby-rest-client, ruby-json
+ ruby-rspec, ntp, ntpdate, nfs-common, ruby-rest-client, ruby-json, ohai
 Description: expected to be integrated into the production environment of the
  Grid'5000 computational nodes. It gathers a collection of tests which check
  that a node meets several basic requirements before it declares itself as
