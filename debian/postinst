@@ -1,31 +1,4 @@
-#!/bin/bash
-#
-# Generate a default configuration file. It replaces with sensible values all
-# templated variables in $1 among the following:
-# <[REF_ROOT_PART]>
-# <[ROOT_DEVICE]>
-# <[SWAP_PART]>
-# <[TMP_PART]>
-# <[TMP_FSTYPE]>
-
-IN=/usr/lib/ruby/vendor_ruby/g5kchecks/data/partitions.tmpl
-OUT=/usr/lib/ruby/vendor_ruby/g5kchecks/data/partitions
-
-# Default values for postinstall parameters
-REF_ROOT_PART=$(mount | awk '{print $1" "$3}' | grep -E "[[:blank:]]/$" | cut -f1 -d' ')
-ROOT_DEVICE=$(echo ${REF_ROOT_PART} | sed 's/[0-9]*$//')
-SWAP_PART=${ROOT_DEVICE}1
-TMP_PART=${ROOT_DEVICE}5
-TMP_FSTYPE=ext3
-
-sed_script=""
-for var in `grep -E -o "<\[[_[:alnum:]]+\]>" ${IN} | grep -E -o "[_[:alnum:]]+"`; do
-  sed_script="$sed_script -e \"s|<\[$var\]>|`eval echo '\${'$var'}'`|\""
-done
-eval sed $sed_script $IN > $OUT
-
-sfdisk -G -uS -d $ROOT_DEVICE > /usr/lib/ruby/vendor_ruby/g5kchecks/data/layout 2>/dev/null
-
+#!/bin/bash -e
 
 # OAR stuff
 chmod +x /etc/oar/check.d/start_g5kchecks
