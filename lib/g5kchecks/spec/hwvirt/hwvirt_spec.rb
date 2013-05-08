@@ -26,7 +26,7 @@ describe "Virtual Hardware" do
 
     #  it "should have virtual driver could be enable" do
     # test if the module could be enable
-    if kmod.class == String
+    if kmod.class == String and vhw_type != nil
       # rmmod.empty? if the loaded module (for testing) must be removed afterwards.
       rmmod = `PATH=/usr/sbin:/sbin:$PATH lsmod | grep -E -e "^kvm_(amd|intel)"`
       system( "PATH=/usr/sbin:/sbin:$PATH modprobe #{@mod_name}").should eql(true)
