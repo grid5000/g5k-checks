@@ -7,7 +7,7 @@ require 'optparse/time'
 require 'g5kchecks'
 require 'g5kchecks/utils/configparser'
 
-CONFIG_PATH = '/etc/g5kchecks.conf'
+CONFIG_PATH = '/etc/g5k-checks.conf'
 OUTPUT_PATH = '/var/lib/g5kchecks'
 
 # Options parsing
