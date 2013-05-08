@@ -8,7 +8,11 @@ describe "Architecture" do
   it "should have the correct number of core" do
     core_api = 0
     core_api = @api['smp_size'].to_i if @api
-    core_ohai = @system[:cpu][:real].to_i
+    if @system[:cpu][:real] == 0
+      core_ohai = @system[:cpu][:total].to_i
+    else
+      core_ohai = @system[:cpu][:real].to_i
+    end
     core_ohai.should eql(core_api), "#{core_ohai}, #{core_api}, architecture, smp_size"
   end
 
