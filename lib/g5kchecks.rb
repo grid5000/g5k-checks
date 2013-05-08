@@ -22,7 +22,7 @@ module G5kChecks
     def run(conf)
       rspec_opts = []
 
-      if conf[:testlist]
+      if conf[:testlist] and conf[:testlist][0] != "all"
         conf[:testlist].each{|t|
           rspec_opts << File.dirname(__FILE__) + "/g5kchecks/spec/#{t}/#{t}_spec.rb"
         }
@@ -37,7 +37,7 @@ module G5kChecks
         conf[:removetestlist].each{|t|
           test = File.dirname(__FILE__) + "/g5kchecks/spec/#{t}/#{t}_spec.rb"
           i = rspec_opts.find_index(test)
-          rspec_opts.delete_at(i)
+          rspec_opts.delete_at(i.to_i)
         }
       end
 
@@ -45,7 +45,6 @@ module G5kChecks
         require 'g5kchecks/rspec/core/formatters/syslog_formatter'
         require 'g5kchecks/rspec/core/formatters/oar_formatter'
         RSpec.configure do |c|
-          c.add_formatter(:documentation)
           c.add_formatter(RSpec::Core::Formatters::OarFormatter)
           c.add_formatter(RSpec::Core::Formatters::SyslogFormatter)
         end
