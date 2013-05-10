@@ -1,5 +1,11 @@
 # provide some useful functions
 
+class String
+  def force_encoding(enc)
+    self
+  end
+end
+
 module Utils
 
   KIBI = 1024;
@@ -48,35 +54,52 @@ module Utils
       cmdline = file.read
       file.close
       cmdline.each_line do |line|
-        if line =~ /([^\s]*)\s*[^s]*start=[^\d]*(\d*),[^s]*size=[^\d]*(\d*),[^I]*Id=[^\d]*(\d*)/
-          layout["#{$1}"] = Hash.new
-          layout["#{$1}"][:start] = $2
-          layout["#{$1}"][:size] = $3
-          layout["#{$1}"][:Id] = $4
+        next if line =~ /^$/
+        if line =~ /^\s([\d]*)[\s]*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)$/
+          num = Regexp.last_match(1)
+          layout[num] = Hash.new
+          layout[num][:start] = Regexp.last_match(2)
+          layout[num][:end] = Regexp.last_match(3)
+          layout[num][:size] = Regexp.last_match(4)
+          layout[num][:type] = Regexp.last_match(5)
+          six = Regexp.last_match(6)
+          sev = Regexp.last_match(7)
+          if Regexp.last_match(5) =~ /extended/
+            layout[num][:fs] = ""
+            layout[num][:flags] = six
+          else
+            layout[num][:fs] = six
+            layout[num][:flags] = sev
+          end
         end
       end
+    else # first exectution time (after new deployment)
+      %x{parted /dev/sda print > #{File.join(File.dirname(__FILE__), '/../data/layout')} 2>/dev/null}
     end
     layout
   end
 
   def Utils.fstab
-    return {} if !File.exist?(File.dirname(__FILE__) + "/../data/fstab")
-    file_fstab = File.open(File.dirname(__FILE__) + "/../data/fstab")
-    fstab = file_fstab.read
-    file_fstab.close
     filesystem = Hash.new
-    fstab.each_line do |line|
-      next if line =~ /^#/
-      if line =~ /([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*/
-        filesys = Regexp.last_match(1)
-        filesystem[filesys] = Hash.new
-        filesystem[filesys]["file_system"] = Regexp.last_match(1)
-        filesystem[filesys]["mount_point"] = Regexp.last_match(2)
-        filesystem[filesys]["fs_type"] = Regexp.last_match(3)
-        filesystem[filesys]["options"] = Regexp.last_match(4).split(",")
-        filesystem[filesys]["dump"] = Regexp.last_match(5)
-        filesystem[filesys]["pass"] = Regexp.last_match(6)
+    if File.exist?(File.dirname(__FILE__) + "/../data/fstab")
+      file_fstab = File.open(File.dirname(__FILE__) + "/../data/fstab")
+      fstab = file_fstab.read
+      file_fstab.close
+      fstab.each_line do |line|
+        next if line =~ /^#/
+        if line =~ /([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*/
+          filesys = Regexp.last_match(1)
+          filesystem[filesys] = Mash.new unless filesystem.has_key?(filesys)
+          filesystem[filesys]["fs_type"] = Regexp.last_match(3)
+          filesystem[filesys]["dump"] = Regexp.last_match(5)
+          filesystem[filesys]["pass"] = Regexp.last_match(6)
+          filesystem[filesys]["options"] = Regexp.last_match(4).split(",")
+          filesystem[filesys]["mount_point"] = Regexp.last_match(2)
+          filesystem[filesys]["file_system"] = filesys
+        end
       end
+    else # first exectution time (after new deployment)
+      %x{cp /etc/fstab #{File.join(File.dirname(__FILE__), '/../data/')}}
     end
     filesystem
   end

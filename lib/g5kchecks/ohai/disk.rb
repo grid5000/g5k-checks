@@ -15,7 +15,7 @@ fstab.each_line do |line|
     filesystem[filesys]["pass"] = Regexp.last_match(6)
     filesystem[filesys]["options"] = Regexp.last_match(4).split(",")
     filesystem[filesys]["mount_point"] = Regexp.last_match(2)
-    filesystem[filesys]["file_system"] = Regexp.last_match(1)
+    filesystem[filesys]["file_system"] = filesys
   end
 end
 
@@ -27,27 +27,41 @@ if File.exist?("/proc/cmdline")
   if cmdline =~ /.*root=([^\d]*)(\d).*/
     root_device = $1
     root_part = $2
-    popen4("sfdisk -uS -d #{root_device} 2>/dev/null") do |pid, stdin, stdout, stderr|
+    layout = {}
+    popen4("parted #{root_device} print") do |pid, stdin, stdout, stderr|
       stdin.close
       stdout.each do |line|
-        if line =~ /([^\s]*)\s*[^s]*start=[^\d]*(\d*),[^s]*size=[^\d]*(\d*),[^I]*Id=[^\d]*(\d*)/
-          name_device = Regexp.last_match(1)
-          filesystem[name_device] = Mash.new unless filesystem.has_key?(name_device)
-          filesystem[name_device][:start] = Regexp.last_match(2)
-          filesystem[name_device][:size] = Regexp.last_match(3)
-          filesystem[name_device][:Id] = Regexp.last_match(4)
-          popen4("tune2fs -l #{name_device}") do |pid, stdin, stdout, stderr|
-            stdin.close
-            stdout.each do |line|
-              if line =~ /^Filesystem state:/
-                filesystem[name_device][:state] = line.chomp.split(": ").last.strip
+        next if line =~ /^$/
+        if line =~ /^\s([\d]*)[\s]*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)$/
+          num = Regexp.last_match(1)
+          layout[num] = Hash.new
+          layout[num][:start] = Regexp.last_match(2)
+          layout[num][:end] = Regexp.last_match(3)
+          layout[num][:size] = Regexp.last_match(4)
+          layout[num][:type] = Regexp.last_match(5)
+          six = Regexp.last_match(6)
+          sev = Regexp.last_match(7)
+          if Regexp.last_match(5) =~ /extended/
+            layout[num][:fs] = ""
+            layout[num][:flags] = six
+          else
+            layout[num][:fs] = six
+            layout[num][:flags] = sev
+          end
+          if num == "2" or num == "3" or num == "5"
+            popen4("tune2fs -l #{root_device}#{num}") do |pid, stdin, stdout, stderr|
+              stdin.close
+              stdout.each do |line2|
+                if line2 =~ /^Filesystem state:/
+                  layout[num][:state] = line.chomp.split(": ").last.strip
+                end
               end
             end
-            filesystem[name_device][:state] = "clean" if !filesystem[name_device].has_key?("state")
           end
+          layout[num][:state] = "clean" if !layout[num].has_key?("state")
         end
       end
     end
+    filesystem["layout"]= layout
   end
 end
-
