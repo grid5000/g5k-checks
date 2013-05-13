@@ -74,6 +74,7 @@ module Utils
         end
       end
     else # first exectution time (after new deployment)
+      %x{mkdir -p #{File.join(File.dirname(__FILE__))}/../data/}
       %x{parted /dev/sda print > #{File.join(File.dirname(__FILE__), '/../data/layout')} 2>/dev/null}
     end
     layout
@@ -99,6 +100,7 @@ module Utils
         end
       end
     else # first exectution time (after new deployment)
+      %x{mkdir -p #{File.join(File.dirname(__FILE__))}/../data/}
       %x{cp /etc/fstab #{File.join(File.dirname(__FILE__), '/../data/')}}
     end
     filesystem
