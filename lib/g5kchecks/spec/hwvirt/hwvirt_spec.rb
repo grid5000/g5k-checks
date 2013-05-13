@@ -2,11 +2,11 @@ describe "Virtual Hardware" do
 
   before do
     @api = RSpec.configuration.node.api_description['supported_job_types']
-    @sytem = RSpec.configuration.node.ohai_description
+    @system = RSpec.configuration.node.ohai_description
   end
 
   it "should have the good driver" do
-    vhw_type = @sytem[:cpu][:'0'][:flags].select{|i|
+    vhw_type = @system[:cpu][:'0'][:flags].select{|i|
       i == "svm" || i == "vmx"
     }
     kmod = ""
