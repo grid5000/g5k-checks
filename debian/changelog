@@ -1,3 +1,10 @@
+g5kchecks (0.2-1) unstable; urgency=low
+
+  * change fdisk to parted
+  * fix bugs
+
+ -- Émile Morel <emile.morel@inria.fr>  Thu, 13 May 2013 11:20:00 +0100
+
 g5kchecks (0.1-1) unstable; urgency=low
 
   * Initial release
