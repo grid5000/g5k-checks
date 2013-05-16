@@ -1,3 +1,10 @@
+g5kchecks (0.2-3) unstable; urgency=low
+
+  * ensure g5-ckecks is running under ruby 1.8
+  * compute an error rate on memory instead of strict comparison
+
+ -- Émile Morel <emile.morel@inria.fr>  Thu, 14 May 2013 19:41:00 +0100
+
 g5kchecks (0.2-2) unstable; urgency=low
 
   * change g5k-checks in oar script
