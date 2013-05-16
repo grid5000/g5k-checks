@@ -1,2 +1,3 @@
 debian/g5kchecks.debhelper.log
 debian/g5kchecks/*
+debian/files
