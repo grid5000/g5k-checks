@@ -10,7 +10,7 @@ describe "Memory" do
     size_api = @api['ram_size'].to_i if @api
     size_ohai = @system[:memory][:total].to_i
     size_ohai = size_ohai*1024
-    size_ohai.should eq(size_api), "#{size_ohai}, #{size_api}, main_memory, ram_size"
+    (size_ohai/100000000).should eq((size_api/100000000)), "#{size_ohai}, #{size_api}, main_memory, ram_size"
   end
 
 end
