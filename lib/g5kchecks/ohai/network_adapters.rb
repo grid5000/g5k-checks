@@ -48,7 +48,7 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
   iface[:ip] = ip[0][0] if ip.size > 0
   ip6 = iface[:addresses].select{|key,value| value[:family] == 'inet6'}.to_a
   iface[:ip6] = ip6[0][0] if ip6.size > 0
-  if iface[:ip].nil?
+  if iface[:ip].nil? and File.exist?('/usr/sbin/brctl')
     #bridge?
     popen4("brctl show") do |pid, stdin, stdout, stderr|
       stdin.close
