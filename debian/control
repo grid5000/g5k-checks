@@ -2,15 +2,16 @@ Source: g5kchecks
 Section: ruby
 Priority: optional
 Maintainer: Émile Morel <emile.morel@inria.fr>
-Build-Depends: debhelper (>= 8.0.0), gem2deb (>= 0.2.7~), rubygems1.9.1
+Build-Depends: debhelper (>= 8.0.0), gem2deb (>= 0.2.7~), rubygems1.8
 Standards-Version: 3.9.3
 XS-Ruby-Versions: all
 
 Package: g5kchecks
 Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, rake,
- ruby-rspec, ntp, ntpdate, nfs-common, ruby-rest-client, ruby-json, ohai
+Depends: ${shlibs:Depends}, ${misc:Depends}, ruby1.8 | ruby-interpreter, rake,
+ ruby-rspec, ntp, ntpdate, nfs-common, ruby-rest-client, ruby-json, ohai,
+ ethtool
 Description: expected to be integrated into the production environment of the
  Grid'5000 computational nodes. It gathers a collection of tests which check
  that a node meets several basic requirements before it declares itself as
