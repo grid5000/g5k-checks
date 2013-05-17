@@ -1,3 +1,15 @@
+g5kchecks (0.2-6) unstable; urgency=low
+
+    * less strict on frequency error
+
+ -- Émile Morel <emile.morel@inria.fr>  Fri, 17 May 2013 16:18:00 +0100
+
+g5kchecks (0.2-5) unstable; urgency=low
+
+    * test if brctl is available
+
+ -- Émile Morel <emile.morel@inria.fr>  Fri, 17 May 2013 14:12:00 +0100
+
 g5kchecks (0.2-4) unstable; urgency=low
 
     * compute an error rate on frequency instead of strict comparison
