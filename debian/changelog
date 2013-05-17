@@ -1,3 +1,11 @@
+g5kchecks (0.2-4) unstable; urgency=low
+
+    * compute an error rate on frequency instead of strict comparison
+    * add ethtool in depends
+    * change checks list to all and remove os
+
+ -- Émile Morel <emile.morel@inria.fr>  Fri, 17 May 2013 11:07:00 +0100
+
 g5kchecks (0.2-3) unstable; urgency=low
 
   * ensure g5-ckecks is running under ruby 1.8
