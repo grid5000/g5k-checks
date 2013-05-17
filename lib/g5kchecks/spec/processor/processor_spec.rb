@@ -9,7 +9,7 @@ describe "Processor" do
     freq_api = ""
     freq_api = @api["clock_speed"] if @api
     freq_ohai = @system[:cpu][:mhz]
-    freq_ohai.should eql(freq_api), "#{freq_ohai}, #{freq_api}, processor, clock_speed"
+    (freq_ohai/10000000).should eql((freq_api/10000000)), "#{freq_ohai}, #{freq_api}, processor, clock_speed"
 
   end
 
