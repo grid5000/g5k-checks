@@ -10,7 +10,12 @@ describe "Chassis" do
     number_ohai = nil
     number_api = @api['serial'] if @api
     number_ohai = @system['serial_number'].strip
-    number_ohai.should eq(number_api), "#{number_ohai}, #{number_api}, chassis, serial_number"
+    # si ohai nous retourne empty alors on va chercher dans base_board
+    if number_ohai == "empty"
+      number_ohai = RSpec.configuration.node.ohai_description.dmi['base_board']['serial_number'].strip
+      # si c'est toujours empty alors on n'effectue pas le test (la bonne valeur est peut-être dans l'API
+      number_ohai.should eq(number_api), "#{number_ohai}, #{number_api}, chassis, serial_number" if number_ohai != "empty"
+    end
   end
 
   it "should have the correct manufacturer" do
@@ -18,7 +23,10 @@ describe "Chassis" do
     manufacturer_ohai = nil
     manufacturer_api = @api['manufacturer'] if @api
     manufacturer_ohai = @system['manufacturer'].strip
-    manufacturer_ohai.should eq(manufacturer_api), "#{manufacturer_ohai}, #{manufacturer_api}, chassis, manufacturer"
+    if manufacturer_ohai == "empty"
+      manufacturer_ohai = RSpec.configuration.node.ohai_description.dmi['base_board']['manufacturer'].strip
+      manufacturer_ohai.should eq(manufacturer_api), "#{manufacturer_ohai}, #{manufacturer_api}, chassis, manufacturer" if manufacturer_ohai == "empty"
+    end
   end
 
   it "should have the correct product name" do
@@ -26,7 +34,10 @@ describe "Chassis" do
     name_ohai = nil
     name_api = @api['name'] if @api
     name_ohai = @system['product_name'].strip
-    name_ohai.should eq(name_api), "#{name_ohai}, #{name_api}, chassis, product_name"
+    if name_ohai == "empty"
+      name_ohai = RSpec.configuration.node.ohai_description.dmi['base_board']['product_name'].strip
+      name_ohai.should eq(name_api), "#{name_ohai}, #{name_api}, chassis, product_name" if name_ohai == "empty"
+    end
   end
 
 end
