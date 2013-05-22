@@ -1,3 +1,15 @@
+g5kchecks (0.2-8) unstable; urgency=low
+
+    * more robust variables for chassis
+
+ -- Émile Morel <emile.morel@inria.fr>  Wed, 22 May 2013 16:30:00 +0100
+
+g5kchecks (0.2-7) unstable; urgency=low
+
+    * change chomp to strip
+
+ -- Émile Morel <emile.morel@inria.fr>  Thu, 21 May 2013 18:00:00 +0100
+
 g5kchecks (0.2-6) unstable; urgency=low
 
     * less strict on frequency error
