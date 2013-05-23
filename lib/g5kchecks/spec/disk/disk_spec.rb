@@ -4,7 +4,7 @@ describe "Disk" do
     @api = RSpec.configuration.node.api_description["storage_devices"]
   end
 
-  RSpec.configuration.node.ohai_description.block_device.select { |key,value| key =~ /[sh]d.*/ }.each_with_index do |disk,i|
+  RSpec.configuration.node.ohai_description.block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each_with_index do |disk,i|
 
     it "should have the correct name" do
       name_ohai = disk[0]
