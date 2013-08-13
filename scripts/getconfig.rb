@@ -8,8 +8,8 @@ if ARGV.size != 4
   puts 'pas les bons arguments'
   exit 1
 end
-g5kcamp = G5kchecksCampaign.new(ARGV[0],ARGV[1],ARGV[2])
+#g5kcamp = G5kchecksCampaign.new(ARGV[0],ARGV[1],ARGV[2])
 
-nodes = g5kcamp.run!
+#nodes = g5kcamp.run!
 
-Merge.new(ARGV[0],ARGV[1], ARGV[3]).merge! if nodes
+Merge.new(ARGV[0],ARGV[1], ARGV[3]).merge! #if nodes
