@@ -17,10 +17,10 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
   #  iface[:version] = nil #FIXME: NOT IMPLEMENTED
 
   # Get MAC address
-  # Wheeze
-  #iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}.key({'family'=>'lladdr'})
-  # squeeze
-  iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}[0][0]
+  # ruby 1.9
+  iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}.key({'family'=>'lladdr'})
+  # ruby 1.8
+  #iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}[0][0]
   popen4("ethtool #{dev}; ethtool -i #{dev}") do |pid, stdin, stdout, stderr|
     stdin.close
     stdout.each do |line|
@@ -30,9 +30,9 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
       if line =~ /^[[:blank:]]*Speed: /
         if line =~ /Unknown/
           iface[:rate] = ""
-      else
-        iface[:rate] = line.chomp.split(": ").last.gsub(/([GMK])b\/s/){'000000'}
-      end
+        else
+          iface[:rate] = line.chomp.split(": ").last.gsub(/([GMK])b\/s/){'000000'}
+        end
       end
       if line =~ /^\s*driver: /
         iface[:driver] = line.chomp.split(": ").last
@@ -48,7 +48,7 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
   iface[:ip] = ip[0][0] if ip.size > 0
   ip6 = iface[:addresses].select{|key,value| value[:family] == 'inet6'}.to_a
   iface[:ip6] = ip6[0][0] if ip6.size > 0
-  if iface[:ip].nil? and File.exist?('/usr/sbin/brctl')
+  if iface[:ip].nil? and (File.exist?('/sbin/brctl') or File.exist?('/usr/sbin/brctl'))
     #bridge?
     popen4("brctl show") do |pid, stdin, stdout, stderr|
       stdin.close
