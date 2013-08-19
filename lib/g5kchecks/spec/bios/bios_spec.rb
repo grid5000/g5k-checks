@@ -15,7 +15,7 @@ describe "Bios" do
   it "should have the correct version" do
     version_api = ""
     version_api = @api['version'] if @api
-    version_ohai = @system['version'].gsub(/'/,')').strip
+    version_ohai = @system['version'].gsub(/'/,'').strip
     version_ohai = version_ohai.to_f if version_ohai.to_f != 0.0
     version_api = version_api.to_f if version_api.to_f != 0.0
     version_ohai.should eql(version_api), "#{version_ohai}, #{version_api}, bios, version"
