@@ -22,6 +22,7 @@ module G5kChecks
       @hash[:checks_for_init_dir] = config["checks_for_init_dir"]
       @hash[:testlist] = config["checks_for_oar"].split(',') if config["checks_for_oar"]
       @hash[:removetestlist] = config["removetestlist"].split(',') if config["removetestlist"]
+      @hash[:urlapi] = config["urlapi"] if config["urlapi"]
       return @hash
     end
   end

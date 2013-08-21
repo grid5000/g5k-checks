@@ -10,12 +10,14 @@ require 'g5kchecks/utils/configparser'
 
 CONFIG_PATH = '/etc/g5k-checks.conf'
 OUTPUT_PATH = '/var/lib/g5kchecks'
+URL_API = 'https://api.grid5000.fr/sid'
 
 # Options parsing
 
 $configpath   = CONFIG_PATH
 $outputpath   = OUTPUT_PATH
 $hashconf = {}
+$hashconf[:urlapi] = URL_API
 
 USAGE = "Usage: #{$0} [options]"
 
@@ -48,6 +50,10 @@ optparse = OptionParser.new(USAGE) do |opts|
 
   # array
   opts.on("-r", "--remove-tests[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf[:removetestlist]=testlist}
+
+  opts.on( '-u', '--url-api <URL>', "Specify the URL API where g5kchecks retrieve informations [default: '#{URL_API}']") do |u|
+    $hashconf[:checks_for_init_dir] = u
+  end
 
   opts.on_head("specific options:")
 
