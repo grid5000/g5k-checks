@@ -1,3 +1,15 @@
+g5kchecks (0.2-12) unstable; urgency=low
+
+    * gsub error (bios)
+
+ -- Émile Morel <emile.morel@inria.fr>  Thu, 18 Aug 2013 15:45:00 +0100
+
+g5kchecks (0.2-11) unstable; urgency=low
+
+    * add sanitize for graphene bios version (graphene)
+
+ -- Émile Morel <emile.morel@inria.fr>  Thu, 18 Aug 2013 15:39:00 +0100
+
 g5kchecks (0.2-10) unstable; urgency=low
 
     * adapt to ruby 1.9 and wheezy
