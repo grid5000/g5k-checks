@@ -10,7 +10,7 @@ require 'g5kchecks/utils/configparser'
 
 CONFIG_PATH = '/etc/g5k-checks.conf'
 OUTPUT_PATH = '/var/lib/g5kchecks'
-URL_API = 'https://api.grid5000.fr/sid'
+URL_API = 'https://api.grid5000.fr/3.0'
 
 # Options parsing
 
