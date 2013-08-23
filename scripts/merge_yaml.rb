@@ -3,6 +3,7 @@ $: << File.join(File.dirname(__FILE__))
 #require 'active_support/ordered_hash'
 
 require "yaml"
+require "json"
 
 # Hack to enable nested Hashes merging
 # Thanks Luc !
@@ -23,31 +24,8 @@ class Hash
         end
       else
         self[k] = v
-        puts "add #{k}: #{v}"
       end
     end
-  end
-
-  def merge(hash)
-    ret = self.dup
-    return ret unless hash.is_a?(Hash)
-    hash.each_pair do |k,v|
-      if ret[k]
-        if v.is_a?(Hash)
-          ret[k] = ret[k].merge(v)
-        elsif v.is_a?(Array)
-          # Keep array's order
-          v.each_index do |i|
-            ret[k][i] = v[i] unless v[i].nil?
-          end
-        else
-          ret[k] = v
-        end
-      else
-        ret[k] = v
-      end
-    end
-    ret
   end
 end
 
@@ -84,7 +62,7 @@ class Merge
   end
 
   def merge!
-    checks_yaml = {}
+    checks = {}
 
     file_check = File.join(@site,@cluster, "cluster_check.yaml")
     file_merge = File.join(@site,@cluster, "cluster_merge_with_admin.yaml")
@@ -94,40 +72,40 @@ class Merge
     Dir.foreach(File.join(@site,@cluster)) {|x|
       next if x == '.' or x == '..'
       node_name = x.split(".")[0]
-      checks_yaml["#{node_name}"] = YAML.load_file(File.join(@site,@cluster,x))#["#{x}"]
+      checks["#{node_name}"] = JSON.parse(File.read(File.join(@site,@cluster,x)))
     }
 
-    nb_nodes_alive = checks_yaml.size
-    nb_nodes_should_alive = 0
-    #puts @dir_ref_api
-    Dir.foreach(File.join(@dir_ref_api, 'data', 'grid5000', 'sites', @site, 'clusters', @cluster, 'nodes')) {|x|
-      next if x == '.' or x == '..'
-      nb_nodes_should_alive += 1
-    }
-
-    if nb_nodes_should_alive != nb_nodes_alive
-      Dir.foreach(File.join(@dir_ref_api, 'data', 'grid5000', 'sites', @site, 'clusters', @cluster, 'nodes')){|x|
-        next if x == '.' or x == '..'
-        miss = File.basename(x, ".json")
-        if !checks_yaml[miss]
-          puts "Add node #{miss} from old api data"
-          merge_with_another_node(checks_yaml, miss)
-        end
-      }
-    end
+#    nb_nodes_alive = checks_yaml.size
+#    nb_nodes_should_alive = 0
+#    #puts @dir_ref_api
+#    Dir.foreach(File.join(@dir_ref_api, 'data', 'grid5000', 'sites', @site, 'clusters', @cluster, 'nodes')) {|x|
+#      next if x == '.' or x == '..'
+#      nb_nodes_should_alive += 1
+#    }
+#
+#    if nb_nodes_should_alive != nb_nodes_alive
+#      Dir.foreach(File.join(@dir_ref_api, 'data', 'grid5000', 'sites', @site, 'clusters', @cluster, 'nodes')){|x|
+#        next if x == '.' or x == '..'
+#        miss = File.basename(x, ".json")
+#        if !checks_yaml[miss]
+#          puts "Add node #{miss} from old api data"
+#          merge_with_another_node(checks_yaml, miss)
+#        end
+#      }
+#    end
 
     File.open(file_check, 'w') { |f|
-      f.puts checks_yaml.to_yaml
+      f.puts checks.to_yaml
     }
 
-    admin_yaml = YAML.load_file(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '.yaml'))
-    checks_yaml.merge!(admin_yaml)
-    sort_yaml = full_view(checks_yaml, checks_yaml.keys.sort { |x,y| x.split("-")[1].to_i <=> y.split("-")[1].to_i})
+    admin_yaml = YAML.load_file(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '_generated.yaml'))
+    admin_yaml.merge!(checks)
+    #sort_yaml = full_view(checks_yaml, checks_yaml.keys.sort { |x,y| x.split("-")[1].to_i <=> y.split("-")[1].to_i})
     # ok là c'est très moche mais je ne comprends pas pourquoi il met cette entête
-    sort_yaml = sort_yaml.gsub(" !ruby/object:Merge","")
+    #sort_yaml = sort_yaml.gsub(" !ruby/object:Merge","")
 
-    File.open(file_merge, 'w') { |f|
-      f.puts sort_yaml
+    File.open(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '_generated.yaml'), 'w') { |f|
+      f.puts admin_yaml.to_yaml
     }
 
   end

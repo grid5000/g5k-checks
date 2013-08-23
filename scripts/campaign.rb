@@ -20,7 +20,7 @@ class G5kchecksEngine < Grid5000::Campaign::Engine
     env[:nodes].each { |node|
       ssh(node, "root") do |ssh|
         logger.info "get [#{node}] yaml file"
-        ssh.sftp.download!("/tmp/#{node}.yaml", "./#{site}/#{cluster}/#{node}.yaml")
+        ssh.sftp.download!("/tmp/#{node}.json", "./#{site}/#{cluster}/#{node}.json")
      end
     }
     env
