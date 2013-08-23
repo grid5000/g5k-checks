@@ -31,10 +31,11 @@ end
 
 class Merge
 
-  def initialize(site, cluster, dir_ref_api)
+  def initialize(site, cluster, dir_ref_api, copy)
     @site = site
     @cluster = cluster
     @dir_ref_api = dir_ref_api
+    @copy = copy
   end
 
   def merge_with_another_node(checks_yaml, miss)
@@ -104,9 +105,18 @@ class Merge
     # ok là c'est très moche mais je ne comprends pas pourquoi il met cette entête
     #sort_yaml = sort_yaml.gsub(" !ruby/object:Merge","")
 
-    File.open(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '_generated.yaml'), 'w') { |f|
-      f.puts admin_yaml.to_yaml
-    }
+    if @copy == "true"
+      File.open(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '_generated.yaml'), 'w') { |f|
+        f.puts admin_yaml.to_yaml
+      }
+      File.open(file_merge, 'w') { |f|
+        f.puts checks.to_yaml
+      }
+    else
+      File.open(file_merge, 'w') { |f|
+        f.puts checks.to_yaml
+      }
+    end
 
   end
 
