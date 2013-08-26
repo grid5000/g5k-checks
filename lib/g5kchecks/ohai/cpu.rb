@@ -27,10 +27,14 @@ if File.exist?("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq")
   freq = file.read
   file.close
   # frequence en khz
-  cpu[:mhz] = (freq.to_i)*1000 if freq
+  cpu[:mhz] = freq.to_i if freq
 else
   cpu[:mhz] = cpu[:'0'][:mhz].to_i*1000000
 end
+
+cpu[:mhz] = (cpu[:mhz].to_f/1000000000)
+cpu[:mhz] = sprintf("%.1f", cpu[:mhz]).to_f
+cpu[:mhz] = (cpu[:mhz]*1000000000).to_i
 
 popen4("lscpu") do |pid, stdin, stdout, stderr|
   stdin.close
