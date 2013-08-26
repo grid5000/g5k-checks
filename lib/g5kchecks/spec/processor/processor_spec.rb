@@ -7,7 +7,11 @@ describe "Processor" do
 
   it "should have the correct frequency" do
     freq_api = ""
-    freq_api = @api["clock_speed"] if @api
+    if @api
+      freq_api = @api["clock_speed"]
+    else
+      freq_api = 0
+    end
     freq_ohai = @system[:cpu][:mhz]
     err = (freq_ohai-freq_api).abs
     err.should be < 100000000, "#{freq_ohai}, #{freq_api}, processor, clock_speed"
