@@ -33,7 +33,11 @@ else
 end
 
 cpu[:mhz] = (cpu[:mhz].to_f/1000000000)
-cpu[:mhz] = sprintf("%.1f", cpu[:mhz]).to_f
+if  cpu[:vendor] == "Intel"
+    cpu[:mhz] = sprintf("%.2f", cpu[:mhz]).to_f
+else
+    cpu[:mhz] = sprintf("%.1f", cpu[:mhz]).to_f
+end
 cpu[:mhz] = (cpu[:mhz]*1000000000).to_i
 
 popen4("lscpu") do |pid, stdin, stdout, stderr|
