@@ -36,12 +36,13 @@ class Cluster
   end
 
   def print_attr(chain,key,uid1,desc1,uid2,desc2)
+    return if chain[0] == "sensors"
+    return if chain[0] == "chassis" && chain[1] == "serial_number"
     if !@remove_attr.include?(key)
       if key == "ram_size"
          @stderr << "Error on [#{chain.join(" - ")}]: #{uid1} with #{desc1} and #{uid2} #{desc2}" if desc2/100000000 != desc1/100000000
       elsif key == "clock_speed"
-        err = (desc2-desc1).abs
-         @stderr << "Error on [#{chain.join(" - ")}]: #{uid1} with #{desc1} and #{uid2} #{desc2}" if err > 100000000
+         @stderr << "Error on [#{chain.join(" - ")}]: #{uid1} with #{desc1} and #{uid2} #{desc2}"
       else
          @stderr << "Error on [#{chain.join(" - ")}]: #{uid1} with #{desc1} and #{uid2} #{desc2}"
       end
