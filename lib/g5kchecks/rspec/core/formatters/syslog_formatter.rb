@@ -11,12 +11,13 @@ module RSpec
         end
 
         def example_failed(example)
-          #          message = if failure.expectation_not_met?
-          #                      "FAILED\t#{failure.header}: #{failure.exception.message}"
-          #                    else
-          #                      "ERROR\t#{failure.header}: #{failure.exception.message}"
-          #                    end
-          log(Syslog::LOG_ERR, "ERROR #{example_group.description} #{example.description}")
+          array = example.exception.message.split(', ')
+          # faux positif (donnée présente dans l'api mais non présente dans ohai)
+          if array[0] != ""
+            log(Syslog::LOG_ERR, "ERROR #{example_group.description} #{example.description}  #{example.exception.message}")
+          else
+            log(Syslog::LOG_INFO, "OK #{example_group.description} #{example.description}")
+          end
         end
 
         def example_passed(example)
