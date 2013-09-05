@@ -37,9 +37,11 @@ describe "Partitions" do
   end
 
   it "should have the correct flags" do
-    pos_sys = @system["layout"]["#{k}"][:flags]
-    pos_lay= v[:flags]
-    pos_lay.should eql(pos_sys), "filesystem layout position of #{k} is #{pos_sys} instead of #{pos_lay}"
+    if k == "3" # don't watch deploy partition (wheezy ext4/ squeeze ext4)
+      pos_sys = @system["layout"]["#{k}"][:flags]
+      pos_lay= v[:flags]
+      pos_lay.should eql(pos_sys), "filesystem layout position of #{k} is #{pos_sys} instead of #{pos_lay}"
+    end
   end
 
   it "should have the correct state" do
