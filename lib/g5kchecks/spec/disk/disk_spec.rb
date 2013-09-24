@@ -7,7 +7,7 @@ describe "Disk" do
   RSpec.configuration.node.ohai_description.block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each_with_index do |disk,i|
 
     it "should have the correct name" do
-      name_ohai = disk[0]
+      name_ohai = disk[i]
       name_api = ""
       name_api = @api[i]["device"] if @api
       name_ohai.should eql(name_api), "#{name_ohai}, #{name_api}, block_devices, #{disk[0]}, device"

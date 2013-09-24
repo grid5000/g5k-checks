@@ -41,8 +41,7 @@ class G5kchecksCampaign
         ENV['RESTFULLY_CONFIG'] || "~/.restfully/api.grid5000.fr.yml"
       )
     }
-    @options[:environment] = "http://public.#{site}.grid5000.fr/~emorel/g5kchecks/custominstallg5kchecks.dsc"
-#    @options[:environment] = "/home/emorel/public/g5kchecks/custominstallg5kchecks.dsc"
+    @options[:environment] = "wheezy-x64-prod"
     @options[:resources] = "nodes=#{nb}"
     @options[:properties] = "cluster='#{cluster}'"
     @options[:walltime] = 3600
