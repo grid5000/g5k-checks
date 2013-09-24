@@ -31,9 +31,11 @@ describe "Partitions" do
   end
 
   it "should have the correct fs" do
-    fs_sys = @system["layout"]["#{k}"][:fs]
-    fs_lay = v[:fs]
-    fs_lay.should eql(fs_sys), "filesystem layout fs of #{k} is #{fs_sys} instead of #{fs_lay}"
+    if k != "3" # don't watch deploy partition (wheezy ext4/ squeeze ext4)
+      fs_sys = @system["layout"]["#{k}"][:fs]
+      fs_lay = v[:fs]
+      fs_lay.should eql(fs_sys), "filesystem layout fs of #{k} is #{fs_sys} instead of #{fs_lay}"
+    end
   end
 
   it "should have the correct flags" do
