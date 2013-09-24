@@ -18,11 +18,13 @@ module RSpec
             # typiquement pour disk et network
             if array[-2] =~ /\d{1,2}/
               file_name = example.full_description.gsub(" ","_") + "_" + array[-2]
+            elsif array[-2] =~ /sd./
+              file_name = example.full_description.gsub(" ","_") + "_" + array[-2]
             else
               file_name = example.full_description.gsub(" ","_")
             end
             File.open(File.join(RSpec.configuration.oar_dir,"OAR_"+file_name), 'w') do |f|
-              f.puts example.execution_result.to_yaml
+              f.puts example.execution_result.to_json
             end
           end
         end
