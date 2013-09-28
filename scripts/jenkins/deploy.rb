@@ -197,8 +197,8 @@ Restfully::Session.new(:base_uri => config['base_uri'], :username => config['use
   else
     begin
       pp envg5k
-      deployment = root.sites[:"#{siteg5k}"].deployments.submit({:nodes => job['assigned_nodes'],:environment => "#{envg5k}" ,:key => File.read(PUBLIC_KEY)})
-  logger.info " [#{siteg5k}] launching '#{envg5k}' on [#{job['assigned_nodes'].join(',')}]"
+      deployment = root.sites[:"#{siteg5k}"].deployments.submit({:nodes => job['assigned_nodes'],:environment => "wheezy-x64-prod" ,:key => File.read(PUBLIC_KEY)})
+      logger.info " [#{siteg5k}] launching '#{envg5k}' on [#{job['assigned_nodes'].join(',')}]"
 
       if deployment.nil?
         logger.error "[#{siteg5k}] can not submit deployment "
@@ -235,15 +235,12 @@ Restfully::Session.new(:base_uri => config['base_uri'], :username => config['use
 	    deployment["nodes"].each do |host|
 	    print "\n\t*** #{host} ***\n\n"
 	    @GATEWAY.ssh(host, "root", :keys => [PRIVATE_KEY], :auth_methods => ["publickey"]) do |ssh|
-              ssh_exec!(ssh,"wget -q http://public.nancy.grid5000.fr/~emorel/g5kchecks/g5kchecks.deb")
               ssh_exec!(ssh,"modprobe ipmi_devintf && modprobe ipmi_si && modprobe ipmi_msghandler")
-              ssh_exec!(ssh,"apt-get update -q2")
-              ssh_exec!(ssh,"apt-get install rake ruby-rspec ntp ntpdate nfs-common ipmitool -y ")
+              ssh_exec!(ssh,"apt-get install ipmitool -y ")
               ssh_exec!(ssh,"apt-get install -f")
-              ssh_exec!(ssh,"dpkg -i g5kchecks.deb")
-              ssh_exec!(ssh,"g5kchecks -m jenkins")
+	      ssh.exec "export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks -m jenkins"
               puts ssh_exec!(ssh,"ls /tmp/")
-              ssh.sftp.download!("/tmp/#{host}_Jenkins_output.yaml", "#{time.strftime("%Y_%m_%d_%H_%M_%S")}_#{host}.yaml")
+              ssh.sftp.download!("/tmp/#{host}_Jenkins_output.json", "#{time.strftime("%Y_%m_%d_%H_%M_%S")}_#{host}.json")
             end
           end
 	end
