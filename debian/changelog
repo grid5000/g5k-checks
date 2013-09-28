@@ -1,3 +1,57 @@
+g5kchecks (0.3-3) unstable; urgency=low
+
+    * [scripts] update jenkin and API scripts 
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 28 Sep 2013 18:27:05 +0100
+
+g5kchecks (0.3-2) unstable; urgency=low
+
+    * [part] don't check fstype too 
+    * [formatter] change yaml to json
+    * [disk] refactoring disk_spec.rb 
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 24 Sep 2013 19:56:08 +0100
+
+g5kchecks (0.3-1) unstable; urgency=low
+
+    * [disk] check good disk
+    * [part] DON'T check the 3 partition 
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 24 Sep 2013 17:17:23 +0100
+
+g5kchecks (0.3) unstable; urgency=low
+
+    * [part] don't check the third partition file system type (ext4/ext3)
+    * [conf] add PATH variable
+    * [clk] set complete path for ntpdate
+    * [formatters] remove false positive from syslog
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 05 Sep 2013 15:33:00 +0100
+
+g5kchecks (0.2-15) unstable; urgency=low
+
+    * [script] jenkins - remov chassis serial_number and sensor
+    * [cpu] more accurate frequency
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 27 Aug 2013 14:13:00 +0100
+
+g5kchecks (0.2-14) unstable; urgency=low
+
+    * [cpu] change frequency test
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 26 Aug 2013 12:42:00 +0100
+
+g5kchecks (0.2-13) unstable; urgency=low
+
+    * [cpu] round frequency (Bug #5189 )
+    * [scripts] automatic update of ref api repo
+    * [script] change merge for new ref api configuration (file generated/manual)
+    * [bin] change api version
+    * [bin] add api url from file configuration
+    * [scripts] add check_cluster_uniformization for jenkins
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 26 Aug 2013 11:14:00 +0100
+
 g5kchecks (0.2-12) unstable; urgency=low
 
     * gsub error (bios)
