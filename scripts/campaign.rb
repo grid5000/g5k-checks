@@ -6,6 +6,13 @@ class G5kchecksEngine < Grid5000::Campaign::Engine
 
 
   on :install! do |env, *args|
+    ssh(env[:nodes], "root", :multi => true, :timeout => 10) do |ssh|
+      ssh.exec "modprobe ipmi_devintf && modprobe ipmi_si && modprobe ipmi_msghandler"
+      ssh.exec "apt-get install ipmitool -y "
+      ssh.exec "apt-get install -f"
+      ssh.exec "export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks -m api"
+      puts ssh.exec "ls /tmp/"
+    end
     env
   end
 
@@ -72,9 +79,7 @@ class G5kchecksCampaign
       engine = G5kchecksEngine.new(connection, @options)
       nodes = engine.run!
       return false if nodes.nil?
-#      return nodes.size == @nb
       return true
-#      nodes.each {|node| puts node} unless nodes.nil?
     else
       STDERR.puts "Restfully configuration file cannot be loaded: #{@options[:restfully_config].inspect} does not exist or cannot be read or is not a file"
       exit(1)

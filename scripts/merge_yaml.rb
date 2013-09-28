@@ -76,34 +76,12 @@ class Merge
       checks["#{node_name}"] = JSON.parse(File.read(File.join(@site,@cluster,x)))
     }
 
-#    nb_nodes_alive = checks_yaml.size
-#    nb_nodes_should_alive = 0
-#    #puts @dir_ref_api
-#    Dir.foreach(File.join(@dir_ref_api, 'data', 'grid5000', 'sites', @site, 'clusters', @cluster, 'nodes')) {|x|
-#      next if x == '.' or x == '..'
-#      nb_nodes_should_alive += 1
-#    }
-#
-#    if nb_nodes_should_alive != nb_nodes_alive
-#      Dir.foreach(File.join(@dir_ref_api, 'data', 'grid5000', 'sites', @site, 'clusters', @cluster, 'nodes')){|x|
-#        next if x == '.' or x == '..'
-#        miss = File.basename(x, ".json")
-#        if !checks_yaml[miss]
-#          puts "Add node #{miss} from old api data"
-#          merge_with_another_node(checks_yaml, miss)
-#        end
-#      }
-#    end
-
     File.open(file_check, 'w') { |f|
       f.puts checks.to_yaml
     }
 
     admin_yaml = YAML.load_file(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '_generated.yaml'))
     admin_yaml.merge!(checks)
-    #sort_yaml = full_view(checks_yaml, checks_yaml.keys.sort { |x,y| x.split("-")[1].to_i <=> y.split("-")[1].to_i})
-    # ok là c'est très moche mais je ne comprends pas pourquoi il met cette entête
-    #sort_yaml = sort_yaml.gsub(" !ruby/object:Merge","")
 
     if @copy == "true"
       File.open(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '_generated.yaml'), 'w') { |f|
