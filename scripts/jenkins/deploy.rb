@@ -197,7 +197,7 @@ Restfully::Session.new(:base_uri => config['base_uri'], :username => config['use
   else
     begin
       pp envg5k
-      deployment = root.sites[:"#{siteg5k}"].deployments.submit({:nodes => job['assigned_nodes'],:environment => "wheezy-x64-prod" ,:key => File.read(PUBLIC_KEY)})
+      deployment = root.sites[:"#{siteg5k}"].deployments.submit({:nodes => job['assigned_nodes'],:environment => "wheezy-x64-min" ,:key => File.read(PUBLIC_KEY)})
       logger.info " [#{siteg5k}] launching '#{envg5k}' on [#{job['assigned_nodes'].join(',')}]"
 
       if deployment.nil?
@@ -235,11 +235,16 @@ Restfully::Session.new(:base_uri => config['base_uri'], :username => config['use
 	    deployment["nodes"].each do |host|
 	    print "\n\t*** #{host} ***\n\n"
 	    @GATEWAY.ssh(host, "root", :keys => [PRIVATE_KEY], :auth_methods => ["publickey"]) do |ssh|
+              ssh_exec!(ssh,"echo \"deb http://apt.grid5000.fr/debian sid main\" >> /etc/apt/sources.list")
+              ssh_exec!(ssh,"apt-get update")
+              ssh_exec!(ssh,"apt-get dist-upgrade")
+              ssh_exec!(ssh,"apt-get install g5kchecks")
               ssh_exec!(ssh,"modprobe ipmi_devintf && modprobe ipmi_si && modprobe ipmi_msghandler")
               ssh_exec!(ssh,"apt-get install ipmitool -y ")
               ssh_exec!(ssh,"apt-get install -f")
+	      ssh.exec "export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks"
+              puts ssh_exec!(ssh,"ls /var/lib/g5k-checks/")
 	      ssh.exec "export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks -m jenkins"
-              puts ssh_exec!(ssh,"ls /tmp/")
               ssh.sftp.download!("/tmp/#{host}_Jenkins_output.json", "#{time.strftime("%Y_%m_%d_%H_%M_%S")}_#{host}.json")
             end
           end
