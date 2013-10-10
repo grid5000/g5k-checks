@@ -235,10 +235,10 @@ Restfully::Session.new(:base_uri => config['base_uri'], :username => config['use
 	    deployment["nodes"].each do |host|
 	    print "\n\t*** #{host} ***\n\n"
 	    @GATEWAY.ssh(host, "root", :keys => [PRIVATE_KEY], :auth_methods => ["publickey"]) do |ssh|
-              ssh_exec!(ssh,"echo \"deb http://apt.grid5000.fr/debian sid main\" >> /etc/apt/sources.list")
+              ssh_exec!(ssh,'echo "deb http://apt.grid5000.fr/debian sid main" >> /etc/apt/sources.list')
               ssh_exec!(ssh,"apt-get update")
               ssh_exec!(ssh,"apt-get dist-upgrade")
-              ssh_exec!(ssh,"apt-get install g5kchecks")
+              ssh_exec!(ssh,"apt-get install g5kchecks -y --force-yes")
               ssh_exec!(ssh,"modprobe ipmi_devintf && modprobe ipmi_si && modprobe ipmi_msghandler")
               ssh_exec!(ssh,"apt-get install ipmitool -y ")
               ssh_exec!(ssh,"apt-get install -f")
