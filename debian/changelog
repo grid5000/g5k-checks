@@ -1,3 +1,9 @@
+g5kchecks (0.3-5) unstable; urgency=low
+
+    * [pkg] improve scripts 
+
+ -- Émile Morel <emile.morel@inria.fr>  Fri, 11 Oct 2013 14:12:45 +0100
+
 g5kchecks (0.3-4) unstable; urgency=low
 
     * [pkg] add bridge-utils 
