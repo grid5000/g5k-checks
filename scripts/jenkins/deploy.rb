@@ -242,9 +242,9 @@ Restfully::Session.new(:base_uri => config['base_uri'], :username => config['use
               ssh_exec!(ssh,"modprobe ipmi_devintf && modprobe ipmi_si && modprobe ipmi_msghandler")
               ssh_exec!(ssh,"apt-get install ipmitool -y --force-yes")
               ssh_exec!(ssh,"apt-get install -f -y --force-yes")
-	      ssh.exec!(ssh,"export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks")
+	      ssh_exec!(ssh,"export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks")
               puts ssh_exec!(ssh,"ls /var/lib/g5k-checks/")
-	      ssh.exec!(ssh,"export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks -m jenkins")
+	      ssh_exec!(ssh,"export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/games:/usr/games && g5k-checks -m jenkins")
               ssh.sftp.download!("/tmp/#{host}_Jenkins_output.json", "#{time.strftime("%Y_%m_%d_%H_%M_%S")}_#{host}.json")
             end
           end
