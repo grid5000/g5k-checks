@@ -2,8 +2,8 @@
 $: << File.join(File.dirname(__FILE__))
 #require 'active_support/ordered_hash'
 
-require "yaml"
 require "json"
+require "yaml"
 
 # Hack to enable nested Hashes merging
 # Thanks Luc !

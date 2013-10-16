@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 $: << File.join(File.dirname(__FILE__))
-require 'campaign'
+require 'rubygems'
 require 'merge_yaml'
+require 'campaign'
 
 # $1 site, $2 cluster $3 nb nodes (can put ALL and BEST), $4 reference-repository directory $5 copy new file on api repo (boolean)
 if ARGV.size != 5

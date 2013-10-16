@@ -26,7 +26,7 @@ class G5kchecksEngine < Grid5000::Campaign::Engine
     end
     env[:nodes].each { |node|
       ssh(node, "root") do |ssh|
-        logger.info "get [#{node}] yaml file"
+        logger.info "get [#{node}] json file"
         ssh.sftp.download!("/tmp/#{node}.json", "./#{site}/#{cluster}/#{node}.json")
      end
     }
