@@ -71,7 +71,7 @@ module G5kChecks
 
       RSpec.configure do |config|
         config.add_setting :node
-        config.node = Grid5000::Node.new(conf[:mode], conf[:urlapi])
+        config.node = Grid5000::Node.new(conf[:mode], conf[:urlapi], conf[:branch])
         config.add_setting :oar_dir
         config.oar_dir = conf[:checks_for_init_dir]
       end

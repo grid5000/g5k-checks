@@ -23,6 +23,7 @@ module G5kChecks
       @hash[:testlist] = config["checks_for_oar"].split(',') if config["checks_for_oar"]
       @hash[:removetestlist] = config["removetestlist"].split(',') if config["removetestlist"]
       @hash[:urlapi] = config["urlapi"] if config["urlapi"]
+      @hash[:branch] = config["branch"] if config["branch"]
       return @hash
     end
   end

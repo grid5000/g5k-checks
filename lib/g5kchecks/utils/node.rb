@@ -13,11 +13,16 @@ module Grid5000
     attr_reader :node_uid, :cluster_uid, :site_uid, :grid_uid
     attr_reader :api, :node_uri
 
-    def initialize(mode, api_url)
+    def initialize(mode, api_url, branch)
       @hostname = Socket.gethostname
       @node_uid, @site_uid, @grid_uid, @ltd = hostname.split(".")
       @cluster_uid = @node_uid.split("-")[0]
       @mode = mode
+      if branch == nil
+        @branch=""
+      else
+        @branch="?branch="+branch
+      end
       @node_uri = [
         api_url,
         "sites", site_uid,
@@ -31,7 +36,7 @@ module Grid5000
       if @mode == "api"
         @api_description ||= JSON.parse "{}"
       else
-        @api_description ||= JSON.parse RestClient.get(@node_uri, :accept => :json)
+        @api_description ||= JSON.parse RestClient.get(@node_uri+@branch, :accept => :json)
       end
       #      @api_description = JSON.parse File.open("files/" + ENV['GRID5000_CHECKS_HOSTNAME'] + ".api","r").read
     end
