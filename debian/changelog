@@ -1,3 +1,10 @@
+g5kchecks (0.4.0) sid; urgency=low
+
+  * e32e54e [chassis] best results
+  * d356997 add É for sign
+
+ -- Émile Morel <emile.morel@inria.fr>  Wed, 13 Nov 2013 13:04:49 +0100
+
 g5kchecks (0.3.6) sid; urgency=low
 
   * 8e46d42 add branch on API url
