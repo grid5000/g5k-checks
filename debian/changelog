@@ -1,6 +1,14 @@
+g5kchecks (0.3.6) sid; urgency=low
+
+  * 8e46d42 add branch on API url
+  * 735a22d add VERSION and Rakefile
+  * e194b77 [scripts] add rubygems
+
+ -- Emile Morel <emile.morel@inria.fr>  Wed, 13 Nov 2013 12:53:17 +0100
+
 g5kchecks (0.3-5) unstable; urgency=low
 
-    * [pkg] improve scripts 
+    * 256f426 [pkg] improve scripts 
 
  -- Émile Morel <emile.morel@inria.fr>  Fri, 11 Oct 2013 14:12:45 +0100
 
