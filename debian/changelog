@@ -1,3 +1,10 @@
+g5kchecks (0.4.1) sid; urgency=low
+
+  * 74709f9 [mountpoint] init
+  * ca0ea0e factorization search line function
+
+ -- Émile Morel <emile.morel@inria.fr>  Wed, 20 Nov 2013 14:41:19 +0100
+
 g5kchecks (0.4.0) sid; urgency=low
 
   * e32e54e [chassis] best results
