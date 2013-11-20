@@ -16,13 +16,16 @@ module RSpec
           if array[0] != ""
             # pas super beau, pour distinguer plusieurs composants
             # typiquement pour disk et network
-            if array[-2] =~ /\d{1,2}/
+            if array[0] =~ /mount/
+              file_name = example.full_description.gsub(" ","_") + "_" + array[1]
+	    elsif array[-2] =~ /\d{1,2}/
               file_name = example.full_description.gsub(" ","_") + "_" + array[-2]
             elsif array[-2] =~ /sd./
               file_name = example.full_description.gsub(" ","_") + "_" + array[-2]
-            else
+	    else
               file_name = example.full_description.gsub(" ","_")
             end
+	    file_name.gsub!(/\//,'\\').gsub!(" ","_")
             File.open(File.join(RSpec.configuration.oar_dir,"OAR_"+file_name), 'w') do |f|
               f.puts example.execution_result.to_json
             end

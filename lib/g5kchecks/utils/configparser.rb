@@ -24,6 +24,7 @@ module G5kChecks
       @hash[:removetestlist] = config["removetestlist"].split(',') if config["removetestlist"]
       @hash[:urlapi] = config["urlapi"] if config["urlapi"]
       @hash[:branch] = config["branch"] if config["branch"]
+      @hash[:mountpoint] = config["mountpoint"] if config["mountpoint"]
       return @hash
     end
   end

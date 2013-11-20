@@ -11,7 +11,7 @@ Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby1.9.1 | ruby-interpreter, rake,
  ruby-rspec, ntp, ntpdate, nfs-common, ruby-rest-client, ruby-json, ohai,
- ethtool, bridge-utils
+ ethtool, bridge-utils, ruby-popen4
 Description: expected to be integrated into the production environment of the
  Grid'5000 computational nodes. It gathers a collection of tests which check
  that a node meets several basic requirements before it declares itself as
