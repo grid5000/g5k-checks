@@ -1,3 +1,10 @@
+g5kchecks (0.4.2) sid; urgency=low
+
+  * ae949e6 [scripts] jenkins - wrong dir and display result
+  * 48d1037 [formatter] change gsub! to gsub (cause nil)
+
+ -- Émile Morel <emile.morel@inria.fr>  Thu, 21 Nov 2013 18:02:17 +0100
+
 g5kchecks (0.4.1) sid; urgency=low
 
   * 74709f9 [mountpoint] init
