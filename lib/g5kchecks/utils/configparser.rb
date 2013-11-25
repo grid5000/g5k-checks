@@ -20,8 +20,8 @@ module G5kChecks
         raise ArgumentError.new("File not found '#{@path}'")
       end
       @hash[:checks_for_init_dir] = config["checks_for_init_dir"]
-      @hash[:testlist] = config["checks_for_oar"].split(',') if config["checks_for_oar"]
-      @hash[:removetestlist] = config["removetestlist"].split(',') if config["removetestlist"]
+      @hash[:testlist] = config["checks_for_oar"] if config["checks_for_oar"]
+      @hash[:removetestlist] = config["removetestlist"] if config["removetestlist"]
       @hash[:urlapi] = config["urlapi"] if config["urlapi"]
       @hash[:branch] = config["branch"] if config["branch"]
       @hash[:mountpoint] = config["mountpoint"] if config["mountpoint"]
