@@ -1,3 +1,9 @@
+g5kchecks (0.4.4) sid; urgency=low
+
+  * aa55377 [pkg] add fio in dependency
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 25 Nov 2013 15:31:07 +0100
+
 g5kchecks (0.4.3) sid; urgency=low
 
   * 656ca46 [scripts] jenkins - remove line in conf file for test testdisk
