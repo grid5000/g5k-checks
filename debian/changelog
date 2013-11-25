@@ -1,3 +1,11 @@
+g5kchecks (0.4.3) sid; urgency=low
+
+  * 656ca46 [scripts] jenkins - remove line in conf file for test testdisk
+  * b0dce35 [testdisk] init
+  * c3f582e [config] change removetestlist and check_for_oar to yaml list
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 25 Nov 2013 15:19:51 +0100
+
 g5kchecks (0.4.2) sid; urgency=low
 
   * ae949e6 [scripts] jenkins - wrong dir and display result
