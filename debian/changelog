@@ -1,3 +1,9 @@
+g5kchecks (0.4.5) sid; urgency=low
+
+  * 32b640b add fallback branch for API
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 09 Dec 2013 14:02:24 +0100
+
 g5kchecks (0.4.4) sid; urgency=low
 
   * aa55377 [pkg] add fio in dependency
