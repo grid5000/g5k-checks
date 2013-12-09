@@ -17,7 +17,7 @@ URL_API = 'https://api.grid5000.fr/3.0'
 $configpath   = CONFIG_PATH
 $outputpath   = OUTPUT_PATH
 $hashconf = {}
-$hashconf[:urlapi] = URL_API
+$hashconf["urlapi"] = URL_API
 
 USAGE = "Usage: #{$0} [options]"
 
@@ -37,22 +37,22 @@ optparse = OptionParser.new(USAGE) do |opts|
   end
 
   opts.on( '-o', '--output-file <PATH>', "Specify the path to the g5kchecks put output files [default: '#{OUTPUT_PATH}']") do |k|
-    $hashconf[:checks_for_init_dir] = k
+    $hashconf["checks_for_init_dir"] = k
   end
 
-  $hashconf[:mode] = "oar_checks"
+  $hashconf["mode"] = "oar_checks"
   opts.on( '-m', '--mode MODE', "Specify the functional mode (oar_checks, api, jenkins) [default: 'oar_check']") do |k|
-    $hashconf[:mode] = k
+    $hashconf["mode"] = k
   end
 
   # array
-  opts.on("-t", "--test-list[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf[:testlist]=testlist}
+  opts.on("-t", "--test-list[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf["testlist"]=testlist}
 
   # array
-  opts.on("-r", "--remove-tests[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf[:removetestlist]=testlist}
+  opts.on("-r", "--remove-tests[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf["removetestlist"]=testlist}
 
   opts.on( '-u', '--url-api <URL>', "Specify the URL API where g5kchecks retrieve informations [default: '#{URL_API}']") do |u|
-    $hashconf[:checks_for_init_dir] = u
+    $hashconf["checks_for_init_dir"] = u
   end
 
   opts.on_head("specific options:")

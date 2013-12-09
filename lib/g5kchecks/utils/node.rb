@@ -18,13 +18,13 @@ module Grid5000
       @hostname = Socket.gethostname
       @node_uid, @site_uid, @grid_uid, @ltd = hostname.split(".")
       @cluster_uid = @node_uid.split("-")[0]
-      if conf[:branch] == nil
+      if conf["branch"] == nil
         @branch=""
       else
-        @branch="?branch="+conf[:branch]
+        @branch="?branch="+conf["branch"]
       end
       @node_uri = [
-        conf[:urlapi],
+        conf["urlapi"],
         "sites", site_uid,
         "clusters", cluster_uid,
         "nodes", node_uid
@@ -33,14 +33,14 @@ module Grid5000
     end
 
     def api_description
-      if @conf[:mode] == "api"
+      if @conf["mode"] == "api"
         @api_description ||= JSON.parse "{}"
       else
         begin
          @api_description = JSON.parse RestClient.get(@node_uri+@branch, :accept => :json)
         rescue RestClient::ResourceNotFound
-          if @conf[:fallback_branch] != nil
-            @api_description = JSON.parse RestClient.get(@node_uri+"?branch="+@conf[:fallback_branch], :accept => :json)
+          if @conf["fallback_branch"] != nil
+            @api_description = JSON.parse RestClient.get(@node_uri+"?branch="+@conf["fallback_branch"], :accept => :json)
           end
         end
         return @api_description
@@ -48,7 +48,7 @@ module Grid5000
     end
 
     def get_wanted_mountpoint
-	return @conf[:mountpoint] if @conf[:mountpoint] != nil
+	return @conf["mountpoint"] if @conf["mountpoint"] != nil
 	return [] 
     end 
 
