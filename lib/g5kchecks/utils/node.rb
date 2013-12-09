@@ -36,7 +36,14 @@ module Grid5000
       if @conf[:mode] == "api"
         @api_description ||= JSON.parse "{}"
       else
-        @api_description ||= JSON.parse RestClient.get(@node_uri+@branch, :accept => :json)
+        begin
+         @api_description = JSON.parse RestClient.get(@node_uri+@branch, :accept => :json)
+        rescue RestClient::ResourceNotFound
+          if @conf[:fallback_branch] != nil
+            @api_description = JSON.parse RestClient.get(@node_uri+"?branch="+@conf[:fallback_branch], :accept => :json)
+          end
+        end
+        return @api_description
       end
     end
 
