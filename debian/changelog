@@ -1,3 +1,9 @@
+g5kchecks (0.4.6) sid; urgency=low
+
+  * b0f9b74 uniformization of parameters
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 09 Dec 2013 14:38:23 +0100
+
 g5kchecks (0.4.5) sid; urgency=low
 
   * 32b640b add fallback branch for API
