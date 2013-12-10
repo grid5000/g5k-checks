@@ -60,11 +60,11 @@ module G5kChecks
         end
       end
 
-      if !File.directory?(conf["checks_for_init_dir"])
-        Dir.mkdir(conf["checks_for_init_dir"], 0755)
+      if !File.directory?(conf["output_dir"])
+        Dir.mkdir(conf["output_dir"], 0755)
       else
-        Dir.foreach(conf["checks_for_init_dir"]) {|f|
-          fn = File.join(conf["checks_for_init_dir"], f);
+        Dir.foreach(conf["output_dir"]) {|f|
+          fn = File.join(conf["output_dir"], f);
           File.delete(fn) if f != '.' && f != '..'
         }
       end
@@ -72,8 +72,8 @@ module G5kChecks
       RSpec.configure do |config|
         config.add_setting :node
         config.node = Grid5000::Node.new(conf)
-        config.add_setting :oar_dir
-        config.oar_dir = conf["checks_for_init_dir"]
+        config.add_setting :output_dir
+        config.output_dir = conf["output_dir"]
       end
 
       RSpec::Core::Runner::run(rspec_opts)

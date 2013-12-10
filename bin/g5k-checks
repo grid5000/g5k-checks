@@ -36,8 +36,8 @@ optparse = OptionParser.new(USAGE) do |opts|
     $configpath = k
   end
 
-  opts.on( '-o', '--output-file <PATH>', "Specify the path to the g5kchecks put output files [default: '#{OUTPUT_PATH}']") do |k|
-    $hashconf["checks_for_init_dir"] = k
+  opts.on( '-o', '--output-dir <PATH>', "Specify the path to the g5kchecks put output files [default: '#{OUTPUT_PATH}']") do |k|
+    $hashconf["output_dir"] = k
   end
 
   $hashconf["mode"] = "oar_checks"
@@ -52,7 +52,7 @@ optparse = OptionParser.new(USAGE) do |opts|
   opts.on("-r", "--remove-tests[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf["removetestlist"]=testlist}
 
   opts.on( '-u', '--url-api <URL>', "Specify the URL API where g5kchecks retrieve informations [default: '#{URL_API}']") do |u|
-    $hashconf["checks_for_init_dir"] = u
+    $hashconf["urlapi"] = u
   end
 
   opts.on_head("specific options:")

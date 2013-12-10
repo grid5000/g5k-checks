@@ -26,7 +26,7 @@ module RSpec
               file_name = example.full_description.gsub(" ","_")
             end
 	    file_name = file_name.gsub(/\//,'\\').gsub(" ","_")
-            File.open(File.join(RSpec.configuration.oar_dir,"OAR_"+file_name), 'w') do |f|
+            File.open(File.join(RSpec.configuration.output_dir,"OAR_"+file_name), 'w') do |f|
               f.puts example.execution_result.to_json
             end
           end
