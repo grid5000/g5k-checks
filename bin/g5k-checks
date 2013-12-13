@@ -8,16 +8,9 @@ require 'optparse/time'
 require 'g5kchecks'
 require 'g5kchecks/utils/configparser'
 
-CONFIG_PATH = '/etc/g5k-checks.conf'
-OUTPUT_PATH = '/var/lib/g5kchecks'
-URL_API = 'https://api.grid5000.fr/3.0'
-
 # Options parsing
 
-$configpath   = CONFIG_PATH
-$outputpath   = OUTPUT_PATH
 $hashconf = {}
-$hashconf["urlapi"] = URL_API
 
 USAGE = "Usage: #{$0} [options]"
 
@@ -32,26 +25,30 @@ optparse = OptionParser.new(USAGE) do |opts|
   # no argument, shows at tail
   opts.on_tail("--help", "show this message") {puts opts; exit}
 
-  opts.on( '-c', '--config-file <PATH>', "Specify the path to the g5kchecks (new) configuration files [default: '#{CONFIG_PATH}']") do |k|
-    $configpath = k
+  $hashconf["conffile"] = "/etc/g5k-checks.conf"
+  opts.on( '-c', '--config-file <PATH>', "Specify the path to the g5kchecks (new) configuration files [default: '#{$hashconf["conffile"]}']") do |conf|
+    $hashconf["conffile"] = conf
   end
-
-  opts.on( '-o', '--output-dir <PATH>', "Specify the path to the g5kchecks put output files [default: '#{OUTPUT_PATH}']") do |k|
-    $hashconf["output_dir"] = k
+  
+  $hashconf["output_dir"] = "/var/lib/g5kchecks/"
+  opts.on( '-o', '--output-dir <PATH>', "Specify the path to the g5kchecks put output files [default: #{$hashconf["output_dir"]}") do |outputdid|
+    $hashconf["output_dir"] = outputdir
   end
 
   $hashconf["mode"] = "oar_checks"
-  opts.on( '-m', '--mode MODE', "Specify the functional mode (oar_checks, api, jenkins) [default: 'oar_check']") do |k|
-    $hashconf["mode"] = k
+  opts.on( '-m', '--mode MODE', "Specify the functional mode (oar_checks, api, jenkins) [default: 'oar_check']") do |mode|
+    $hashconf["mode"] = mode
   end
 
   # array
   opts.on("-t", "--test-list[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf["testlist"]=testlist}
 
   # array
-  opts.on("-r", "--remove-tests[=TEST1,TEST2]", Array, "list") {|testlist|$hashconf["removetestlist"]=testlist}
+  opts.on("-r", "--remove-tests[=TEST1,TEST2] (default=all)", Array, "list") do |rm|
+    $hashconf["removetestlist"] = rm
+  end
 
-  opts.on( '-u', '--url-api <URL>', "Specify the URL API where g5kchecks retrieve informations [default: '#{URL_API}']") do |u|
+  opts.on( '-u', '--url-api <URL>', "Specify the URL API where g5kchecks retrieve informations") do |u|
     $hashconf["urlapi"] = u
   end
 
@@ -60,7 +57,7 @@ optparse = OptionParser.new(USAGE) do |opts|
   # version
   opts.on_tail("--version", "show version") do
     require 'version'
-    puts G5kChecks::VERSION
+    puts VERSION
     exit
   end
 
@@ -73,6 +70,6 @@ rescue OptionParser::InvalidOption => e
   exit 1
 end
 
-$hashconf = G5kChecks::ConfigParser.new($configpath).parse.merge!($hashconf)
+$hashconf = G5kChecks::ConfigParser.new($hashconf["conffile"]).parse.merge!($hashconf)
 
 G5kChecks::G5kChecks.new.run($hashconf)
