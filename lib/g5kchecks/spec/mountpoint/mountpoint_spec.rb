@@ -4,7 +4,7 @@ describe "MountPoint" do
 
     it "should have the correct mount point" do
       line = Utils.mount_grep(m)
-      line.size.should_not eql(0), "mount point #{m} not exist, #{m}" 
+      line.size.should_not eql(0), "mount point #{m} not exist" 
     end
 
   }

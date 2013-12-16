@@ -17,7 +17,7 @@ module RSpec
             # pas super beau, pour distinguer plusieurs composants
             # typiquement pour disk et network
             if array[0] =~ /mount/
-              file_name = example.full_description.gsub(" ","_") + "_" + array[1]
+              file_name = array[0]
 	    elsif array[-2] =~ /\d{1,2}/
               file_name = example.full_description.gsub(" ","_") + "_" + array[-2]
             elsif array[-2] =~ /sd./
