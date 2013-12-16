@@ -1,3 +1,16 @@
+g5kchecks (0.4.7) sid; urgency=low
+
+  * 3e025f3 retrieve_dir instead of retrieve_url for file
+  * 38c9e4e [bmc] strongest tests
+  * 59c5445 [network] remove useless call
+  * 9c37ba9 [mountpoint] better output
+  * 2459b20 add verbose option
+  * 740425a option refactoring
+  * aa7d3b8 gitignore - debian/g5kchecks.substvars
+  * 3dabf96 change output dir variable
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 16 Dec 2013 11:56:54 +0100
+
 g5kchecks (0.4.6) sid; urgency=low
 
   * b0f9b74 uniformization of parameters
