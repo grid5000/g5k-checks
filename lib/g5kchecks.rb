@@ -22,8 +22,8 @@ module G5kChecks
     def run(conf)
       rspec_opts = []
 
-      if conf["testlist"] and conf["testlist"][0] != "all"
-        conf["testlist"].each{|t|
+      if conf["enabletestlist"] and conf["enabletestlist"][0] != "all"
+        conf["enabletestlist"].each{|t|
           rspec_opts << File.dirname(__FILE__) + "/g5kchecks/spec/#{t}/#{t}_spec.rb"
         }
       else
@@ -37,8 +37,15 @@ module G5kChecks
         conf["removetestlist"].each{|t|
           test = File.dirname(__FILE__) + "/g5kchecks/spec/#{t}/#{t}_spec.rb"
           i = rspec_opts.find_index(test)
-          rspec_opts.delete_at(i.to_i)
+          rspec_opts.delete_at(i.to_i) if i
         }
+      end
+
+      if conf["verbose"] 
+        require 'g5kchecks/rspec/core/formatters/verbose_formatter'
+        RSpec.configure do |c|
+          c.add_formatter(RSpec::Core::Formatters::VerboseFormatter)
+        end
       end
 
       if conf["mode"] == "oar_checks"
