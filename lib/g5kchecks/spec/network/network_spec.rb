@@ -1,7 +1,6 @@
 describe "Network" do
 
   before(:all) do
-    @api = RSpec.configuration.node.api_description["network_adapters"]
     @api_desc = RSpec.configuration.node.api_description["network_adapters"]
     @api = {}
     if @api_desc
