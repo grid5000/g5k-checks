@@ -52,7 +52,7 @@ module Grid5000
 	  end
         end
       elsif @conf["retrieve_from"] == "file"
-	@node_path = File.join(@conf["retrieve_url"], @hostname, "json") 
+	@node_path = File.join(@conf["retrieve_dir"], @hostname+".json") 
 	@api_description = JSON.parse(File.read(@node_path))	
       end
       return @api_description
