@@ -124,7 +124,7 @@ module Utils
 
   def Utils.mount_grep(grep)
     mount = Hash.new
-    POpen4::popen4("mount | grep '#{grep} '") do |stdout, stderr, stdin, pid|
+    POpen4::popen4("mount | grep '#{grep}'") do |stdout, stderr, stdin, pid|
       stdin.close
       stdout.each do |line|
 	parsed_line = Utils.parse_line_mount(line)
