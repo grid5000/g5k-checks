@@ -1,3 +1,10 @@
+g5kchecks (0.4.8) sid; urgency=low
+
+  * 19a150a [mountpoint] check differences between fstab file and mount command
+  * 8c239fc [utils] grep mount less robust
+
+ -- Émile Morel <emile.morel@inria.fr>  Sat, 21 Dec 2013 17:48:00 +0100
+
 g5kchecks (0.4.7) sid; urgency=low
 
   * 3e025f3 retrieve_dir instead of retrieve_url for file
