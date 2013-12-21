@@ -9,4 +9,13 @@ describe "MountPoint" do
 
   }
 
+ Utils.fstab.select { |key,value| value["fs_type"] != "swap" }.each do |k,v|
+
+    it "should be mounted" do
+      type_fstab = Utils.mount_grep(v["file_system"])
+      type_fstab.size.should_not eql(0), "#{v["file_system"]} is not mounted (according to mount command)"
+    end
+
+  end
+
 end
