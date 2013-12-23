@@ -31,7 +31,7 @@ optparse = OptionParser.new(USAGE) do |opts|
   end
   
   $hashconf["output_dir"] = "/var/lib/g5kchecks/"
-  opts.on( '-o', '--output-dir <PATH>', "Specify the path to the g5kchecks put output files [default: #{$hashconf["output_dir"]}]") do |outputdid|
+  opts.on( '-o', '--output-dir <PATH>', "Specify the path to the g5kchecks put output files [default: #{$hashconf["output_dir"]}]") do |outputdir|
     $hashconf["output_dir"] = outputdir
   end
 
