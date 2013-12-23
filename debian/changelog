@@ -1,3 +1,10 @@
+g5kchecks (0.4.9) sid; urgency=low
+
+  * 4581700 rename outputdir
+  * 0a3ba67 [scripts] jenkins - add check disk performances
+
+ -- Émile Morel <emile.morel@inria.fr>  Mon, 23 Dec 2013 10:11:53 +0100
+
 g5kchecks (0.4.8) sid; urgency=low
 
   * 19a150a [mountpoint] check differences between fstab file and mount command
