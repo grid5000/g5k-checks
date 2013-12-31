@@ -83,7 +83,7 @@ class Merge
     admin_yaml = YAML.load_file(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '_generated.yaml'))
     admin_yaml.merge!(checks)
 
-    if @copy == "true"
+    if @copy
       File.open(File.join(@dir_ref_api, 'generators', 'input', 'sites', @site, 'clusters', @cluster + '_generated.yaml'), 'w') { |f|
         f.puts admin_yaml.to_yaml
       }
