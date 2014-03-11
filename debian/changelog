@@ -1,3 +1,11 @@
+g5kchecks (0.4.10) sid; urgency=low
+
+  * 5157bac [network] remove mountable check
+  * 99aa795 [conf] remove mounted points
+  * 0bb8288 [scripts] getconfig - add parameters for offline use
+
+ -- Émile Morel <emile.morel@inria.fr>  Tue, 11 Mar 2014 17:39:21 +0100
+
 g5kchecks (0.4.9) sid; urgency=low
 
   * 4581700 rename outputdir
