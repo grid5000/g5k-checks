@@ -1,3 +1,10 @@
+g5kchecks (0.4.12) sid; urgency=low
+
+  * 2b5cfa7 [utils] add ServiceUnavailable rescue (Bug 5457)
+  * a9666bc Rakefile debuild to build package
+
+ -- Émile Morel <emile.morel@inria.fr>  Wed, 12 Mar 2014 17:26:11 +0100
+
 g5kchecks (0.4.11) sid; urgency=low
 
   * 37b70dd rakefile imporve
