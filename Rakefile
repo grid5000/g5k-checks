@@ -89,18 +89,18 @@ namespace :package do
   desc "Build the binary package (#{NAME} v#{VERSION})"
   task :build do
     puts "--> Build package".green
-    sh "dpkg-buildpackage "
+    sh "debuild"
   end
 
   desc "Publish #{"#{NAME}-#{VERSION}".green} in APT repository"
   task :publish => [:build] do
     puts "--> Upload to #{APT}".green
-    pkg = " #{NAME}_#{VERSION}_all.deb"
-    pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz"
+    pkg = " #{NAME}_#{VERSION}_all.deb #{NAME}_#{VERSION}.dsc"
+    pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz #{NAME}_#{VERSION}_amd64.build"
     sh "cd ..;scp #{pkg} #{APT}:/tmp"
     puts "--> Move packages to incoming directory".green
     sh "ssh #{APT} 'cd /tmp;sudo mv #{pkg} /var/www/debian/incoming/'"
     puts "--> Run debarchiver (sid main)".green
-    sh "ssh #{APT} 'sudo /usr/bin/debarchiver -so --configfile /etc/debarchiver.conf --dl 6'"
+    sh "ssh #{APT} 'sudo /usr/bin/debarchiver --scanall --configfile /etc/debarchiver.conf --index -a'"
   end
 end
