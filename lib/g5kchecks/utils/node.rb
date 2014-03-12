@@ -20,6 +20,7 @@ module Grid5000
       @cluster_uid = @node_uid.split("-")[0]
       @ohai_description = nil
       @api_description = nil
+      @max_retries = 2
     end
 
     def api_description
@@ -38,18 +39,36 @@ module Grid5000
           "clusters", cluster_uid,
           "nodes", node_uid
         ].join("/")
-	begin
+        begin
           @api_description = JSON.parse RestClient.get(@node_path+@branch, :accept => :json)
         rescue RestClient::ResourceNotFound
           if @conf["fallback_branch"] != nil
-	    begin
+            begin
               @api_description = JSON.parse RestClient.get(@node_path+"?branch="+@conf["fallback_branch"], :accept => :json)
             rescue RestClient::ResourceNotFound
-	      raise "Node not find with url #{@node_path+@branch} and #{@node_path+"?branch="+@conf["fallback_branch"]}"
-	    end
+              raise "Node not find with url #{@node_path+@branch} and #{@node_path+"?branch="+@conf["fallback_branch"]}"
+            rescue RestClient::ServiceUnavailable => error
+              @retries ||= 0
+              if @retries < @max_retries
+                @retries += 1
+                sleep 10
+                retry
+              else
+                raise error
+              end
+            end
           else
-	    raise "Node not find with url #{@node_path+@branch}"
-	  end
+            raise "Node not find with url #{@node_path+@branch}"
+          end
+        rescue RestClient::ServiceUnavailable => error
+          @retries ||= 0
+          if @retries < @max_retries
+            @retries += 1
+            sleep 10
+            retry
+          else
+            raise error
+          end
         end
       elsif @conf["retrieve_from"] == "file"
 	@node_path = File.join(@conf["retrieve_dir"], @hostname+".json") 
