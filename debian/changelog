@@ -1,3 +1,10 @@
+g5kchecks (0.4.11) sid; urgency=low
+
+  * 37b70dd rakefile imporve
+  * 6576d65 [conf] add testing branch by default
+
+ -- Émile Morel <emile.morel@inria.fr>  Wed, 12 Mar 2014 13:20:21 +0100
+
 g5kchecks (0.4.10) sid; urgency=low
 
   * 5157bac [network] remove mountable check
