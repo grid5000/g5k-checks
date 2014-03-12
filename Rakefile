@@ -95,9 +95,8 @@ namespace :package do
   desc "Publish #{"#{NAME}-#{VERSION}".green} in APT repository"
   task :publish => [:build] do
     puts "--> Upload to #{APT}".green
-    pkg = " #{NAME}_#{VERSION}_all.deb mw-extensions-g5k_#{VERSION}_all.deb"
+    pkg = " #{NAME}_#{VERSION}_all.deb"
     pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz"
-    pkg += " mw-extensions-g5kutils_#{VERSION}_all.deb #{NAME}_#{VERSION}.dsc "
     sh "cd ..;scp #{pkg} #{APT}:/tmp"
     puts "--> Move packages to incoming directory".green
     sh "ssh #{APT} 'cd /tmp;sudo mv #{pkg} /var/www/debian/incoming/'"

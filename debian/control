@@ -2,7 +2,7 @@ Source: g5kchecks
 Section: ruby
 Priority: optional
 Maintainer: Émile Morel <emile.morel@inria.fr>
-Build-Depends: debhelper (>= 8.0.0), gem2deb (>= 0.2.7~), rubygems1.8
+Build-Depends: debhelper (>= 8.0.0), gem2deb (>= 0.2.7~)
 Standards-Version: 3.9.3
 XS-Ruby-Versions: all
 
