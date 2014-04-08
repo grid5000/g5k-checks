@@ -1,3 +1,9 @@
+g5kchecks (0.4.13) sid; urgency=low
+
+  * 6295778 [network] change enabled check
+
+ -- Émile Morel <emile.morel@inria.fr>  Tue, 08 Apr 2014 16:50:53 +0200
+
 g5kchecks (0.4.12) sid; urgency=low
 
   * 2b5cfa7 [utils] add ServiceUnavailable rescue (Bug 5457)
