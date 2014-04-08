@@ -24,14 +24,17 @@ interfaces.select { |d,i| %w{ eth myri }.include?(i[:type]) }.each do |dev,iface
   popen4("ethtool #{dev}; ethtool -i #{dev}") do |pid, stdin, stdout, stderr|
     stdin.close
     stdout.each do |line|
-      if line =~ /^[[:blank:]]*Link detected: /
-        iface[:enabled] = ( line.chomp.split(": ").last.eql?('yes') )
-      end
+#      if line =~ /^[[:blank:]]*Link detected: /
+#        iface[:enabled] = ( line.chomp.split(": ").last.eql?('yes') )
+#      end
       if line =~ /^[[:blank:]]*Speed: /
         if line =~ /Unknown/
           iface[:rate] = ""
+          # enabled => true if there is any cable connected to this interface (eg speed is know by ethtool) 
+          iface[:enabled] = false
         else
           iface[:rate] = line.chomp.split(": ").last.gsub(/([GMK])b\/s/){'000000'}
+          iface[:enabled] = true 
         end
       end
       if line =~ /^\s*driver: /
