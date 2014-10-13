@@ -1,3 +1,9 @@
+g5kchecks (0.4.15) sid; urgency=low
+
+  * 307096c [rights] Checks rights on /tmp
+
+ -- Pascal Morillon <pascal.morillon@irisa.fr>  Mon, 13 Oct 2014 11:27:04 +0000
+
 g5kchecks (0.4.14) sid; urgency=low
 
   * 942e414 [network] remove enabled check
