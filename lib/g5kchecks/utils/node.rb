@@ -5,7 +5,7 @@ require 'restclient'
 require 'json'
 require 'yaml'
 require 'ohai'
-Ohai::Config[:plugin_path] << File.join(File.dirname(__FILE__), '/../ohai')
+Ohai::Config[:plugin_path] << File.expand_path(File.join(File.dirname(__FILE__), '/../ohai'))
 
 module Grid5000
   class Node
