@@ -10,7 +10,7 @@ describe "Network" do
     end
   end
 
-  RSpec.configuration.node.ohai_description[:network][:interfaces].to_hash.select { |d,i| %w{ eth ib myri }.include?(i[:type]) }.each do |dev|
+  RSpec.configuration.node.ohai_description[:network][:interfaces].to_hash.select { |d,i| %w{ eno eth ib myri }.include?(i[:type]) }.each do |dev|
 
     it "should be the correct interface name" do
       name_api = ""
