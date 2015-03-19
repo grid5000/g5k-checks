@@ -45,12 +45,14 @@ module RSpec
         end
 
         def add_to_yaml_hash(array, value, hash)
+          value = value.encode(Encoding.default_external)
           if array.size == 1
             # puts array[0]
-            hash[array[0]] = Utils.string_to_object(value)
+            tmp = array[0].encode(Encoding.default_external)
+            hash[tmp] = Utils.string_to_object(value)
             return hash
           else
-            tmp = Utils.string_to_object(array.delete_at(0))
+            tmp = Utils.string_to_object(array.delete_at(0).encode(Encoding.default_external))
             if hash[tmp]
               add_to_yaml_hash(array,value, hash[tmp])
             else
