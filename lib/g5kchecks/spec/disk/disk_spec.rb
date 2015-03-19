@@ -25,14 +25,14 @@ describe "Disk" do
     end
 
     it "should have the correct model" do
-      model_ohai = v['model']
+      model_ohai = RUBY_VERSION >= "1.9.3" ? v['model'].encode(Encoding::UTF_8) : v['model']
       model_api = ""
       model_api = @api[k]['model'] if (@api and @api[k] and @api[k]['model'])
       model_ohai.should eql(model_api), "#{model_ohai}, #{model_api}, block_devices, #{k}, model"
     end
 
     it "should have the correct revision" do
-      version_ohai = v["rev"]
+      version_ohai = RUBY_VERSION >= "1.9.3" ? v['rev'].encode(Encoding::UTF_8) : v['rev']
       version_api = ""
       version_api = @api[k]['rev'] if (@api and @api[k] and @api[k]['rev'])
       version_api = version_api.to_f if version_api.to_f != 0.0
