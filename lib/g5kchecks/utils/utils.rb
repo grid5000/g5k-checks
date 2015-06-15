@@ -44,7 +44,7 @@ module Utils
     return true if string == true || string =~ /true/i
     return false if string == false || string =~ /false/i
     return string.to_i if string =~ /^[0-9]+$/
-    return string.to_f if string =~ /^[0-9]+.[0-9]+$/
+    return string.to_f if string =~ /^[0-9]+\.[0-9]+$/
     return string.strip
   end
 
