@@ -1,5 +1,19 @@
 g5kchecks (0.4.15) sid; urgency=low
 
+  * 18cbbc1 Workaround for an old Ohai bug related to Ruby string encoding
+  * 305c7fb Fix regexp that matches cpu version (g5k #6034)
+  * 9d2dba4 Merge pull request #5 from ChameleonCloud/fix_float_regexp
+  * b612299 Fix regular expression for matching a float
+  * ee8b0b4 Merge pull request #2 from ChameleonCloud/fix_ohai_plugin_path
+  * db02b62 Merge pull request #1 from ChameleonCloud/support_eno_ifname
+  * 16f4dd3 Fix plugin path configuration for Ohai >= 6.18.0
+  * f0c4593 Support predictable on-board Ethernet interface names
+  * 96a4c4e Release version 0.4.15
+
+ -- Simon Delamare <simon.delamare@ens-lyon.fr>  Tue, 30 Jun 2015 15:26:16 +0200
+
+g5kchecks (0.4.15) sid; urgency=low
+
   * 307096c [rights] Checks rights on /tmp
 
  -- Pascal Morillon <pascal.morillon@irisa.fr>  Mon, 13 Oct 2014 11:27:04 +0000
