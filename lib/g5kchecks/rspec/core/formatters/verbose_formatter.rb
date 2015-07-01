@@ -25,7 +25,11 @@ module RSpec
 
         def example_passed(example)
           super(example)
-          puts success_color("\e[32m  OK " + example.description.strip + "\e[0m")
+          if respond_to? :success_color
+            puts success_color("\e[32m  OK " + example.description.strip + "\e[0m")
+          else
+            puts "\e[32m  OK " + example.description.strip + "\e[0m"
+          end
         end
 
         def example_pending(example)
@@ -39,7 +43,11 @@ module RSpec
         end
 
         def failure_output(example, exception)
-          failure_color("\e[31mKO #{example.exception.message} (FAILED - #{next_failure_index})\e[0m")
+          if respond_to? :failure_color
+            failure_color("\e[31mKO #{example.exception.message} (FAILED - #{next_failure_index})\e[0m")
+          else
+            "\e[31mKO #{example.exception.message} (FAILED - #{next_failure_index})\e[0m"
+          end
         end
 
         def current_indentation
