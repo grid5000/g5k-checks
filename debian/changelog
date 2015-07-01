@@ -1,3 +1,9 @@
+g5kchecks (0.4.16) sid; urgency=low
+
+  * efe3c78 Fix verbose output for older version of rspec
+
+ -- Simon Delamare <simon.delamare@ens-lyon.fr>  Wed, 01 Jul 2015 13:40:58 +0200
+
 g5kchecks (0.4.15) sid; urgency=low
 
   * 18cbbc1 Workaround for an old Ohai bug related to Ruby string encoding
