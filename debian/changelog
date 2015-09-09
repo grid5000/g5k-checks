@@ -1,3 +1,10 @@
+g5kchecks (0.5.0) sid; urgency=low
+
+  * a7e7ef1 Use hwloc utils instead of ohai to check mem
+  * 0a27cf3 Add utils to fetch memory using hwloc
+
+ -- Simon Delamare <simon.delamare@ens-lyon.fr>  Wed, 09 Sep 2015 14:23:15 +0200
+
 g5kchecks (0.4.16) sid; urgency=low
 
   * efe3c78 Fix verbose output for older version of rspec
