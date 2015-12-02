@@ -1,3 +1,9 @@
+g5kchecks (0.5.1) sid; urgency=low
+
+  * 0822df4 Be more tolerant for memory checking
+
+ -- Simon Delamare <simon.delamare@ens-lyon.fr>  Wed, 02 Dec 2015 14:54:07 +0100
+
 g5kchecks (0.5.0) sid; urgency=low
 
   * a7e7ef1 Use hwloc utils instead of ohai to check mem
