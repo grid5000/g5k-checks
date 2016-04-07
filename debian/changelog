@@ -1,3 +1,9 @@
+g5kchecks (0.6.0) sid; urgency=low
+
+  * c214965 new check : std version and postinstall version
+
+ -- Arthur Garnier <arthur.garnier@inria.fr>  Thu, 07 Apr 2016 16:50:02 +0200
+
 g5kchecks (0.5.1) sid; urgency=low
 
   * 0822df4 Be more tolerant for memory checking
