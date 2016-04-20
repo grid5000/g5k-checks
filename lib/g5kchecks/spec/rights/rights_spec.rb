@@ -6,3 +6,10 @@ describe "Rights on /tmp" do
   end
 
 end
+
+describe "Sudo rights" do
+  it "should not use sudo-g5k" do
+    exist = File.exist?("/etc/sudoers.d/allowed_by_g5ksudo")
+    exist.should eql(false), "User used sudo-g5k"
+  end
+end
