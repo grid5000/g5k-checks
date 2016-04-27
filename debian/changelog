@@ -1,3 +1,9 @@
+g5kchecks (0.6.2) sid; urgency=low
+
+  * 8dc6524 Send fails to centralized syslog
+
+ -- Arthur Garnier <arthur.garnier@inria.fr>  Wed, 27 Apr 2016 10:40:42 +0200
+
 g5kchecks (0.6.1) sid; urgency=low
 
   * 3d8f618 [Rights] Add sudo-g5k check
