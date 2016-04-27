@@ -3,3 +3,5 @@
 # OAR stuff
 chmod +x /etc/oar/check.d/start_g5kchecks
 mkdir -p /var/lib/oar/checklogs
+#Restart rsyslog service
+systemctl restart rsyslog.service

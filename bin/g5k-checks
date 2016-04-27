@@ -8,6 +8,8 @@ require 'optparse/time'
 require 'g5kchecks'
 require 'g5kchecks/utils/configparser'
 
+require 'syslog'
+
 # Options parsing
 
 $hashconf = {}
@@ -78,3 +80,11 @@ end
 $hashconf = G5kChecks::ConfigParser.new($hashconf["conffile"]).parse.merge!($hashconf)
 
 G5kChecks::G5kChecks.new.run($hashconf)
+
+#Send fails to Syslog
+Syslog.open("g5k-checks", Syslog::LOG_ODELAY, Syslog::LOG_DAEMON)
+Dir.foreach($hashconf["output_dir"]) {|f|
+  next if f=='.' or f=='..'
+  Syslog.log(Syslog::LOG_INFO, File.read($hashconf["output_dir"]+"/"+f))
+}
+Syslog.close

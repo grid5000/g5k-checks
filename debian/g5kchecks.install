@@ -1,2 +1,3 @@
 conf/g5k-checks.conf /etc
 conf/start_g5kchecks /etc/oar/check.d/
+conf/syslog_g5kchecks.conf /etc/rsyslog.d/
