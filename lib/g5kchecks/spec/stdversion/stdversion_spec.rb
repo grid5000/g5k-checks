@@ -13,17 +13,17 @@ describe "Standard Environment Version" do
     end
   end
 
-  it "image version should equals kadeploy api" do
-
+  it "should have environment version equals to standard env in kadeploy api" do
     lastV = @json[0]["version"]
     lastN = @json[0]["name"]
     lastStd = "#{lastN}-#{lastV}"
-    @curStd.should eql(lastStd)
+    @curStd.should eql(lastStd), "Standard Environment Version is #{@curStd} instead of #{lastStd}"
+
   end
 
-  it "postinstall version should equals kadeploy api" do
+  it "should have postinstall version equals to version in kadeploy api" do
     lastPost = @json[0]["postinstalls"][0]["archive"]
-    @curPost.should eql(lastPost)
+    @curPost.should eql(lastPost), "Postinstalls Version is #{@curPost} instead of #{lastPost}"
   end
 
 end
