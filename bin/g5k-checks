@@ -21,19 +21,19 @@ optparse = OptionParser.new(USAGE) do |opts|
   opts.banner << " argv..."
 
   # separator
-  opts.on_tail
-  opts.on_tail("common options:")
+  #opts.on_tail
+  #opts.on_tail("common options:")
 
   # no argument, shows at tail
-  opts.on_tail("--help", "show this message") {puts opts; exit}
+  opts.on_tail("--help", "Show this message") {puts opts; exit}
 
   $hashconf["conffile"] = "/etc/g5k-checks.conf"
-  opts.on( '-c', '--config-file <PATH>', "Specify the path to the g5kchecks (new) configuration files [default: '#{$hashconf["conffile"]}']") do |conf|
+  opts.on( '-c', '--config-file <PATH>', "Specify the path to the g5k-checks configuration files [default: '#{$hashconf["conffile"]}']") do |conf|
     $hashconf["conffile"] = conf
   end
   
   $hashconf["output_dir"] = "/var/lib/g5kchecks/"
-  opts.on( '-o', '--output-dir <PATH>', "Specify the path to the g5kchecks put output files [default: #{$hashconf["output_dir"]}]") do |outputdir|
+  opts.on( '-o', '--output-dir <PATH>', "Specify the path where g5k-checks puts output files [default: #{$hashconf["output_dir"]}]") do |outputdir|
     $hashconf["output_dir"] = outputdir
   end
 
@@ -43,14 +43,14 @@ optparse = OptionParser.new(USAGE) do |opts|
   end
 
   # array
-  opts.on("-e", "--enable-tests[=TEST1,TEST2]", Array, "Enable specifics tests") {|testlist|$hashconf["enabletestlist"]=testlist}
+  opts.on("-e", "--enable-tests[=TEST1,TEST2]", Array, "Enable specific tests") {|testlist|$hashconf["enabletestlist"]=testlist}
 
   # array
-  opts.on("-r", "--remove-tests[=TEST1,TEST2] (default=all)", Array, "Remove specifics tests") do |rm|
+  opts.on("-r", "--remove-tests[=TEST1,TEST2] (default=all)", Array, "Remove specific tests") do |rm|
     $hashconf["removetestlist"] = rm
   end
 
-  opts.on( '-u', '--url-api <URL>', "Specify the URL API where g5kchecks retrieve informations") do |u|
+  opts.on( '-u', '--url-api <URL>', "Specify the URL where g5k-checks retrieves API information") do |u|
     $hashconf["urlapi"] = u
   end
 
@@ -59,10 +59,10 @@ optparse = OptionParser.new(USAGE) do |opts|
     $hashconf["verbose"] = true
   end
 
-  opts.on_head("specific options:")
+#  opts.on_head("specific options:")
 
   # version
-#  opts.on_tail('', "--version", "show version") do
+#  opts.on_tail('', "--version", "Show version") do
 #    require 'version'
 #    puts VERSION
 #    exit

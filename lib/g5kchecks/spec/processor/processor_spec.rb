@@ -15,7 +15,6 @@ describe "Processor" do
     freq_ohai = @system[:cpu][:mhz]
     err = (freq_ohai-freq_api).abs
     err.should be < 100000000, "#{freq_ohai}, #{freq_api}, processor, clock_speed"
-
   end
 
   it "should be of the correct instruction set" do

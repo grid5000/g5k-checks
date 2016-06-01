@@ -10,7 +10,7 @@ module RSpec
         end
 
         def example_failed(example)
-          # bypass si l'api est rempli et que g5kcheks ne trouve
+          # bypass si l'api est rempli et que g5kchecks ne trouve
           # pas la valeur
           array = example.exception.message.split(', ')
           if array[0] != ""
