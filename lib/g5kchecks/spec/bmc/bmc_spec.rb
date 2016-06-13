@@ -4,7 +4,7 @@ describe "BMC" do
     @api = RSpec.configuration.node.api_description["network_adapters"].select { |na|
       na['management'] == true
     }[0] unless RSpec.configuration.node.api_description.empty?
-    @ohai = RSpec.configuration.node.ohai_description[:network][:interfaces][:mgt].to_hash
+    @ohai = RSpec.configuration.node.ohai_description[:network][:interfaces][:bmc].to_hash
   end
 
     it "should have the correct IPv4" do
@@ -27,7 +27,7 @@ describe "BMC" do
       mgt_api = ""
       mgt_ohai = ""
       mgt_api = @api['management'] if @api
-      mgt_ohai = @ohai[:management] if @ohai
+      mgt_ohai = @ohai['management'] if @ohai
       mgt_ohai.should eql(mgt_api), "#{mgt_ohai}, #{mgt_api}, network_interfaces, bmc, management"
     end
 end

@@ -143,20 +143,21 @@ end
 
 # Process management interface
 
-interfaces["mgt"] = Hash.new
 # Get MAC address from ipmitool if possible
 if File.exist?('/usr/bin/ipmitool')
-
-  popen4("ipmitool lan print") do |pid, stdin, stdout, stderr|
+  popen4("/usr/bin/ipmitool lan print") do |pid, stdin, stdout, stderr|
     stdin.close
     stdout.each do |line|
       if line =~ /^[[:blank:]]*MAC Address/
-        interfaces["mgt"][:mac] = line.chomp.split(": ").last
+        interfaces["bmc"] ||= {}
+        interfaces["bmc"][:mac] = line.chomp.split(": ").last
       end
       if line =~ /^[[:blank:]]*IP Address/
-        interfaces["mgt"][:ip] = line.chomp.split(": ").last
+        interfaces["bmc"] ||= {}
+        interfaces["bmc"][:ip] = line.chomp.split(": ").last
       end
     end
   end
 
+  interfaces["bmc"]['management'] = true if interfaces["bmc"]
 end
