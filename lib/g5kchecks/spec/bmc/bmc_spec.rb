@@ -24,8 +24,8 @@ describe "BMC" do
     end
 
     it "should be a management card" do
-      mgt_api = ""
-      mgt_ohai = ""
+      mgt_api = nil
+      mgt_ohai = nil
       mgt_api = @api['management'] if @api
       mgt_ohai = @ohai['management'] if @ohai
       mgt_ohai.should eql(mgt_api), "#{mgt_ohai}, #{mgt_api}, network_interfaces, bmc, management"
