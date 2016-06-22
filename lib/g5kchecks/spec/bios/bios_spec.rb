@@ -28,4 +28,17 @@ describe "Bios" do
     release_ohai.should eql(release_api), "#{release_ohai}, #{release_api}, bios, release_date"
   end
 
+  [:bios_ht_enabled, :bios_turboboost_enabled, :bios_c1e, :bios_cstates].each { |key|
+    
+    it "should have the correct value for #{key}" do
+      key_ohai = @system[:cpu][key]
+      
+      key_api = nil
+      key_api = @api[key.to_s] if @api
+      
+      key_ohai.should eq(key_api), "#{key_ohai}, #{key_api}, bios, #{key}"
+    end
+    
+  }
+
 end

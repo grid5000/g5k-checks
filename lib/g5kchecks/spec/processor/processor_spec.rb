@@ -80,4 +80,21 @@ describe "Processor" do
     l3_ohai.to_i.should eql(l3_api), "#{l3_ohai}, #{l3_api}, processor, cache_l3"
   end
 
+  [:cpu_speed, 
+   :ht_capable, :ht_enabled, 
+   :pstate_driver, :pstate_governor, :pstate_max_cpu_speed, :pstate_min_cpu_speed, 
+   :turboboost_enabled, 
+   :cstate_driver, :cstate_governor, :cstate_max_id,].each { |key|
+    
+    it "should have the correct value for #{key}" do
+      key_ohai = @system[:cpu][key]
+      
+      key_api = nil
+      key_api = @api[key.to_s] if @api
+      
+      key_ohai.should eq(key_api), "#{key_ohai}, #{key_api}, processor, #{key}"
+    end
+    
+  }
+  
 end
