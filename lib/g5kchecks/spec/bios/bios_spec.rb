@@ -3,6 +3,7 @@ describe "Bios" do
   before(:all) do
     @api = RSpec.configuration.node.api_description["bios"]
     @system = RSpec.configuration.node.ohai_description.dmi["bios"]
+    @system2 = RSpec.configuration.node.ohai_description
   end
 
   it "should have the correct vendor" do
@@ -31,7 +32,7 @@ describe "Bios" do
   [:bios_ht_enabled, :bios_turboboost_enabled, :bios_c1e, :bios_cstates].each { |key|
     
     it "should have the correct value for #{key}" do
-      key_ohai = @system[:cpu][key]
+      key_ohai = @system2[:cpu][key]
       
       key_api = nil
       key_api = @api[key.to_s] if @api

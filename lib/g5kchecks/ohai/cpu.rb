@@ -157,7 +157,9 @@ syscfg_list = {
   :bios_cstates => 'ProcCStates',
 }
 
-syscfg = execute('syscfg') rescue []
+execute('/opt/dell/toolkit/bin/syscfg -o /tmp/syscfg-bios.conf') rescue []
+syscfg = File.read('/tmp/syscfg-bios.conf') rescue ''
+
 syscfg_list.each {|k,v|
   cpu[k] = (syscfg.match(/^[;]?#{v}=(.*)/)[1] == 'enable' rescue 'unknown')
 }
