@@ -81,7 +81,7 @@ end
 #cpu[:extra] = 'test'
 
 # 
-cpu[:cpu_speed] = (execute('x86info').last.split(" ").last.to_f * 1000 * 1000).to_i rescue 'unknown'
+cpu[:clock_speed] = (execute('x86info').last.split(" ").last.to_f * 1000 * 1000).to_i rescue 'unknown'
 
 # Parsing 'lscpu -p' output to retrieve :nb_procs, :nb_cores and :nb_threads
 # 'lscpu -p' output format :

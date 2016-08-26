@@ -12,7 +12,11 @@ describe "Processor" do
     else
       freq_api = 0
     end
-    freq_ohai = @system[:cpu][:mhz]
+
+    # freq_ohai = @system[:cpu][:mhz] # not accurate
+
+    freq_ohai = @system[:cpu]['clock_speed'].to_i * 1000 # from x86info
+
     err = (freq_ohai-freq_api).abs
     err.should be < 100000000, "#{freq_ohai}, #{freq_api}, processor, clock_speed"
   end
