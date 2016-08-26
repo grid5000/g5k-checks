@@ -151,17 +151,18 @@ end
 # bios configuration (using sysctl)
 
 syscfg_list = { 
-  :bios_ht_enabled => 'LogicalProc',
-  :bios_turboboost_enabled => 'ProcTurboMode',
-  :bios_c1e => 'ProcC1E',
-  :bios_cstates => 'ProcCStates',
+  :ht_enabled => 'LogicalProc',
+  :turboboost_enabled => 'ProcTurboMode',
+  :cstate_c1e => 'ProcC1E',
+  :cstate_enabled => 'ProcCStates',
 }
 
 execute('/opt/dell/toolkit/bin/syscfg -o /tmp/syscfg-bios.conf') rescue []
 syscfg = File.read('/tmp/syscfg-bios.conf') rescue ''
 
+cpu['configuration'] ||= {}
 syscfg_list.each {|k,v|
-  cpu[k] = (syscfg.match(/^[;]?#{v}=(.*)/)[1] == 'enable' rescue 'unknown')
+  cpu['configuration'][k] = (syscfg.match(/^[;]?#{v}=(.*)/)[1] == 'enable' rescue 'unknown')
 }
 
 #cpu[:extra2] = 'test2'
