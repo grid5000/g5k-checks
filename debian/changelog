@@ -1,3 +1,23 @@
+g5kchecks (0.7.0) sid; urgency=low
+
+  * abdbc4d [bios] Skip BIOS configuration tests when both the values cannot be retrieved and the ref-api does not have the BIOS configuration info
+  * 43810bc [network,bmc,disk,testdisk,chassis] G5K API naming convention in rspec outputs
+  * 62e8eeb [architecture] Removed smt_size and smp_size
+  * 4d3de2e [all] Moved cpu ht/pstate/cstate/turboboost properties
+  * 3173ce2 [os] Enabled OS tests again
+  * 1542131 [cpu] Replaced clock_speed value from ohai by the clock_speed value found by x86info
+  * 5dbd55a [bios] bug fix. Bios version numbers with multiple dots (ex: 1.2.3) were wrongly converted to float and chopped off (ex: 1.2)
+  * 50a3bcb [bios] Bug fix for syscfg
+  * c977193 [bmc] Changed variable type. It avoids problems with the rspec api_formatter.
+  * c73d951 [cpu, architecture, bios] Moved information about ht/cstates/pstates/turboboost
+  * acf5040 [cpu] Added information about ht/cstates/pstates/turboboost
+  * f6bdf66 [bmc] Added management=true to the BMC interfaces description retrieved by OHAI. It will enable the tests concerning the ip/mac of BMC interfaces. See #7008.
+  * 2a2a6df Minor misspells
+  * c21bf19 [stdversion] Update return of the check to be in 1 line
+  * bc5cc54 Change Licence.txt for LICENSE
+
+ -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Mon, 05 Sep 2016 15:14:16 +0200
+
 g5kchecks (0.6.2) sid; urgency=low
 
   * 8dc6524 Send fails to centralized syslog
