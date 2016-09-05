@@ -162,7 +162,7 @@ syscfg = File.read('/tmp/syscfg-bios.conf') rescue ''
 
 cpu['configuration'] ||= {}
 syscfg_list.each {|k,v|
-  cpu['configuration'][k] = (syscfg.match(/^[;]?#{v}=(.*)/)[1] == 'enable' rescue 'unknown')
+  cpu['configuration'][k] = (syscfg.match(/^[;]?#{v}=(.*)/)[1] == 'enable' rescue nil)
 }
 
 #cpu[:extra2] = 'test2'

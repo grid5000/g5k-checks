@@ -35,9 +35,11 @@ describe "Bios" do
       key_ohai = @system2[:cpu]['configuration'][key]
       
       key_api = nil
-      key_api = @api['configuration'][key.to_s] if @api
+      key_api = @api['configuration'][key.to_s] if @api && @api.key?('configuration')
       
-      key_ohai.should eq(key_api), "#{key_ohai}, #{key_api}, bios, configuration, #{key}"
+      if key_ohai != nil || key_api != nil # This test is there to avoid inserting nil entries to the ref-api
+        key_ohai.should eq(key_api), "#{key_ohai}, #{key_api}, bios, configuration, #{key}"
+      end
     end
     
   }
