@@ -12,7 +12,7 @@ describe "BMC" do
       ip_ohai = ""
       ip_api = @api['ip'] if @api
       ip_ohai = @ohai['ip'] if @ohai 
-      ip_ohai.should eql(ip_api), "#{ip_ohai}, #{ip_api}, network_interfaces, bmc, ip"
+      ip_ohai.should eql(ip_api), "#{ip_ohai}, #{ip_api}, network_adapters, bmc, ip"
     end
 
     it "should have the correct Mac Address" do
@@ -20,7 +20,7 @@ describe "BMC" do
       mac_ohai = ""
       mac_api = @api['mac'] if @api
       mac_ohai = @ohai['mac'] if @ohai
-      mac_ohai.should eql(mac_api), "#{mac_ohai}, #{mac_api}, network_interfaces, bmc, mac"
+      mac_ohai.should eql(mac_api), "#{mac_ohai}, #{mac_api}, network_adapters, bmc, mac"
     end
 
     it "should be a management card" do
@@ -28,7 +28,7 @@ describe "BMC" do
       mgt_ohai = nil
       mgt_api = @api['management'] if @api
       mgt_ohai = @ohai['management'] if @ohai
-      mgt_ohai.should eql(mgt_api), "#{mgt_ohai}, #{mgt_api}, network_interfaces, bmc, management"
+      mgt_ohai.should eql(mgt_api), "#{mgt_ohai}, #{mgt_api}, network_adapters, bmc, management"
     end
 end
 

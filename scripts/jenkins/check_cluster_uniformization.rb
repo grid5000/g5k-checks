@@ -37,7 +37,7 @@ class Cluster
 
   def print_attr(chain,key,uid1,desc1,uid2,desc2)
     return if chain[0] == "sensors"
-    return if chain[0] == "chassis" && chain[1] == "serial_number"
+    return if chain[0] == "chassis" && chain[1] == "serial"
     if !@remove_attr.include?(key)
       @stderr << "Error on [#{chain.join(" - ")}]: #{uid1} with #{desc1} and #{uid2} #{desc2}"
     end
