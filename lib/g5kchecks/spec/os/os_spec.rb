@@ -23,6 +23,7 @@ describe "OS" do
     release_api = ""
     release_api = @api['version'] if @api
     release_ohai = @system[:platform_version]
+    release_api = release_api.to_s unless release_api.is_a? String # release_ohai is a string but is saved as a float on the yaml output of g5k-checks (?)
     release_ohai.should eql(release_api), "#{release_ohai}, #{release_api}, operating_system, version"
   end
 
