@@ -1,3 +1,10 @@
+g5kchecks (0.7.1) sid; urgency=low
+
+  * b117d00 [bmc] Handle the case where ohai does not find the BMC interface (missing ipmitools)
+  * 577a46a [os] Fixed type conversion in the OS version check
+
+ -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Mon, 12 Sep 2016 10:38:54 +0200
+
 g5kchecks (0.7.0) sid; urgency=low
 
   * abdbc4d [bios] Skip BIOS configuration tests when both the values cannot be retrieved and the ref-api does not have the BIOS configuration info
