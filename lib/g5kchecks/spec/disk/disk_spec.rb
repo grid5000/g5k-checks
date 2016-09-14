@@ -40,6 +40,13 @@ describe "Disk" do
       version_ohai.should eql(version_api), "#{version_ohai}, #{version_api}, storage_devices, #{k}, rev"
     end
 
+    it "should have the correct vendor" do
+      vendor_ohai = v["vendor"]
+      vendor_api = ""
+      vendor_api = @api[k]['vendor'] if (@api and @api[k] and @api[k]['rev'])
+      vendor_ohai.should eql(vendor_api), "#{vendor_ohai}, #{vendor_api}, block_devices, #{k}, vendor"
+    end
+
   }
 
 end
