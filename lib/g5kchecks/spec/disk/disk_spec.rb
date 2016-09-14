@@ -33,6 +33,9 @@ describe "Disk" do
 
     it "should have the correct revision" do
       version_ohai = v["rev"]
+      # See github issue #6: ohai gets the 'rev' info from /sys/block/sda/device/rev and the data is actually truncated on some clusters. Use rev_from_hdparm instead when available
+      version_ohai = v["rev_from_hdparm"] if v.key?("rev_from_hdparm") && v["rev_from_hdparm"] != nil
+
       version_api = ""
       version_api = @api[k]['rev'] if (@api and @api[k] and @api[k]['rev'])
       version_api = version_api.to_f if version_api.to_f != 0.0
