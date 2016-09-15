@@ -23,7 +23,7 @@ end
 #
 
 block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each { |k,v|
-  v['rev_from_hdparm'] = execute2("hdparm -I /dev/#{k}").grep(/Firmware Revision:/)[0].sub("Firmware Revision:", "").lstrip.rstrip rescue nil
+  v['rev_from_hdparm'] = execute2("hdparm -I /dev/#{k}").grep(/Firmware Revision:/)[0].sub("Firmware Revision:", "").strip rescue nil
 }
 
 #
