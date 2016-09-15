@@ -1,3 +1,13 @@
+g5kchecks (0.7.2) sid; urgency=low
+
+  * de04580 [disk] Temporarily disable vendor test and revert changes on version test for next release
+  * 0aba3a1 [processor] Fixed ht_capable for grimani
+  * 9f7a71f [disk] Fixed issues with hd vendor. See grid5000/g5k-checks#6
+  * b7d0c87 [disk] Fixed truncated hd rev. See grid5000/g5k-checks#6
+  * d79fb0f [disk] Added a test concerning the disk vendors
+
+ -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Thu, 15 Sep 2016 09:51:12 +0200
+
 g5kchecks (0.7.1) sid; urgency=low
 
   * b117d00 [bmc] Handle the case where ohai does not find the BMC interface (missing ipmitools)
