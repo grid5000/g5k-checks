@@ -121,11 +121,15 @@ interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
           iface[:rate] = line.chomp.split(": ").last.to_i*1000000000
         end
         if line =~ /^State/
-          iface[:enabled] = ( line.chomp.split(": ").last.eql?('Active') or line.chomp.split(": ").last.eql?('Initializing'))
+          iface[:enabled] = line.chomp.split(": ").last.eql?('Active') #or line.chomp.split(": ").last.eql?('Initializing')) See #7250 and #7244
         end
       end
     end
   end
+  
+  # The interface is enabled iff state is 'Active' and /sys/class/infiniband/mlx4_0 exists.
+  iface[:enabled] = iface[:enabled] && File.exist?('/sys/class/infiniband/mlx4_0')
+
   begin
     res = Resolv.getaddress(hostname + '-' + dev)
   rescue Exception => e
