@@ -104,6 +104,14 @@ cpu[:nb_threads] = lscpu_p_count[0]
 cpu_flags = fileread('/proc/cpuinfo').grep(/flags\t\t: /)[0] rescue 'unknown'
 cpu[:ht_capable] = ! / ht /.match(cpu_flags).nil?
 
+# HACK - see #7309
+# There is a bug in /proc/cpuinfo concerning the ht flag for grimani (E5-2603 v3)
+# https://en.wikipedia.org/wiki/List_of_Intel_Xeon_microprocessors#.22Haswell-EP.22_.2822_nm.29_Efficient_Performance
+#  All [intel] models support [...] Hyper-threading (except E5-1603
+#  v3, E5-1607 v3, E5-2603 v3, E5-2609 v3, E5-2628 v3, E5-2663 v3, E5-2685 v3 and
+#  E5-4627 v3)
+cpu[:ht_capable] = false if /E5-2603 v3/.match(cpu[:'0'][:model_name])
+
 # :ht_enabled
 cpu[:ht_enabled] = ! (cpu[:nb_threads] == cpu[:nb_cores])
 
