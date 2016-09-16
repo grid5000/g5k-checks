@@ -49,7 +49,7 @@ describe "Disk" do
 
       vendor_api = ""
       vendor_api = @api[k]['vendor'] if (@api and @api[k] and @api[k]['rev'])
-      vendor_ohai.should eql(vendor_api), "#{vendor_ohai}, #{vendor_api}, block_devices, #{k}, vendor"
+      vendor_ohai.should eql(vendor_api), "#{vendor_ohai}, #{vendor_api}, storage_devices, #{k}, vendor"
     end
 
   }
