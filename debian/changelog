@@ -1,3 +1,14 @@
+g5kchecks (0.7.3) sid; urgency=low
+
+  * 15c381c [network] disabled the test of the "enabled" property
+  * 9744ebd [block_device] hdparm output is messed up on granduc
+  * 9982ae6 [systemctl] Check systemctl status. See #7251
+  * 9d3fbe1 [network_adapters] #7250: check if network interfaces are enabled. Hardening of the 'infiniband is enabled' test. Also enabled the check concerning the 'mountable' property.
+  * 702c691 [disk] moved vendor property from block_devices to storage_devices
+  * 2f48402 Revert "[disk] Temporarily disable vendor test and revert changes on version test for next release"
+
+ -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Tue, 20 Sep 2016 15:44:49 +0200
+
 g5kchecks (0.7.2) sid; urgency=low
 
   * de04580 [disk] Temporarily disable vendor test and revert changes on version test for next release
