@@ -1,3 +1,9 @@
+g5kchecks (0.7.4) sid; urgency=low
+
+
+
+ -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Tue, 20 Sep 2016 16:26:22 +0200
+
 g5kchecks (0.7.3) sid; urgency=low
 
   * 15c381c [network] disabled the test of the "enabled" property
