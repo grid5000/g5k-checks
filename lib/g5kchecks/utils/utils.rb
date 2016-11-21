@@ -1,5 +1,7 @@
+# coding: utf-8
 # provide some useful functions
 require 'popen4'
+require 'g5kchecks/utils/dmidecode'
 
 class String
   def force_encoding(enc)
@@ -159,17 +161,22 @@ module Utils
     filesystem
   end
 
-  def Utils.hwloc_parse_mem
-    mem_units = ["B", "KB", "MB", "GB", "TB"]
-    POpen4::popen4("hwloc-ls") do |stdout, stderr, stdin, pid|
-      re = stdout.first.match(/^Machine \((?<memsize>[[:digit:]]+)(?<memunit>[A-Z]+).*\)$/)
-      if not re or not re[:memsize] or not mem_units.include?(re[:memunit])
-        raise "Error while parsing hwloc-ls output: #{re}"
-      end
-      memsize = re[:memsize].to_i * (1024 ** mem_units.index(re[:memunit]))
-      return memsize
-    end
-    raise "Failed to get hwloc-ls output"
+  #Wrap dmidecode methods into Utils
+  def Utils.dmidecode_total_memory
+    DmiDecode.get_total_memory
   end
+
+  # def Utils.hwloc_parse_mem
+  #   mem_units = ["B", "KB", "MB", "GB", "TB"]
+  #   POpen4::popen4("hwloc-ls") do |stdout, stderr, stdin, pid|
+  #     re = stdout.first.match(/^Machine \((?<memsize>[[:digit:]]+)(?<memunit>[A-Z]+).*\)$/)
+  #     if not re or not re[:memsize] or not mem_units.include?(re[:memunit])
+  #       raise "Error while parsing hwloc-ls output: #{re}"
+  #     end
+  #     memsize = re[:memsize].to_i * (1024 ** mem_units.index(re[:memunit]))
+  #     return memsize
+  #   end
+  #   raise "Failed to get hwloc-ls output"
+  # end
 
 end
