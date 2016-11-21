@@ -46,7 +46,7 @@ module Grid5000
             begin
               @api_description = JSON.parse RestClient.get(@node_path+"?branch="+@conf["fallback_branch"], :accept => :json)
             rescue RestClient::ResourceNotFound
-              raise "Node not find with url #{@node_path+@branch} and #{@node_path+"?branch="+@conf["fallback_branch"]}"
+              raise "Node not found with url #{@node_path+@branch} and #{@node_path+"?branch="+@conf["fallback_branch"]}"
             rescue RestClient::ServiceUnavailable => error
               @retries ||= 0
               if @retries < @max_retries
