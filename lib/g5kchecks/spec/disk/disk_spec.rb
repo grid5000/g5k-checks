@@ -38,8 +38,8 @@ describe "Disk" do
 
       version_api = ""
       version_api = @api[k]['rev'] if (@api and @api[k] and @api[k]['rev'])
-      version_api = version_api.to_f if version_api.to_f != 0.0
-      version_ohai = version_ohai.to_f if version_ohai.to_f != 0.0
+      version_api = version_api.to_s
+      version_ohai = version_ohai.to_s
       version_ohai.should eql(version_api), "#{version_ohai}, #{version_api}, storage_devices, #{k}, rev"
     end
 
