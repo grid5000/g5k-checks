@@ -78,8 +78,6 @@ popen4("lscpu") do |pid, stdin, stdout, stderr|
   end
 end
 
-#cpu[:extra] = 'test'
-
 # 
 cpu[:clock_speed] = (execute('x86info').last.split(" ").last.to_f * 1000 * 1000).to_i rescue 'unknown'
 
@@ -173,4 +171,3 @@ syscfg_list.each {|k,v|
   cpu['configuration'][k] = (syscfg.match(/^[;]?#{v}=(.*)/)[1] == 'enable' rescue nil)
 }
 
-#cpu[:extra2] = 'test2'
