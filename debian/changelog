@@ -1,3 +1,18 @@
+g5kchecks (0.7.5) sid; urgency=low
+
+  * ab0c1d5 [cpu] Removed harmless debug code
+  * 86aa2c9 Merge pull request #12 from nmichon/master
+  * 10efa49 [disk] Compare disk revision as strings
+  * 2fb47c5 [bios] Compare bios version as strings
+  * ead0567 Updated ruby version
+  * 554f5d1 [mem] Use dmidecode instead of hwloc
+  * 35abb10 Corrected typo
+  * 8e12653 Merge pull request #11 from pmorillon/debuild
+  * 8fef780 v0.7.3
+  * c7445e3 Add a dockerfile to build Debian packages, and fixes debian files.
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Tue, 06 Dec 2016 16:07:51 +0100
+
 g5kchecks (0.7.4) sid; urgency=low
 
 
