@@ -17,6 +17,21 @@ describe "Disk" do
       name_api.should_not eql(nil), "#{k}, not_exist, storage_devices, #{k}, device"
     end
 
+    it "should have the correct device id" do
+      by_id_ohai = v['by_id']
+      by_id_api = ''
+      by_id_api = @api[k]['by_id'] if (@api and @api[k] and @api[k]['by_id'])
+      by_id_ohai.should eql(by_id_api), "#{by_id_ohai}, #{by_id_api}, storage_devices, #{k}, by_id"
+    end
+
+    it "should have the correct device path" do
+      by_path_ohai = ''
+      by_path_ohai = v['by_path'] if v.key?('by_path') && v['by_path'] != nil
+      by_path_api = ''
+      by_path_api = @api[k]['by_path'] if (@api and @api[k] and @api[k]['by_path'])
+      by_path_ohai.should eql(by_path_api), "#{by_path_ohai}, #{by_path_api}, storage_devices, #{k}, by_path"
+    end
+
     it "should have the correct size" do
       size_ohai = v["size"].to_i*512
       size_api = 0
