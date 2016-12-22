@@ -1,3 +1,9 @@
+g5kchecks (0.7.6) sid; urgency=low
+
+
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Thu, 22 Dec 2016 10:39:03 +0100
+
 g5kchecks (0.7.5) sid; urgency=low
 
   * ab0c1d5 [cpu] Removed harmless debug code
