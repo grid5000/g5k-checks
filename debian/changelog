@@ -1,3 +1,11 @@
+g5kchecks (0.7.6) sid; urgency=low
+
+  * 3e6a292 Fix bios version and disk revision
+  * 02123c3 Add by_id and by_path properties, and fix the rev_from_hdparm property
+  * 9cdbea1 v0.7.5 (References the changes until the 20th of September, late version bump)
+
+ -- Florent Didier <florent.didier@inria.fr>  Wed, 04 Jan 2017 17:28:00 +0100
+
 g5kchecks (0.7.5) sid; urgency=low
 
   * ab0c1d5 [cpu] Removed harmless debug code
