@@ -17,8 +17,8 @@ describe "Bios" do
     version_api = ""
     version_api = @api['version'] if @api
     version_ohai = @system['version'].gsub(/'/,'').strip
-    version_ohai = version_ohai.to_s
-    version_api  = version_api.to_s
+    version_ohai = Utils.string_to_object(version_ohai.to_s)
+    version_api  = Utils.string_to_object(version_api.to_s)
     version_ohai.should eql(version_api), "#{version_ohai}, #{version_api}, bios, version"
   end
 
