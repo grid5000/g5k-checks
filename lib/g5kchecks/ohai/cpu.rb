@@ -34,8 +34,8 @@ if cpu[:'0'][:model_name] =~ /AMD/
   end
 else
   cpu[:vendor] = "Intel"
-  if cpu[:'0'][:model_name] =~ /Xeon/
-    cpu[:model] = "Intel Xeon"
+  if cpu[:'0'][:model_name] =~ /(Xeon|Atom)/
+    cpu[:model] = "Intel #{$1}"
     if cpu[:'0'][:model_name] =~ /CPU[^\w]*(.*?)(?:\s0)?\s+@/
       cpu[:version] = $1
     end
