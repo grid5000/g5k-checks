@@ -1,8 +1,10 @@
 g5kchecks (0.7.6) sid; urgency=low
-
-  * 3e6a292 Fix bios version and disk revision
-  * 02123c3 Add by_id and by_path properties, and fix the rev_from_hdparm property
-  * 9cdbea1 v0.7.5 (References the changes until the 20th of September, late version bump)
+  * 59f7ddc v0.7.6
+  * 3f1b653 Fix bios version and disk revision
+  * 4235fe1 Add by_id and by_path properties, and fix the rev_from_hdparm property
+  * ba42368 Merge pull request #13 from ChameleonCloud/atom [cpu] Add support for Intel Atom
+  * 87f9bef v0.7.5 (References the changes until the 20th of September, late version bump)
+  * 4ed487f [cpu] Add support for Intel Atom
 
  -- Florent Didier <florent.didier@inria.fr>  Wed, 04 Jan 2017 17:28:00 +0100
 
