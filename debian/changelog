@@ -1,3 +1,9 @@
+g5kchecks (0.7.7) sid; urgency=low
+
+  * 70d1fa2 Add unstable_device_name property management
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Mon, 16 Jan 2017 17:36:03 +0100
+
 g5kchecks (0.7.6) sid; urgency=low
   * 59f7ddc v0.7.6
   * 3f1b653 Fix bios version and disk revision
