@@ -58,21 +58,20 @@ module DmiDecode
 
       size = mem_dev['Size']
       form_factor = mem_dev['Form Factor']
-      locator = mem_dev['Locator']
-      # Some systems report little chunks of memory other than
-      # main system memory as Memory Devices, the 'DIMM' as
-      # form factor seems to indicate main system memory.
-      # Unfortunately some DIMMs are reported with a form
-      # factor of '<OUT OF SPEC>'.  In that case fall back to
-      # checking for signs of it being a DIMM in the locator
-      # field.
-      if (size != 'No Module Installed' &&
-          ((form_factor == 'DIMM' || form_factor == 'FB-DIMM' || form_factor == 'SODIMM') ||
-           (form_factor == '<OUT OF SPEC>' && locator =~ /DIMM/)))
-        megs, units = size.split(' ')
 
-        next if units != 'MB'
-        physical_memory += megs.to_i;
+      #Consider <OUT OF SPEC> form factor valid if returned size is valid (ex: see lille/chifflet)
+      if (size != 'No Module Installed' &&
+          (form_factor == 'DIMM'
+           || form_factor == 'FB-DIMM'
+           || form_factor == 'SODIMM'
+           || form_factor == '<OUT OF SPEC>'))
+        size_u, unit = size.split(' ')
+
+        if (unit == "GB")
+          physical_memory += (size_u.to_i * 1024)
+        else if (unit == "MB")
+          physical_memory += size_u.to_i
+        end
       end
     end
     return physical_memory * (1024 ** 2)
