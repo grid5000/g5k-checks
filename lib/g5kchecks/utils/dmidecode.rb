@@ -61,11 +61,12 @@ module DmiDecode
 
       #Consider <OUT OF SPEC> form factor valid if returned size is valid (ex: see lille/chifflet)
       if (size != 'No Module Installed' && (form_factor == 'DIMM' || form_factor == 'FB-DIMM' || form_factor == 'SODIMM' || form_factor == '<OUT OF SPEC>'))
+
         size_u, unit = size.split(' ')
 
         if (unit == "GB")
           physical_memory += (size_u.to_i * 1024)
-        else if (unit == "MB")
+        elsif (unit == "MB")
           physical_memory += size_u.to_i
         end
       end
