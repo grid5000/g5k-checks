@@ -9,8 +9,8 @@ describe "Chassis" do
   it "should have the correct serial number" do
     number_api = ""
     number_ohai = nil
-    number_api = @api['serial'] if @api
-    number_ohai = @system['serial_number'].strip
+    number_api = @api['serial'].to_s if @api
+    number_ohai = @system['serial_number'].to_s.strip unless @system['serial_number'].nil?
     # si ohai nous retourne empty alors on va chercher dans base_board
     if number_ohai == "empty"
       number_ohai = RSpec.configuration.node.ohai_description.dmi['base_board']['serial_number'].strip
