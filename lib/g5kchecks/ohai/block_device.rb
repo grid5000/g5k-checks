@@ -26,8 +26,7 @@ block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk
   v['by_id'] = execute2("find /dev/disk/by-id/ -lname '*#{k}' | grep '/wwn-'") rescue nil
   v['by_path'] = execute2("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'") rescue nil
 
-  v['rev_from_hdparm'] = execute2("hdparm -I /dev/#{k}").grep(/Firmware Revision:/)[0].sub("Firmware Revision:", "").strip rescue nil
-  v['rev_from_hdparm'].encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '')
+  v['rev_from_hdparm'] = execute2("hdparm -I /dev/#{k}").grep(/Firmware Revision:/)[0].sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
 }
 
 #
