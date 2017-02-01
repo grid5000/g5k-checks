@@ -1,3 +1,14 @@
+g5kchecks (0.7.8) sid; urgency=low
+
+  * 011ba45 Fix the rev_from_hdparm property
+  * 18bae7e Changed chassis serial comparison format
+  * 83b4c41 Fixed syntax error
+  * aeaf773 Fixed syntax error
+  * fd6a499 Adapted ram_size retrieval for lille/chifflet (dmidecode returns GB units instead of MB)
+  * 661c52d More resilient disk revision retrieval
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 01 Feb 2017 12:40:41 +0100
+
 g5kchecks (0.7.7) sid; urgency=low
 
   * 70d1fa2 Add unstable_device_name property management
