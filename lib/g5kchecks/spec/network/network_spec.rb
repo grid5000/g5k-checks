@@ -81,18 +81,11 @@ describe "Network" do
       ven_ohai.should eql(ven_api), "#{ven_ohai}, #{ven_api}, network_adapters, #{dev[0]}, vendor"
     end
 
-    # it "should have the correct enabled mode" do
-    #   ven_api = nil
-    #   ven_api = @api[dev[0]]['enabled'] if @api_desc
-    #   ven_ohai = dev[1][:enabled]
-    #   ven_ohai.should eql(ven_api), "#{ven_ohai}, #{ven_api}, network_adapters, #{dev[0]}, enabled"
-    # end
-
-    it "should have the correct mountable mode" do
-      ven_api = nil
-      ven_api = @api[dev[0]]['mountable'] if @api_desc
-      ven_ohai = dev[1][:mountable]
-      ven_ohai.should eql(ven_api), "#{ven_ohai}, #{ven_api}, network_adapters, #{dev[0]}, mountable"
+    it "should have the correct enabled mode" do
+      enabled_api = nil
+      enabled_api = @api[dev[0]]['enabled'] if @api_desc
+      enabled_ohai = dev[1][:enabled]
+      enabled_ohai.should eql(enabled_api), "#{enabled_ohai}, #{enabled_api}, network_adapters, #{dev[0]}, enabled"
     end
 
     it "should have the correct mounted mode" do

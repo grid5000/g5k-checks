@@ -21,6 +21,22 @@ interfaces.select { |d,i| %w{ eno eth myri }.include?(i[:type]) }.each do |dev,i
   iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}.key({'family'=>'lladdr'})
   # ruby 1.8
   #iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}[0][0]
+
+  #save the state of interface to restore it afterwards
+  popen4("cat /sys/class/net/#{dev}/operstate") do |pid, stdin, stdout, stderr|
+    case stdout.chomp()
+    when "unknown", "lowerlayerdown", "testing", "dormant", "up"
+      ifaceState = "up"
+    when "notpresent", "down"
+      ifaceState = "down"
+    else
+      ifaceState = "up"
+    end
+  end
+  #Set all interfaces up before calling ethtool. (carrier and rate state are not available if interface is down)
+  system("ip link set dev #{dev} up")
+  #Wait a moment before probing the interface
+  sleep 2
   popen4("ethtool #{dev}; ethtool -i #{dev}") do |pid, stdin, stdout, stderr|
     stdin.close
     stdout.each do |line|
@@ -30,11 +46,11 @@ interfaces.select { |d,i| %w{ eno eth myri }.include?(i[:type]) }.each do |dev,i
       if line =~ /^[[:blank:]]*Speed: /
         if line =~ /Unknown/
           iface[:rate] = ""
-          # enabled => true if there is any cable connected to this interface (eg speed is know by ethtool) 
+          # enabled => true if there is any cable connected to this interface (eg speed is know by ethtool)
           iface[:enabled] = false
         else
           iface[:rate] = line.chomp.split(": ").last.gsub(/([GMK])b\/s/){'000000'}
-          iface[:enabled] = true 
+          iface[:enabled] = true
         end
       end
       if line =~ /^\s*driver: /
@@ -70,9 +86,9 @@ interfaces.select { |d,i| %w{ eno eth myri }.include?(i[:type]) }.each do |dev,i
     end
   end
   iface[:mounted] = ( not iface[:ip].nil? )
-  iface[:mountable] = ( not res.nil? ) || iface[:mounted]
+  #Restore previous interface state
+  system("ip link set dev #{dev} #{ifaceState}")
 end
-
 
 # Process ib interfaces
 interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
@@ -94,7 +110,6 @@ interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
   iface[:mac] = guid_prefix + File.read(File.join('/sys/class/net', dev, 'address')).chomp.split(':')[5..20].join(':')
 
   iface[:enabled] = false #FIXME: NOT IMPLEMENTED
-  #iface[:rate]    = nil #FIXME: NOT IMPLEMENTED
   #iface[:driver]  = nil #FIXME: NOT IMPLEMENTED
 
   ca = ""
@@ -140,7 +155,6 @@ interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
   iface[:ip] = ip[0][0] if ip.size > 0
   ip6 = iface[:addresses].select{|key,value| value[:family] == 'inet6'}.to_a
   iface[:ip6] = ip6[0][0] if ip6.size > 0
-  iface[:mountable] = ( not res.nil? )
   iface[:mounted] = ( not iface[:ip].nil? )
   iface[:driver] = "mlx4_core"
 end
