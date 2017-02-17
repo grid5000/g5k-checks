@@ -4,7 +4,6 @@ provides "network/network_adapters"
 require_plugin("network")
 require_plugin("hostname")
 
-
 interfaces = network[:interfaces]
 
 # Process only eno, eth, and myri interfaces first
@@ -22,15 +21,18 @@ interfaces.select { |d,i| %w{ eno eth myri }.include?(i[:type]) }.each do |dev,i
   # ruby 1.8
   #iface[:mac] = iface[:addresses].select{|key,value| value == {'family'=>'lladdr'}}[0][0]
 
-  #save the state of interface to restore it afterwards
+  #save the state of interface to restore it afterwards, defaults to up
+  ifaceState = "up"
   popen4("cat /sys/class/net/#{dev}/operstate") do |pid, stdin, stdout, stderr|
-    case stdout.chomp()
-    when "unknown", "lowerlayerdown", "testing", "dormant", "up"
-      ifaceState = "up"
-    when "notpresent", "down"
-      ifaceState = "down"
-    else
-      ifaceState = "up"
+    stdout.each do |line|
+      case line.chomp()
+      when "unknown", "lowerlayerdown", "testing", "dormant", "up"
+        ifaceState = "up"
+      when "notpresent", "down"
+        ifaceState = "down"
+      else
+        ifaceState = "up"
+      end
     end
   end
   #Set all interfaces up before calling ethtool. (carrier and rate state are not available if interface is down)
