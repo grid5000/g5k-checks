@@ -1,3 +1,10 @@
+g5kchecks (0.7.9) sid; urgency=low
+
+  * 77c2d2f Fixed network interface operstate
+  * de6c462 Disabled mountable test and improved enabled check
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Mon, 20 Feb 2017 17:18:04 +0100
+
 g5kchecks (0.7.8) sid; urgency=low
 
   * 011ba45 Fix the rev_from_hdparm property
