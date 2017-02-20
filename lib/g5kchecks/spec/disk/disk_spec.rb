@@ -1,3 +1,5 @@
+require 'pathname'
+
 describe "Disk" do
 
   before(:all) do
@@ -5,7 +7,13 @@ describe "Disk" do
     if tmpapi != nil
       @api = {}
       tmpapi.each{ |d|
-        @api[d["device"]] = d
+        # If symink exists, reorder block devices
+        unless d["symlink"]
+          @api[d["device"]] = d
+        else
+          blk = Pathname.new(d["symlink"]).realpath.basename.to_s
+          @api[d["device"]] = tmpapi.select { |x| x['device'] == blk }.first
+        end
       }
     end
   end
