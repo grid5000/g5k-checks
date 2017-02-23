@@ -10,7 +10,7 @@ NAME = "g5kchecks"
 USER_NAME = %x{git config --get user.name}.chomp
 USER_EMAIL = %x{git config --get user.email}.chomp
 VERSION = File.read(VERSION_FILE).chomp
-APT = ENV['HOST'] || 'apt.grid5000.fr'
+APT_HOST = ENV['HOST'] || 'apt.g5kadmin'
 
 class String
   def yellow
@@ -90,17 +90,25 @@ namespace :package do
   task :build do
     puts "--> Build package".green
     sh "debuild"
+    sh "mkdir -p ./build/"
+    sh "mv ../#{NAME}_#{VERSION}* ./build/"
   end
 
-  desc "Publish #{"#{NAME}-#{VERSION}".green} in APT repository"
+  #Publish debian package to apt and web.grid5000.fr
+  desc "Publish #{"#{NAME}-#{VERSION}".green} in APT and web repositories"
   task :publish => [:build] do
-    puts "--> Upload to #{APT}".green
-    pkg = " #{NAME}_#{VERSION}_all.deb #{NAME}_#{VERSION}.dsc"
-    pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz #{NAME}_#{VERSION}_amd64.build"
-    sh "cd ..;scp #{pkg} #{APT}:/tmp"
-    puts "--> Move packages to incoming directory".green
-    sh "ssh #{APT} 'cd /tmp;sudo mv #{pkg} /var/www/debian/incoming/'"
-    puts "--> Run debarchiver (sid main)".green
-    sh "ssh #{APT} 'sudo /usr/bin/debarchiver --scanall --configfile /etc/debarchiver.conf --index -a'"
+   puts "--> Upload to #{APT_HOST}".green
+   pkg = "#{NAME}_#{VERSION}_all.deb #{NAME}_#{VERSION}.dsc"
+   pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz #{NAME}_#{VERSION}_amd64.build"
+   sh "cd ./build/ ; scp #{pkg} #{APT_HOST}:/tmp"
+   puts "--> Move packages to incoming directory".green
+   sh "ssh #{APT_HOST} 'cd /tmp; sudo mv #{pkg} /var/www/debian/incoming/'"
+   puts "--> Run debarchiver (sid main)".green
+   sh "ssh #{APT_HOST} 'sudo /usr/bin/debarchiver --scanall --configfile /etc/debarchiver.conf --index -a'"
+
+   puts "--> Publish on web.grid5000.fr".green
+   pkg = "#{NAME}_#{VERSION}_all.deb"
+   sh "scp ./build/#{pkg} web.g5kadmin:"
+   sh "ssh web.g5kadmin \"sudo su -c 'mv ~g5kadmin/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/ ; ln -s -f /var/www/www.grid5000.fr/htdocs/packages/debian/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/g5kchecks_all.deb'\""
   end
 end
