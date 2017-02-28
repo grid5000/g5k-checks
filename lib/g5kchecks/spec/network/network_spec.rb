@@ -27,10 +27,10 @@ describe "Network" do
     end
 
     it "should have the correct IPv6" do
-      ip_api = ""
-      ip_api = @api[dev[0]]['ip6'] if @api_desc
-      ip_ohai = dev[1][:ip6]
-      ip_ohai.should eql(ip_api), "#{ip_ohai}, #{ip_api}, network_adapters, #{dev[0]}, ip6"
+      ip6_api = ""
+      ip6_api = @api[dev[0]]['ip6'] if @api_desc
+      ip6_ohai = dev[1][:ip6]
+      ip6_ohai.should eql(ip6_api), "#{ip6_ohai}, #{ip6_api}, network_adapters, #{dev[0]}, ip6"
     end
 
     it "should have the correct Driver" do
@@ -42,11 +42,11 @@ describe "Network" do
 
     if dev[0] =~ /ib/
       it "should have the correct guid" do
-      mac_api = ""
-      mac_api = @api[dev[0]]['guid'] if @api_desc
-      mac_ohai = dev[1][:mac]
-      mac_ohai.should eql(mac_api), "#{mac_ohai}, #{mac_api}, network_adapters, #{dev[0]}, guid"
-    end
+        mac_api = ""
+        mac_api = @api[dev[0]]['guid'] if @api_desc
+        mac_ohai = dev[1][:mac]
+        mac_ohai.should eql(mac_api), "#{mac_ohai}, #{mac_api}, network_adapters, #{dev[0]}, guid"
+      end
     else
       it "should have the correct Mac Address" do
         mac_api = ""
@@ -81,18 +81,11 @@ describe "Network" do
       ven_ohai.should eql(ven_api), "#{ven_ohai}, #{ven_api}, network_adapters, #{dev[0]}, vendor"
     end
 
-    it "should have the correct enabled mode" do
-      enabled_api = nil
-      enabled_api = @api[dev[0]]['enabled'] if @api_desc
-      enabled_ohai = dev[1][:enabled]
-      enabled_ohai.should eql(enabled_api), "#{enabled_ohai}, #{enabled_api}, network_adapters, #{dev[0]}, enabled"
-    end
-
     it "should have the correct mounted mode" do
-      ven_api = nil
-      ven_api = @api[dev[0]]['mounted'] if @api_desc
-      ven_ohai = dev[1][:mounted]
-      ven_ohai.should eql(ven_api), "#{ven_ohai}, #{ven_api}, network_adapters, #{dev[0]}, mounted"
+      mounted_api = nil
+      mounted_api = @api[dev[0]]['mounted'] if @api_desc
+      mounted_ohai = dev[1][:mounted]
+      mounted_ohai.should eql(mounted_api), "#{mounted_ohai}, #{mounted_api}, network_adapters, #{dev[0]}, mounted"
     end
 
     it "should not be a management card" do
