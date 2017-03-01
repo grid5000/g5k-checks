@@ -1,3 +1,12 @@
+g5kchecks (0.7.10) sid; urgency=low
+
+  * 0f1c89b Changed wrong file modes
+  * ce41348 Removed enabled spec test and renamed tests variables
+  * 1443eb5 Removed network interface enabled lookup
+  * 512192e Fixed rake task package:publish
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 01 Mar 2017 14:23:08 +0100
+
 g5kchecks (0.7.9) sid; urgency=low
 
   * 77c2d2f Fixed network interface operstate
