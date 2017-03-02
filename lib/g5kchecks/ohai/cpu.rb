@@ -124,11 +124,11 @@ end
 
 # :turboboost_enabled
 if cpu[:pstate_driver] == 'intel_pstate'
-  cpu[:turboboost_enabled] = (fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == "0") rescue "unknown"
+  cpu[:turboboost_enabled] = (fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == "0") rescue false
 elsif cpu[:pstate_driver] == 'acpi-cpufreq'
-  cpu[:turboboost_enabled] = (fileread('/sys/devices/system/cpu/cpufreq/boost') == "1") rescue "unknown"
+  cpu[:turboboost_enabled] = (fileread('/sys/devices/system/cpu/cpufreq/boost') == "1") rescue false
 else
-  cpu[:turboboost_enabled] = "unknown"
+  cpu[:turboboost_enabled] = false
 end
 
 # cstate
