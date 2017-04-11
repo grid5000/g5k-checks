@@ -14,7 +14,7 @@ describe 'Disk' do
 
   def get_ohai_value(_api, ohai, device, key)
     return nil if !(ohai && ohai[device] && ohai[device][key])
-    return ohai[device][key]
+    return Utils.string_to_object(ohai[device][key].to_s)
   end
 
   api = nil
