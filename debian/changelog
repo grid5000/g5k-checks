@@ -1,6 +1,13 @@
+g5kchecks (0.7.12) sid; urgency=medium
+
+  * c1a323f Fix disk revision (types mismatch)
+
+ -- Florent Didier <florent.didier@inria.fr>  Wed, 12 Apr 2017 09:35:00 +0200
+
 g5kchecks (0.7.11) sid; urgency=medium
 
   * ca252f4 Check disks from the ref-api disk list instead of only disks enabled on the node
+  * 76af035 v0.7.11
 
  -- Florent Didier <florent.didier@inria.fr>  Wed, 05 Apr 2017 16:00:00 +0200
 
