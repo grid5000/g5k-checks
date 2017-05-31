@@ -5,7 +5,8 @@ require 'restclient'
 require 'json'
 require 'yaml'
 require 'ohai'
-Ohai::Config[:plugin_path] << File.expand_path(File.join(File.dirname(__FILE__), '/../ohai'))
+
+Ohai.config[:plugin_path] << File.expand_path(File.join(File.dirname(__FILE__), '/../ohai'))
 
 module Grid5000
   class Node
@@ -40,11 +41,15 @@ module Grid5000
           "nodes", node_uid
         ].join("/")
         begin
-          @api_description = JSON.parse RestClient.get(@node_path+@branch, :accept => :json)
+          @api_description = JSON.parse RestClient::Resource.new(@node_path+@branch, :user => @conf["apiuser"], :password => @conf["apipasswd"], :headers => {
+                                                                   :accept => :json
+                                                                 }).get()
         rescue RestClient::ResourceNotFound
           if @conf["fallback_branch"] != nil
             begin
-              @api_description = JSON.parse RestClient.get(@node_path+"?branch="+@conf["fallback_branch"], :accept => :json)
+              @api_description = JSON.parse RestClient::Resource.new(@node_path+"?branch="+@conf["fallback_branch"], :user => @conf["apiuser"], :password => @conf["apipasswd"], :headers => {
+                                                                       :accept => :json
+                                                                     }).get()
             rescue RestClient::ResourceNotFound
               raise "Node not found with url #{@node_path+@branch} and #{@node_path+"?branch="+@conf["fallback_branch"]}"
             rescue RestClient::ServiceUnavailable => error
