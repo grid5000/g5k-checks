@@ -20,18 +20,13 @@ optparse = OptionParser.new(USAGE) do |opts|
 
   opts.banner << " argv..."
 
-  # separator
-  #opts.on_tail
-  #opts.on_tail("common options:")
-
-  # no argument, shows at tail
   opts.on_tail("--help", "Show this message") {puts opts; exit}
 
   $hashconf["conffile"] = "/etc/g5k-checks.conf"
   opts.on( '-c', '--config-file <PATH>', "Specify the path to the g5k-checks configuration files [default: '#{$hashconf["conffile"]}']") do |conf|
     $hashconf["conffile"] = conf
   end
-  
+
   $hashconf["output_dir"] = "/var/lib/g5kchecks/"
   opts.on( '-o', '--output-dir <PATH>', "Specify the path where g5k-checks puts output files [default: #{$hashconf["output_dir"]}]") do |outputdir|
     $hashconf["output_dir"] = outputdir
@@ -50,24 +45,22 @@ optparse = OptionParser.new(USAGE) do |opts|
     $hashconf["removetestlist"] = rm
   end
 
-  opts.on( '-u', '--url-api <URL>', "Specify the URL where g5k-checks retrieves API information") do |u|
+  opts.on('-u', '--url-api <URL>', "Specify the URL where g5k-checks retrieves API information") do |u|
     $hashconf["urlapi"] = u
+  end
+
+  opts.on('-l', '--api-login user', "Specify the user to login with on the API") do |user|
+    $hashconf["apiuser"] = user
+  end
+
+  opts.on('-p', '--api-passwd passwd', "Specify the password to login with on the API") do |passwd|
+    $hashconf["apipasswd"] = passwd
   end
 
   $hashconf["verbose"] = false
   opts.on_tail( '-v', '--verbose', "Enable verbose mode [default: #{$hashconf["verbose"]}]") do 
     $hashconf["verbose"] = true
   end
-
-#  opts.on_head("specific options:")
-
-  # version
-#  opts.on_tail('', "--version", "Show version") do
-#    require 'version'
-#    puts VERSION
-#    exit
-#  end
-
 end
 
 begin
