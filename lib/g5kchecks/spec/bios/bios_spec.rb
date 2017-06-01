@@ -2,7 +2,7 @@ describe "Bios" do
 
   before(:all) do
     @api = RSpec.configuration.node.api_description["bios"]
-    @system = RSpec.configuration.node.ohai_description.dmi["bios"]
+    @system = RSpec.configuration.node.ohai_description["dmi"]["bios"]
     @system2 = RSpec.configuration.node.ohai_description
   end
 
@@ -10,7 +10,7 @@ describe "Bios" do
     vendor_api = ""
     vendor_api = @api['vendor'] if @api
     vendor_ohai = @system['vendor']
-    vendor_ohai.should eql(vendor_api), "#{vendor_ohai}, #{vendor_api}, bios, vendor"
+    expect(vendor_ohai).to eql(vendor_api), "#{vendor_ohai}, #{vendor_api}, bios, vendor"
   end
 
   it "should have the correct version" do
@@ -19,14 +19,14 @@ describe "Bios" do
     version_ohai = @system['version'].gsub(/'/,'').strip
     version_ohai = Utils.string_to_object(version_ohai.to_s)
     version_api  = Utils.string_to_object(version_api.to_s)
-    version_ohai.should eql(version_api), "#{version_ohai}, #{version_api}, bios, version"
+    expect(version_ohai).to eql(version_api), "#{version_ohai}, #{version_api}, bios, version"
   end
 
   it "should have the correct release date" do
     release_api = ""
     release_api = @api['release_date'] if @api
     release_ohai = @system['release_date']
-    release_ohai.should eql(release_api), "#{release_ohai}, #{release_api}, bios, release_date"
+    expect(release_ohai).to eql(release_api), "#{release_ohai}, #{release_api}, bios, release_date"
   end
 
   [:ht_enabled, :turboboost_enabled, :cstate_c1e, :cstate_enabled].each { |key|
@@ -38,7 +38,7 @@ describe "Bios" do
       key_api = @api['configuration'][key.to_s] if @api && @api.key?('configuration')
       
       if key_ohai != nil || key_api != nil # This test is there to avoid inserting nil entries to the ref-api
-        key_ohai.should eq(key_api), "#{key_ohai}, #{key_api}, bios, configuration, #{key}"
+        expect(key_ohai).to eq(key_api), "#{key_ohai}, #{key_api}, bios, configuration, #{key}"
       end
     end
     

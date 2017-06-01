@@ -9,7 +9,7 @@ describe "Architecture" do
     plat_api = ""
     plat_api = @api['platform_type'] if @api
     plat_ohai = @system[:kernel][:machine]
-    plat_ohai.should eq(plat_api), "#{plat_ohai}, #{plat_api}, architecture, platform_type"
+    expect(plat_ohai).to eq(plat_api), "#{plat_ohai}, #{plat_api}, architecture, platform_type"
   end
 
   [:nb_procs, :nb_cores, :nb_threads].each { |key|
@@ -20,9 +20,7 @@ describe "Architecture" do
       key_api = nil
       key_api = @api[key.to_s] if @api
       
-      key_ohai.should eq(key_api), "#{key_ohai}, #{key_api}, architecture, #{key}"
+      expect(key_ohai).to eq(key_api), "#{key_ohai}, #{key_api}, architecture, #{key}"
     end
-    
   }
-  
 end

@@ -5,7 +5,7 @@ describe "Standard Environment Version" do
 
   before(:all) do
     site = %x(hostname).split('.')[1]
-    @json = JSON.parse(RestClient.get("https://api.grid5000.fr/stable/sites/#{site}/internal/kadeployapi/environments?last=true&user=deploy&name=jessie-x64-std"))
+    @json = JSON.parse(RestClient::Resource.new("https://api.grid5000.fr/stable/sites/#{site}/internal/kadeployapi/environments?last=true&user=deploy&name=jessie-x64-std", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get())
     @curStd, @curPost = nil;
     File.open("/etc/grid5000/release", "r") do |infile|
       @curStd = infile.gets.strip
@@ -17,13 +17,12 @@ describe "Standard Environment Version" do
     lastV = @json[0]["version"]
     lastN = @json[0]["name"]
     lastStd = "#{lastN}-#{lastV}"
-    @curStd.should eql(lastStd), "Standard Environment Version is #{@curStd} instead of #{lastStd}"
-
+    expect(@curStd).to eql(lastStd), "Standard Environment Version is #{@curStd} instead of #{lastStd}"
   end
 
   it "should have postinstall version equals to version in kadeploy api" do
     lastPost = @json[0]["postinstalls"][0]["archive"]
-    @curPost.should eql(lastPost), "Postinstalls Version is #{@curPost} instead of #{lastPost}"
+    expect(@curPost).to eql(lastPost), "Postinstalls Version is #{@curPost} instead of #{lastPost}"
   end
 
 end
