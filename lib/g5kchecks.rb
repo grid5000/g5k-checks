@@ -77,6 +77,7 @@ module G5kChecks
       end
 
       RSpec.configure do |config|
+        config.deprecation_stream = "/dev/null"
         config.add_setting :node
         config.node = Grid5000::Node.new(conf)
         config.add_setting :output_dir
