@@ -1,16 +1,18 @@
-require 'rspec/core/formatters/base_text_formatter'
+# coding: utf-8
+
 require 'g5kchecks/utils/utils'
 require 'yaml'
 
 module RSpec
   module Core
     module Formatters
-      class APIFormatter < BaseTextFormatter
+      class APIFormatter
+
+        RSpec::Core::Formatters.register self, :stop, :close
 
         attr_reader :output_hash, :yaml_hash
 
         def initialize(output)
-          super
           @output_hash = {}
           @yaml_hash = Hash.new
         end
@@ -19,10 +21,9 @@ module RSpec
           (@output_hash[:messages] ||= []) << message
         end
 
-        def stop
-          super
-          @output_hash[:examples] = examples.each do |example|
-            if e=example.exception
+        def stop(examplesNotification)
+          @output_hash[:examples] = examplesNotification.examples.each do |example|
+            if e = example.exception
               array = e.message.split(', ')
               if array.size > 1
                 value = array.delete_at(0)
@@ -35,7 +36,7 @@ module RSpec
           end
         end
 
-        def close
+        def close(nullNotification)
           File.open(File.join("/tmp/",RSpec.configuration.node.hostname + ".yaml"), 'w' ) { |f|
             f.puts @yaml_hash.to_yaml
           }

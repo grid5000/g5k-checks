@@ -1,16 +1,17 @@
-require 'rspec/core/formatters/base_text_formatter'
+
 require 'g5kchecks/utils/utils'
 require 'yaml'
 
 module RSpec
   module Core
     module Formatters
-      class JenkinsFormatter < BaseTextFormatter
+      class JenkinsFormatter
+
+        RSpec::Core::Formatters.register self, :stop, :close
 
         attr_reader :output_hash, :yaml_hash
 
         def initialize(output)
-          super
           @output_hash = {}
           @yaml_hash = Hash.new
         end
@@ -19,9 +20,8 @@ module RSpec
           (@output_hash[:messages] ||= []) << message
         end
 
-        def stop
-          super
-          @output_hash[:examples] = examples.each do |example|
+        def stop(examplesNotification)
+          @output_hash[:examples] = examplesNotification.examples.each do |example|
             if e=example.exception
               # bypass si l'api est rempli et que g5kcheks ne trouve
               # pas la valeur
@@ -43,13 +43,12 @@ module RSpec
           end
         end
 
-        def close
-         File.open(File.join("/tmp/",RSpec.configuration.node.hostname + "_Jenkins_output.json"), 'w' ) { |f|
-           f.puts @yaml_hash.to_json
-         }
-        end
-
+        def close(nullNotification)
+          File.open(File.join("/tmp/",RSpec.configuration.node.hostname + "_Jenkins_output.json"), 'w' ) { |f|
+            f.puts @yaml_hash.to_json
+          }
         end
       end
+    end
   end
 end
