@@ -1,6 +1,5 @@
 # coding: utf-8
-# provide some useful functions
-require 'popen4'
+
 require 'g5kchecks/utils/dmidecode'
 
 class String
@@ -48,6 +47,12 @@ module Utils
     return string.to_i if string =~ /^[0-9]+$/
     return string.to_f if string =~ /^[0-9]+\.[0-9]+$/
     return string.strip
+  end
+
+  def Utils.shell_out(command, **options)
+    begin
+      Ohai::Mixin::Command::shell_out(command, options)
+    end
   end
 
   def Utils.layout
@@ -126,25 +131,21 @@ module Utils
 
   def Utils.mount_grep(grep)
     mount = Hash.new
-    POpen4::popen4("mount | grep '#{grep}'") do |stdout, stderr, stdin, pid|
-      stdin.close
-      stdout.each do |line|
-	parsed_line = Utils.parse_line_mount(line)
-	mount.merge!(parsed_line) if parsed_line != nil
-      end
-   end
+    stdout = shell_out("mount | grep '#{grep}'").stdout
+    stdout.each_line do |line|
+      parsed_line = Utils.parse_line_mount(line)
+      mount.merge!(parsed_line) if parsed_line != nil
+    end
     mount
   end
 
   def Utils.mount
     mount = Hash.new
-    POpen4::popen4("mount") do |stdout, stderr, stdin, pid|
-      stdin.close
-      stdout.each do |line|
-	parsed_line = Utils.parse_line_mount(line)
-	mount.merge!(parsed_line) if parsed_line != nil
-      end
-   end
+    stdout = shell_out("mount").stdout
+    stdout.each_line do |line|
+      parsed_line = Utils.parse_line_mount(line)
+      mount.merge!(parsed_line) if parsed_line != nil
+    end
     mount
   end
 
@@ -165,18 +166,5 @@ module Utils
   def Utils.dmidecode_total_memory
     DmiDecode.get_total_memory
   end
-
-  # def Utils.hwloc_parse_mem
-  #   mem_units = ["B", "KB", "MB", "GB", "TB"]
-  #   POpen4::popen4("hwloc-ls") do |stdout, stderr, stdin, pid|
-  #     re = stdout.first.match(/^Machine \((?<memsize>[[:digit:]]+)(?<memunit>[A-Z]+).*\)$/)
-  #     if not re or not re[:memsize] or not mem_units.include?(re[:memunit])
-  #       raise "Error while parsing hwloc-ls output: #{re}"
-  #     end
-  #     memsize = re[:memsize].to_i * (1024 ** mem_units.index(re[:memunit]))
-  #     return memsize
-  #   end
-  #   raise "Failed to get hwloc-ls output"
-  # end
 
 end

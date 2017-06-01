@@ -1,5 +1,5 @@
 
-require 'open3'
+require 'g5kchecks/utils/utils'
 
 Ohai.plugin(:Cpu) do
 
@@ -14,13 +14,13 @@ Ohai.plugin(:Cpu) do
 
   # Execute an external program
   def execute(cmd)
-    stdout, stderr, status = Open3.capture3(cmd)
-    
-    raise "#{cmd}: #{status.exitstatus}" unless status.success?
+    res = Utils.shell_out(cmd)
+    stdout = res.stdout
+
+    raise "#{cmd}: #{res.exitstatus.to_s}" if res.error?
 
     stdout = stdout.split("\n")
     stdout = (stdout.size == 1 ? stdout[0] : stdout)
-
     return stdout
   end
 
@@ -64,21 +64,19 @@ Ohai.plugin(:Cpu) do
     end
     cpu[:mhz] = (cpu[:mhz]*1000000000).to_i
 
-    popen4("lscpu") do |pid, stdin, stdout, stderr|
-      stdin.close
-      stdout.each do |line|
-        if line =~ /^L1d/
-          cpu[:L1d] = line.chomp.split(": ").last.lstrip.sub("K","")
-        end
-        if line =~ /^L1i/
-          cpu[:L1i] = line.chomp.split(": ").last.lstrip.sub("K","")
-        end
-        if line =~ /^L2/
-          cpu[:L2] = line.chomp.split(": ").last.lstrip.sub("K","")
-        end
-        if line =~ /^L3/
-          cpu[:L3] = line.chomp.split(": ").last.lstrip.sub("K","")
-        end
+    stdout = Utils.shell_out("lscpu").stdout
+    stdout.each_line do |line|
+      if line =~ /^L1d/
+        cpu[:L1d] = line.chomp.split(": ").last.lstrip.sub("K","")
+      end
+      if line =~ /^L1i/
+        cpu[:L1i] = line.chomp.split(": ").last.lstrip.sub("K","")
+      end
+      if line =~ /^L2/
+        cpu[:L2] = line.chomp.split(": ").last.lstrip.sub("K","")
+      end
+      if line =~ /^L3/
+        cpu[:L3] = line.chomp.split(": ").last.lstrip.sub("K","")
       end
     end
 

@@ -28,24 +28,20 @@ Ohai.plugin(:FileSystem) do
         root_device = $1
         root_part = $2
         layout = {}
-        popen4("parted #{root_device} print") do |pid, stdin, stdout, stderr|
-          stdin.close
-          stdout.each do |line|
-	    num, tmp_layout = Utils.parse_line_layout(line)
-	    next if tmp_layout == nil
-	    layout.merge!(tmp_layout)
-            if num == "2" or num == "3" or num == "5"
-              popen4("tune2fs -l #{root_device}#{num}") do |pid, stdin, stdout, stderr|
-                stdin.close
-                stdout.each do |line2|
-                  if line2 =~ /^Filesystem state:/
-                    layout[num][:state] = line.chomp.split(": ").last.strip
-                  end
-                end
+        stdout = Utils.shell_out("parted #{root_device} print").stdout
+        stdout.each_line do |line|
+	  num, tmp_layout = Utils.parse_line_layout(line)
+	  next if tmp_layout == nil
+	  layout.merge!(tmp_layout)
+          if num == "2" or num == "3" or num == "5"
+            stdout = Utils.shell_out("tune2fs -l #{root_device}#{num}").stdout
+            stdout.each_line do |line2|
+              if line2 =~ /^Filesystem state:/
+                layout[num][:state] = line.chomp.split(": ").last.strip
               end
             end
-            layout[num][:state] = "clean" if !layout[num].has_key?("state")
           end
+          layout[num][:state] = "clean" if !layout[num].has_key?("state")
         end
         filesystem["layout"] = layout
       end
