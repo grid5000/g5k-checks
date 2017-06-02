@@ -1,19 +1,17 @@
+# coding: utf-8
 
 module RSpec
   module Core
     module Formatters
-
       class VerboseFormatter
 
-        RSpec::Core::Formatters.register self, :example_group_started, :example_group_finished, :example_passed, :example_pending, :example_failed
+        RSpec::Core::Formatters.register self, :example_group_started, :example_group_finished, :example_passed, :example_failed
 
         def initialize(output)
           @group_level = 0
         end
 
         def example_group_started(groupNotification)
-          #super(example_group)
-
           puts if @group_level == 0
           puts "#{current_indentation}#{groupNotification.group.description.strip}"
 
@@ -25,26 +23,26 @@ module RSpec
         end
 
         def example_passed(exampleNotification)
-          if respond_to? :success_color
-            puts success_color("\e[32m  OK " + exampleNotification.example.description.strip + "\e[0m")
-          else
-            puts "\e[32m  OK " + exampleNotification.example.description.strip + "\e[0m"
-          end
-        end
-
-        def example_pending(example)
-          puts pending_color(example.description.strip)
+          print_success(exampleNotification.example.description.strip)
         end
 
         def example_failed(failedExampleNotification)
-          puts failure_output(failedExampleNotification.example, failedExampleNotification.example.exception)
+          print_error("#{failedExampleNotification.example.exception.to_s} (FAILED - #{next_failure_index})")
         end
 
-        def failure_output(example, exception)
-          if respond_to? :failure_color
-            failure_color("\e[31mKO #{exception.message} (FAILED - #{next_failure_index})\e[0m")
+        def print_success(msg)
+          if $stdout.isatty
+            puts "\e[32m  OK " + msg + "\e[0m"
           else
-            "\e[31mKO #{exception.message} (FAILED - #{next_failure_index})\e[0m"
+            puts " OK " + msg
+          end
+        end
+
+        def print_error(msg)
+          if $stdout.isatty
+            puts "\e[31m  KO " + msg + "\e[0m"
+          else
+            puts " KO " + msg
           end
         end
 
@@ -60,9 +58,7 @@ module RSpec
         def start_dump
           output.puts
         end
-
       end
-
     end
   end
 end
