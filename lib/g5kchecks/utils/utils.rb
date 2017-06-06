@@ -29,10 +29,10 @@ module Utils
     Hash.new {|ht,k| ht[k] = autovivifying_hash}
   end
 
-  def Utils.interface_name(int)
-    # Ref API: interface
-    case int
-    when "eno","eth" then return 'Ethernet'
+  def Utils.interface_type(type)
+    #Ref API: interface
+    case type
+    when /^en/,"eth" then return 'Ethernet'
     when "br"        then return 'Bridge'
     when "ib"        then return 'InfiniBand'
     when "myri"      then return 'Myrinet'
