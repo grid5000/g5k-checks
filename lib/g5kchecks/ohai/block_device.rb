@@ -7,18 +7,6 @@ Ohai.plugin(:Blockdevice) do
   provides "block_device/improve"
   depends "block_device"
 
-  # Execute an external program
-  def execute2(cmd)
-    stdout, stderr, status = Open3.capture3(cmd)
-
-    raise "#{cmd}: #{status.exitstatus}" unless status.success?
-
-    stdout = stdout.split("\n")
-    stdout = (stdout.size == 1 ? stdout[0] : stdout)
-    
-    return stdout
-  end
-
   # Get disk/vendor pairs from the lshw output
   def lshw_deep_search(h)
     vendors = {}
@@ -49,13 +37,14 @@ Ohai.plugin(:Blockdevice) do
     # It is also truncated in lshw -class disk -class storage -json but value might be retrieve using hdparm
     #
     block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each { |k,v|
-      v['by_id'] = execute2("find /dev/disk/by-id/ -lname '*#{k}' | grep '/wwn-'") rescue nil
-      v['by_path'] = execute2("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'") rescue nil
-      v['rev_from_hdparm'] = execute2("hdparm -I /dev/#{k}").grep(/Firmware Revision:/)[0].sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
+      v['by_id'] = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}' | grep '/wwn-'").stdout rescue nil
+      v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'").stdout rescue nil
+      stdout = utils.shell_out("hdparm -I /dev/#{k}").stdout
+      v['rev_from_hdparm'] = stdout.grep(/Firmware Revision:/)[0].sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
     }
 
     # Execute lshw
-    lshw_hash = JSON.parse(execute2("lshw -json").join("\n"))
+    lshw_hash = JSON.parse(Utils.shell_out("lshw -json").stdout.join("\n"))
     vendors = lshw_deep_search(lshw_hash) # {"/dev/sda"=>"Hitachi"}
 
     # Insert information into the ohai output
