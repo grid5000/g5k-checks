@@ -83,24 +83,21 @@ module Utils
   end
 
   def Utils.shell_out(command, **options)
-    begin
-      Ohai::Mixin::Command::shell_out(command, options)
-    end
+    Ohai::Mixin::Command::shell_out(command, options) rescue {}
   end
 
   def Utils.layout
     layout = {}
-    if File.exist?(File.dirname(__FILE__) + "/../data/layout")
-      file = File.open(File.dirname(__FILE__) + "/../data/layout")
-      cmdline = file.read
-      file.close
-      cmdline.each_line do |line|
-        num, parsed_line = Utils.parse_line_layout(line)
-	layout.merge!(parsed_line) if parsed_line != nil
-      end
-    else # first execution (after new deployment)
+    if !File.exist?(File.dirname(__FILE__) + "/../data/layout")
       %x{mkdir -p #{File.join(File.dirname(__FILE__))}/../data/}
       %x{parted /dev/sda print > #{File.join(File.dirname(__FILE__), '/../data/layout')} 2>/dev/null}
+    end
+    file = File.open(File.dirname(__FILE__) + "/../data/layout")
+    cmdline = file.read
+    file.close
+    cmdline.each_line do |line|
+      num, parsed_line = Utils.parse_line_layout(line)
+      layout.merge!(parsed_line) if parsed_line != nil
     end
     layout
   end
@@ -131,17 +128,12 @@ module Utils
 
   def Utils.fstab
     filesystem = Hash.new
-    if File.exist?(File.dirname(__FILE__) + "/../data/fstab")
-      file_fstab = File.open(File.dirname(__FILE__) + "/../data/fstab")
-      fstab = file_fstab.read
-      file_fstab.close
-      fstab.each_line do |line|
-	parsed_line = Utils.parse_line_fstab(line)
-        filesystem.merge!(parsed_line) if parsed_line != nil
-      end
-    else # first execution (after new deployment)
-      %x{mkdir -p #{File.join(File.dirname(__FILE__))}/../data/}
-      %x{cp /etc/fstab #{File.join(File.dirname(__FILE__), '/../data/')}}
+    file_fstab = File.open("/etc/fstab")
+    fstab = file_fstab.read
+    file_fstab.close
+    fstab.each_line do |line|
+      parsed_line = Utils.parse_line_fstab(line)
+      filesystem.merge!(parsed_line) if parsed_line != nil
     end
     filesystem
   end
