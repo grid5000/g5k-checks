@@ -11,32 +11,22 @@ module RSpec
         end
 
         def example_failed(failedExampleNotification)
-          # bypass si l'api est rempli et que g5kchecks ne trouve
-          # pas la valeur
           array = failedExampleNotification.exception.message.split(', ')
-          if array[0] != ""
-            # pas super beau, pour distinguer plusieurs composants
-            # typiquement pour disk et network
-            if array[0] =~ /mount/
-              file_name = array[0]
-	    elsif array[-2] =~ /\d{1,2}/
-              file_name = failedExampleNotification.example.full_description.gsub(" ","_") + "_" + array[-2]
-            elsif array[-2] =~ /sd./
-              file_name = failedExampleNotification.example.full_description.gsub(" ","_") + "_" + array[-2]
-	    else
-              file_name = failedExampleNotification.example.full_description.gsub(" ","_")
-            end
-	    file_name = file_name.gsub(/\//,'\\').gsub(" ","_")
-            File.open(File.join(RSpec.configuration.output_dir, "OAR_"+file_name), 'w') do |f|
-              f.puts failedExampleNotification.example.execution_result.exception.to_json
-            end
+          # pas super beau, pour distinguer plusieurs composants
+          # typiquement pour disk et network
+          if array[0] =~ /mount/
+            file_name = array[0]
+	  elsif array[-2] =~ /\d{1,2}/
+            file_name = failedExampleNotification.example.full_description.gsub(" ","_") + "_" + array[-2]
+          elsif array[-2] =~ /sd./
+            file_name = failedExampleNotification.example.full_description.gsub(" ","_") + "_" + array[-2]
+	  else
+            file_name = failedExampleNotification.example.full_description.gsub(" ","_")
           end
-        end
-
-        def example_passed(exampleNotification)
-        end
-
-        def example_pending(failedExampleNotification)
+	  file_name = file_name.gsub(/\//,'\\').gsub(" ","_")
+          File.open(File.join(RSpec.configuration.output_dir, "OAR_"+file_name), 'w') do |f|
+            f.puts failedExampleNotification.example.execution_result.exception.to_json
+          end
         end
       end
     end
