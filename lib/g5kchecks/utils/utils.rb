@@ -39,6 +39,39 @@ module Utils
     end
   end
 
+  #Get the given interface up/down status
+  def Utils.interface_operstate(dev)
+    ifaceState = "down"
+    case Utils.shell_out("cat /sys/class/net/#{dev}/operstate").stdout.chomp()
+    when "unknown", "testing", "dormant", "up"
+      ifaceState = "up"
+    when "notpresent", "lowerlayerdown", "down"
+      ifaceState = "down"
+    end
+    ifaceState
+  end
+
+  #Get ethtool information on iface rate
+  def Utils.interface_ethtool(dev)
+    infos = {}
+    stdout = Utils.shell_out("/sbin/ethtool #{dev}; /sbin/ethtool -i #{dev}").stdout
+    stdout.each_line do |line|
+      if line =~ /^[[:blank:]]*Speed: /
+        if line =~ /Unknown/
+          infos[:rate] = ""
+          infos[:enabled] = false
+        else
+          infos[:rate] = line.chomp.split(": ").last.gsub(/([GMK])b\/s/){'000000'}
+          infos[:enabled] = true
+        end
+      end
+      if line =~ /^\s*driver: /
+        infos[:driver] = line.chomp.split(": ").last
+      end
+    end
+    infos
+  end
+
   # vraiment pas beau mais en ruby 1.9.3 les messages
   # rspec ne peuvent plus être des objets
   def Utils.string_to_object(string)
