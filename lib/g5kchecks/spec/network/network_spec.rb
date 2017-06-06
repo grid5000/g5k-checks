@@ -1,100 +1,112 @@
+
+def get_api_ifaces
+  ifaces = {}
+  net_adapters = RSpec.configuration.node.api_description["network_adapters"]
+  if net_adapters
+    net_adapters.each{ |iface|
+      ifaces[iface['device']] = iface
+    }
+  end
+  ifaces
+end
+
 describe "Network" do
 
   before(:all) do
-    @api_desc = RSpec.configuration.node.api_description["network_adapters"]
-    @api = {}
-    if @api_desc
-      @api_desc.each { |a|
-        @api[a['device']] = a
-      }
-    end
+    @system = RSpec.configuration.node.ohai_description[:network][:interfaces]
+    @api = get_api_ifaces
   end
 
-  RSpec.configuration.node.ohai_description[:network][:interfaces].to_hash.select { |d,i| %w{ eno eth ib myri }.include?(i[:type]) }.each do |dev|
+  #Iterate over API network adapters only, ignoring those unknown by ref-api
+  # RSpec.configuration.node.api_description["network_adapters"].reject{ |iface|
+  #   #Ignore BMC
+  #   iface['management'] == true
+  # }.each do |iface|
 
-    it "should be the correct interface name" do
-      name_api = ""
-      name_api = @api[dev[0]]['interface'] if @api_desc
-      name_ohai = Utils.interface_name(dev[1][:type])
-      expect(name_ohai).to eql(name_api), "#{name_ohai}, #{name_api}, network_adapters, #{dev[0]}, interface"
+  ohai = RSpec.configuration.node.ohai_description[:network][:interfaces]
+  ohai.select { |dev,iface|
+    dev =~ /^en/ || %w{ ib eth myri }.include?(iface[:type])
+  }.each do |dev,iface|
+
+    api = get_api_ifaces
+    name = iface[:name]
+    #Handle predictable interfaces names (name is either iface name or predictable name from udev)
+    if !api[dev] && api[name]
+      dev = name
+    end
+
+    it "should have the correct name" do
+      name_api = dev
+      name_ohai = iface[:name]
+      expect(name_ohai).to eql(name_api), "#{name_ohai}, #{name_api}, network_adapters, #{dev}, name"
+    end
+
+    it "should be the correct interface type" do
+      type_api = @api[dev]['interface'] rescue ""
+      type_ohai = Utils.interface_type(iface[:type])
+      expect(type_ohai).to eql(type_api), "#{type_ohai}, #{type_api}, network_adapters, #{dev}, interface"
     end
 
     it "should have the correct IPv4" do
-      ip_api = ""
-      ip_api = @api[dev[0]]['ip'] if @api_desc
-      ip_ohai = dev[1][:ip]
-      expect(ip_ohai).to eql(ip_api), "#{ip_ohai}, #{ip_api}, network_adapters, #{dev[0]}, ip"
+      ip_api = @api[dev]['ip'] rescue ""
+      ip_ohai = iface[:ip]
+      expect(ip_ohai).to eql(ip_api), "#{ip_ohai}, #{ip_api}, network_adapters, #{dev}, ip"
     end
 
     it "should have the correct IPv6" do
-      ip6_api = ""
-      ip6_api = @api[dev[0]]['ip6'] if @api_desc
-      ip6_ohai = dev[1][:ip6]
-      expect(ip6_ohai).to eql(ip6_api), "#{ip6_ohai}, #{ip6_api}, network_adapters, #{dev[0]}, ip6"
+      ip6_api = @api[dev]['ip6'] rescue ""
+      ip6_ohai = iface[:ip6]
+      expect(ip6_ohai).to eql(ip6_api), "#{ip6_ohai}, #{ip6_api}, network_adapters, #{dev}, ip6"
     end
 
     it "should have the correct Driver" do
-      driver_api = ""
-      driver_api = @api[dev[0]]['driver'] if @api_desc
-      driver_ohai = dev[1][:driver]
-      expect(driver_ohai).to eql(driver_api), "#{driver_ohai}, #{driver_api}, network_adapters, #{dev[0]}, driver"
+      driver_api = @api[dev]['driver'] rescue ""
+      driver_ohai = iface[:driver]
+      expect(driver_ohai).to eql(driver_api), "#{driver_ohai}, #{driver_api}, network_adapters, #{dev}, driver"
     end
 
-    if dev[0] =~ /ib/
+    if dev =~ /ib/
       it "should have the correct guid" do
-        mac_api = ""
-        mac_api = @api[dev[0]]['guid'] if @api_desc
-        mac_ohai = dev[1][:mac]
-        expect(mac_ohai).to eql(mac_api), "#{mac_ohai}, #{mac_api}, network_adapters, #{dev[0]}, guid"
+        mac_api = @api[dev]['guid'] rescue ""
+        mac_ohai = iface[:mac].downcase
+        expect(mac_ohai).to eql(mac_api), "#{mac_ohai}, #{mac_api}, network_adapters, #{dev}, guid"
       end
     else
       it "should have the correct Mac Address" do
-        mac_api = ""
-        mac_api = @api[dev[0]]['mac'] if @api_desc
-        mac_ohai = dev[1][:mac].downcase
-        expect(mac_ohai).to eql(mac_api), "#{mac_ohai}, #{mac_api}, network_adapters, #{dev[0]}, mac"
+        mac_api = @api[dev]['mac'] rescue ""
+        mac_ohai = iface[:mac].downcase
+        expect(mac_ohai).to eql(mac_api), "#{mac_ohai}, #{mac_api}, network_adapters, #{dev}, mac"
       end
     end
 
     it "should have the correct Rate" do
-      rate_api = ""
-      rate_api = @api[dev[0]]['rate'] if @api_desc
-      if dev[1][:rate] == ""
-        rate_ohai = dev[1][:rate]
-      else
-        rate_ohai = dev[1][:rate].to_i
-      end
-      expect(rate_ohai).to eql(rate_api), "#{rate_ohai}, #{rate_api}, network_adapters, #{dev[0]}, rate"
+      rate_api = @api[dev]['rate'].to_i rescue ""
+      rate_ohai = iface[:rate].to_i
+      expect(rate_ohai).to eql(rate_api), "#{rate_ohai}, #{rate_api}, network_adapters, #{dev}, rate"
     end
 
     it "should have the correct version" do
-      ver_api = ""
-      ver_api = @api[dev[0]]['version'] if @api_desc
-      ver_ohai = dev[1][:version]
-      expect(ver_ohai).to eql(ver_api), "#{ver_ohai}, #{ver_api}, network_adapters, #{dev[0]}, version"
+      ver_api = @api[dev]['version'] rescue ""
+      ver_ohai = iface[:version]
+      expect(ver_ohai).to eql(ver_api), "#{ver_ohai}, #{ver_api}, network_adapters, #{dev}, version"
     end
 
     it "should have the correct vendor" do
-      ven_api = ""
-      ven_api = @api[dev[0]]['vendor'] if @api_desc
-      ven_ohai = dev[1][:vendor]
-      expect(ven_ohai).to eql(ven_api), "#{ven_ohai}, #{ven_api}, network_adapters, #{dev[0]}, vendor"
+      ven_api = @api[dev]['vendor'] rescue ""
+      ven_ohai = iface['vendor']
+      expect(ven_ohai).to eql(ven_api), "#{ven_ohai}, #{ven_api}, network_adapters, #{dev}, vendor"
     end
 
     it "should have the correct mounted mode" do
-      mounted_api = nil
-      mounted_api = @api[dev[0]]['mounted'] if @api_desc
-      mounted_ohai = dev[1][:mounted]
-      expect(mounted_ohai).to eql(mounted_api), "#{mounted_ohai}, #{mounted_api}, network_adapters, #{dev[0]}, mounted"
+      mounted_api = @api[dev]['mounted'] rescue false
+      mounted_ohai = iface[:mounted]
+      expect(mounted_ohai).to eql(mounted_api), "#{mounted_ohai}, #{mounted_api}, network_adapters, #{dev}, mounted"
     end
 
     it "should not be a management card" do
-      mgt_api = nil
-      mgt_api = @api[dev[0]]['management'] if @api_desc
-      mgt_ohai = dev[1][:management]
-      expect(mgt_ohai).to eql(mgt_api), "#{mgt_ohai}, #{mgt_api}, network_adapters, #{dev[0]}, management"
+      mgt_api = @api[dev]['management'] rescue false
+      mgt_ohai = iface[:management]
+      expect(mgt_ohai).to eql(mgt_api), "#{mgt_ohai}, #{mgt_api}, network_adapters, #{dev}, management"
     end
-
   end
-
 end
