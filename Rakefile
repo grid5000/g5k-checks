@@ -2,14 +2,20 @@
 # Date:: 2013-07-05 18:48:14 +0200
 #
 
+$:.unshift File.join(File.dirname(__FILE__),'lib')
+
+require 'g5kchecks/version'
+
 ROOT_DIR = File.expand_path(File.dirname(__FILE__))
 CHANGELOG_FILE = File.join(ROOT_DIR, "debian", "changelog")
-VERSION_FILE = File.join(ROOT_DIR, "VERSION")
+
+VERSION_FILE = "lib/g5kchecks/version.rb"
+VERSION = G5kChecks::VERSION
 
 NAME = "g5kchecks"
 USER_NAME = %x{git config --get user.name}.chomp
 USER_EMAIL = %x{git config --get user.email}.chomp
-VERSION = File.read(VERSION_FILE).chomp
+
 APT_HOST = ENV['HOST'] || 'apt.g5kadmin'
 
 class String
@@ -48,11 +54,7 @@ def bump(index)
     changelog
   ].join("\n")
 
-  content_version = File.read(VERSION_FILE).gsub(VERSION,new_version)
-
-  File.open(VERSION_FILE, "w+") do |f|
-    f << content_version
-  end
+  system("sed -i s/#{VERSION}/#{new_version}/ #{VERSION_FILE}")
 
   File.open(CHANGELOG_FILE, "w+") do |f|
     f << content_changelog
@@ -62,7 +64,7 @@ def bump(index)
   unless ENV['NOCOMMIT']
     puts "--> Committing changelog and version file...".green
     sh "git commit -m 'v#{new_version}' #{CHANGELOG_FILE} #{VERSION_FILE}"
-    sh "git tag #{File.read(VERSION_FILE).chomp}"
+    sh "git tag #{new_version}"
   end
 end
 
