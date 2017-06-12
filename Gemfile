@@ -1,8 +1,5 @@
 
 source 'https://rubygems.org'
 
-ruby '2.1.5'
+gemspec :name => "g5k-checks"
 
-gem 'ohai', '8.21.0'
-gem 'restclient'
-gem 'rspec', '3.5.0'

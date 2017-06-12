@@ -1,3 +1,11 @@
+PATH
+  remote: .
+  specs:
+    g5k-checks (0.7.12)
+      ohai (~> 8.21.0)
+      restclient (>= 0.0.0)
+      rspec (~> 3.5.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -34,6 +42,7 @@ GEM
     paint (1.0.1)
     plist (3.3.0)
     public_suffix (2.0.5)
+    rake (10.5.0)
     restclient (0.14.4)
       paint (~> 1.0)
     rspec (3.5.0)
@@ -56,6 +65,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  ohai (= 8.21.0)
-  restclient
-  rspec (= 3.5.0)
+  bundler
+  g5k-checks!
+  rake
