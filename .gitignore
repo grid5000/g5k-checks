@@ -3,3 +3,4 @@ debian/g5kchecks.substvars
 debian/g5kchecks/*
 debian/files
 build/
+bundle/

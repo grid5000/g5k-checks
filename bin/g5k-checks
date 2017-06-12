@@ -1,6 +1,12 @@
 #!/usr/bin/env ruby
 
-$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+begin
+  #Hard-coded path for deployed bundle...
+  require '/usr/lib/ruby/bundles/g5kchecks/bundler/setup'
+rescue LoadError
+  #puts "Running in development mode, dependencies load path managed by bundler"
+  $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+end
 
 require 'optparse'
 require 'optparse/time'
