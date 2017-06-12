@@ -92,6 +92,8 @@ namespace :package do
   task :build do
     puts "--> Build package".green
     sh "debuild"
+    sh "mkdir -p ./build/"
+    sh "mv ../#{NAME}_#{VERSION}* ./build/"
   end
 
   #Publish debian package to apt and web.grid5000.fr
