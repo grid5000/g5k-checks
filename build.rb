@@ -8,7 +8,7 @@ puts 'Installing vendored g5k-checks dependencies...'
 system("rm -fr ./.bundle")
 system 'bundle install --standalone --no-binstubs --without=development --path bundle'
 
-abort "No bundle installed" unless Dir.exist? 'bundle'
+abort "Error: bundle not installed" unless Dir.exist? 'bundle'
 
 RUBY_INSTALL_ROOT = '/usr/lib/ruby'
 
