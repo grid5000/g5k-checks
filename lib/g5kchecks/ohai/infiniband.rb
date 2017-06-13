@@ -15,8 +15,7 @@ Ohai.plugin(:NetworkInfiniband) do
       # Infiniband interfaces can't be management interfaces
       iface[:management] = false
 
-      iface[:vendor] = nil #FIXME: NOT IMPLEMENTED
-      iface[:version] = nil #FIXME: NOT IMPLEMENTED
+      iface[:vendor] = Utils.get_pci_vendor("/sys/class/net/#{dev}/device/subsystem_vendor")
 
       # Get MAC address
       if File.exist?('/sys/class/infiniband/mthca0/ports')
