@@ -3,17 +3,16 @@ require 'g5kchecks/utils/utils'
 
 Ohai.plugin(:NetworkInfiniband) do
 
-  provides "network/infiniband"
+  provides "network/network_infiniband"
   depends "network"
   depends "hostname"
 
   collect_data do
 
     # Process ib interfaces
-    interfaces.select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
+    network[:interfaces].select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
 
-      # It is likely that an interface is not the management interface if it is
-      # accessible from the OS.
+      # Infiniband interfaces can't be management interfaces
       iface[:management] = false
 
       iface[:vendor] = nil #FIXME: NOT IMPLEMENTED
@@ -43,7 +42,6 @@ Ohai.plugin(:NetworkInfiniband) do
 
       if !ca.empty?
         num = "#{(iface[:number].to_i)+1}"
-        #TODO move to ohai plugin
         stdout = Utils.shell_out("ibstat #{ca.chomp!} #{num}").stdout
         stdout.each_line do |line|
           if line =~ /^Rate/
