@@ -75,6 +75,15 @@ module Utils
     infos
   end
 
+  #Get vendor from pci vendor id
+  def Utils.get_pci_vendor(vendor_id_path)
+    vendor_id = Utils.shell_out("cat #{vendor_id_path}").stdout.strip.chomp rescue ""
+    vendor_id = vendor_id.sub('0x', '')
+    vendor = Utils.shell_out("grep '^#{vendor_id}' /usr/share/misc/pci.ids").stdout.chomp rescue ""
+    vendor = vendor.sub(/^#{vendor_id}/, '').strip()
+    return vendor
+  end
+
   # vraiment pas beau mais en ruby 1.9.3 les messages
   # rspec ne peuvent plus être des objets
   def Utils.string_to_object(string)
