@@ -1,5 +1,4 @@
 
-require 'open3'
 require 'json'
 
 Ohai.plugin(:Blockdevice) do
@@ -10,7 +9,7 @@ Ohai.plugin(:Blockdevice) do
   # Get disk/vendor pairs from the lshw output
   def lshw_deep_search(h)
     vendors = {}
-    
+
     if h['class'] == 'disk' && h.key?('vendor')
       vendors[h['logicalname']] = h['vendor']
     else
@@ -29,10 +28,12 @@ Ohai.plugin(:Blockdevice) do
 
   collect_data do
 
+    # Execute lshw
+    lshw_hash = JSON.parse(Utils.shell_out("lshw -json").stdout)
+    vendors = lshw_deep_search(lshw_hash) # {"/dev/sda"=>"Hitachi"}
+
     #
     # See github issue #6: finding the hard-drive vendor
-    #
-    #
     # See github issue #6: ohai gets the 'rev' info from /sys/block/sda/device/rev (see ohai/lib/ohai/plugins/linux/block_device.rb) and the data is actually truncated on some clusters
     # It is also truncated in lshw -class disk -class storage -json but value might be retrieve using hdparm
     #
@@ -41,17 +42,9 @@ Ohai.plugin(:Blockdevice) do
       v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'").stdout rescue nil
       stdout = Utils.shell_out("hdparm -I /dev/#{k} | grep 'Firmware Revision'").stdout.chomp()
       v['rev_from_hdparm'] = stdout.sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
-    }
-
-    # Execute lshw
-    lshw_hash = JSON.parse(Utils.shell_out("lshw -json").stdout.join("\n"))
-    vendors = lshw_deep_search(lshw_hash) # {"/dev/sda"=>"Hitachi"}
-
-    # Insert information into the ohai output
-    block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each { |k,v|
       if vendors.key?("/dev/#{k}") 
         v['vendor_from_lshw'] = vendors["/dev/#{k}"]
-      end                       
+      end
     }
   end
 end
