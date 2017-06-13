@@ -58,7 +58,7 @@ module Utils
     stdout.each_line do |line|
       if line =~ /^[[:blank:]]*Speed: /
         if line =~ /Unknown/
-          infos[:rate] = ""
+          infos[:rate] = nil
           infos[:enabled] = false
         else
           infos[:rate] = line.chomp.split(": ").last.gsub(/([GMK])b\/s/){'000000'}
@@ -67,6 +67,9 @@ module Utils
       end
       if line =~ /^\s*driver: /
         infos[:driver] = line.chomp.split(": ").last
+      end
+      if line =~ /^\s*version: /
+        infos[:version] = line.chomp.split(": ").last
       end
     end
     infos
