@@ -5,6 +5,10 @@ def get_api_ifaces
   if net_adapters
     net_adapters.each{ |iface|
       ifaces[iface['device']] = iface
+      #Easy transition to predictable names
+      if !(iface['name'].nil? || iface['name'].empty?) && iface['device'] != iface['name']
+        ifaces[iface['name']] = iface
+      end
     }
   end
   ifaces
@@ -17,26 +21,13 @@ describe "Network" do
     @api = get_api_ifaces
   end
 
-  #Iterate over API network adapters only, ignoring those unknown by ref-api
-  # RSpec.configuration.node.api_description["network_adapters"].reject{ |iface|
-  #   #Ignore BMC
-  #   iface['management'] == true
-  # }.each do |iface|
-
   ohai = RSpec.configuration.node.ohai_description[:network][:interfaces]
-  ohai.select { |dev,iface|
+  ohai.select { |dev, iface|
     dev =~ /^en/ || %w{ ib eth myri }.include?(iface[:type])
   }.each do |dev,iface|
 
-    api = get_api_ifaces
-    name = iface[:name]
-    #Handle predictable interfaces names (name is either iface name or predictable name from udev)
-    if !api[dev] && api[name]
-      dev = name
-    end
-
-    it "should have the correct name" do
-      name_api = dev
+    it "should have the correct predictable name" do
+      name_api = @api[dev]['name'] rescue ""
       name_ohai = iface[:name]
       expect(name_ohai).to eql(name_api), "#{name_ohai}, #{name_api}, network_adapters, #{dev}, name"
     end
