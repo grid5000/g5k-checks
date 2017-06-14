@@ -35,15 +35,19 @@ Ohai.plugin(:Blockdevice) do
     #
     # See github issue #6: finding the hard-drive vendor
     # See github issue #6: ohai gets the 'rev' info from /sys/block/sda/device/rev (see ohai/lib/ohai/plugins/linux/block_device.rb) and the data is actually truncated on some clusters
-    # It is also truncated in lshw -class disk -class storage -json but value might be retrieve using hdparm
+    # It is also truncated in lshw -class disk -class storage -json but value might be retrieve using sdparm
     #
     block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each { |k,v|
       v['by_id'] = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}' | grep '/wwn-'").stdout rescue nil
       v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'").stdout rescue nil
-      stdout = Utils.shell_out("hdparm -I /dev/#{k} | grep 'Firmware Revision'").stdout.chomp()
-      v['rev_from_hdparm'] = stdout.sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
-      if vendors.key?("/dev/#{k}") 
-        v['vendor_from_lshw'] = vendors["/dev/#{k}"]
+
+      stdout = Utils.shell_out("/usr/bin/sdparm /dev/#{k}").stdout
+      stdout = stdout.each_line.peek rescue nil
+      stdout = stdout.strip.split.last
+
+      v['rev'] = stdout.strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue v['rev'] #Keep original ohai value in case of errors
+      if vendors.key?("/dev/#{k}")
+        v['vendor'] = vendors["/dev/#{k}"]
       end
     }
   end

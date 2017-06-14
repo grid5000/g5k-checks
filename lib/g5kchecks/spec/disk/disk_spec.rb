@@ -70,18 +70,13 @@ describe 'Disk' do
 
     it 'should have the correct revision' do
       version_api = get_api_value(api, ohai, k, 'rev')
-      # See github issue #6: api gets the 'rev' info from /sys/block/sda/device/rev and the data is actually truncated on some clusters. Use rev_from_hdparm instead when available
       version_ohai = get_ohai_value(api, ohai, k, 'rev')
-      rev_from_hdparm = get_ohai_value(api, ohai, k, 'rev_from_hdparm')
-      version_ohai = rev_from_hdparm if !rev_from_hdparm.nil?
       expect(version_api).to eql(version_ohai), "#{version_ohai}, #{version_api}, storage_devices, #{k}, rev"
     end
 
     it 'should have the correct vendor' do
       vendor_api = get_api_value(api, ohai, k, 'vendor')
       vendor_ohai = get_ohai_value(api, ohai, k, 'vendor')
-      vendor_from_lshw = get_ohai_value(api, ohai, k, 'vendor_from_lshw')
-      vendor_ohai = vendor_from_lshw  if !vendor_from_lshw.nil?
       expect(vendor_api).to eql(vendor_ohai), "#{vendor_ohai}, #{vendor_api}, storage_devices, #{k}, vendor"
     end
   end
