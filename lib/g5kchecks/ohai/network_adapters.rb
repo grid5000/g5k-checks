@@ -81,7 +81,6 @@ Ohai.plugin(:NetworkAdapters) do
         end
         #Get infos only if interesting or is last run
         if status != "down" || Time.now.to_i >= now + timeout
-          puts "GETTING ethtool infos for dev #{dev}"
           @ethtool_infos = Utils.interface_ethtool(dev)
           #exit early if rate changed 
           if (!@ethtool_infos[:rate].nil? && @ethtool_infos[:rate] != ethtool[:rate])
@@ -89,7 +88,6 @@ Ohai.plugin(:NetworkAdapters) do
           end
         end
       end
-      puts "ethtool_infos for dev #{dev} :: #{@ethtool_infos.inspect}"
       iface[:rate] = @ethtool_infos[:rate]
       iface[:driver] = @ethtool_infos[:driver]
       iface[:version] = @ethtool_infos[:version]
