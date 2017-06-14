@@ -95,7 +95,7 @@ describe "Network" do
     end
 
     it "should not be a management card" do
-      mgt_api = @api[dev]['management'] rescue false
+      mgt_api = @api[dev]['management'] rescue nil
       mgt_ohai = iface[:management]
       expect(mgt_ohai).to eql(mgt_api), "#{mgt_ohai}, #{mgt_api}, network_adapters, #{dev}, management"
     end

@@ -11,23 +11,6 @@ Ohai.plugin(:NetworkAdapters) do
 
     interfaces = network[:interfaces]
 
-    # Process management interface
-    # Get MAC address from ipmitool if possible
-    if File.exist?('/usr/bin/ipmitool')
-      stdout = Utils.shell_out("/usr/bin/ipmitool lan print").stdout
-      stdout.each_line do |line|
-        if line =~ /^[[:blank:]]*MAC Address/
-          interfaces["bmc"] ||= {}
-          interfaces["bmc"][:mac] = line.chomp.split(": ").last
-        end
-        if line =~ /^[[:blank:]]*IP Address/
-          interfaces["bmc"] ||= {}
-          interfaces["bmc"][:ip] = line.chomp.split(": ").last
-        end
-      end
-      interfaces["bmc"]['management'] = true if interfaces["bmc"]
-    end
-
     @br_iface = nil
 
     interfaces.select{ |d,i| i[:type] == 'br'}.each { |dev, iface|
@@ -107,6 +90,23 @@ Ohai.plugin(:NetworkAdapters) do
         iface[:ip6] = ip6[0][0] if ip6.size > 0
       end
       iface[:mounted] = ( not iface[:ip].nil? )
+    end
+
+    # Process management interface
+    # Get MAC address from ipmitool if possible
+    if File.exist?('/usr/bin/ipmitool')
+      stdout = Utils.shell_out("/usr/bin/ipmitool lan print").stdout
+      stdout.each_line do |line|
+        if line =~ /^[[:blank:]]*MAC Address/
+          interfaces["bmc"] ||= {}
+          interfaces["bmc"][:mac] = line.chomp.split(": ").last
+        end
+        if line =~ /^[[:blank:]]*IP Address/
+          interfaces["bmc"] ||= {}
+          interfaces["bmc"][:ip] = line.chomp.split(": ").last
+        end
+      end
+      interfaces["bmc"][:management] = true if interfaces["bmc"]
     end
   end
 end
