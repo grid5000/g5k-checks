@@ -48,10 +48,10 @@ Ohai.plugin(:NetworkAdapters) do
       end
       now = Time.now.to_i
       if ifaceStatus == "down"
-        timeout = 6
+        timeout = 10
       else
-        #If interface was already up, no need to wait
-        timeout = 2
+        #If interface was already up, reduce timeout
+        timeout = 4
       end
 
       #Wait for link negociation after setting iface up
@@ -65,7 +65,7 @@ Ohai.plugin(:NetworkAdapters) do
         #Get infos only if interesting or is last run
         if status != "down" || Time.now.to_i >= now + timeout
           @ethtool_infos = Utils.interface_ethtool(dev)
-          #exit early if rate changed 
+          #exit early if rate changed
           if (!@ethtool_infos[:rate].nil? && @ethtool_infos[:rate] != ethtool[:rate])
             break
           end
