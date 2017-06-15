@@ -40,6 +40,8 @@ Ohai.plugin(:Blockdevice) do
     block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each { |k,v|
       v['by_id'] = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}' | grep '/wwn-'").stdout rescue nil
       v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'").stdout rescue nil
+      #Handle the case where by_path cannot be fetched
+      v['no_path'] = ((v['by_path'].nil?) || (v['by_path'].empty?))
       stdout = Utils.shell_out("hdparm -I /dev/#{k} | grep 'Firmware Revision'").stdout.chomp()
       v['rev_from_hdparm'] = stdout.sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
       if vendors.key?("/dev/#{k}") 

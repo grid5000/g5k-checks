@@ -49,9 +49,13 @@ describe 'Disk' do
     end
 
     it 'should have the correct device path' do
-      by_path_api = get_api_value(api, ohai, k, 'by_path')
-      by_path_ohai = get_ohai_value(api, ohai, k, 'by_path')
-      expect(by_path_api).to eql(by_path_ohai), "#{by_path_ohai}, #{by_path_api}, storage_devices, #{k}, by_path"
+      #Check by_path only if we can get it from the system...
+      if get_ohai_value(api, ohai, k, 'no_path') == false
+        by_path_api = get_api_value(api, ohai, k, 'by_path')
+        by_path_ohai = get_ohai_value(api, ohai, k, 'by_path')
+
+        expect(by_path_api).to eql(by_path_ohai), "#{by_path_ohai}, #{by_path_api}, storage_devices, #{k}, by_path"
+      end
     end
 
     it 'should have the correct size' do
