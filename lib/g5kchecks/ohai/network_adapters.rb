@@ -51,10 +51,11 @@ Ohai.plugin(:NetworkAdapters) do
         timeout = 10
       else
         #If interface was already up, reduce timeout
-        timeout = 4
+        timeout = 5
       end
 
       #Wait for link negociation after setting iface up
+      ethtool_infos = {}
       while Time.now.to_i < now + timeout
         sleep(1)
         status = Utils.interface_operstate(dev)
@@ -64,16 +65,16 @@ Ohai.plugin(:NetworkAdapters) do
         end
         #Get infos only if interesting or is last run
         if status != "down" || Time.now.to_i >= now + timeout
-          @ethtool_infos = Utils.interface_ethtool(dev)
+          ethtool_infos = Utils.interface_ethtool(dev)
           #exit early if rate changed
-          if (!@ethtool_infos[:rate].nil? && @ethtool_infos[:rate] != ethtool[:rate])
+          if (!ethtool_infos[:rate].nil? && ethtool_infos[:rate] != ethtool[:rate])
             break
           end
         end
       end
-      iface[:rate] = @ethtool_infos[:rate]
-      iface[:driver] = @ethtool_infos[:driver]
-      iface[:version] = @ethtool_infos[:version]
+      iface[:rate] = ethtool_infos[:rate]
+      iface[:driver] = ethtool_infos[:driver]
+      iface[:version] = ethtool_infos[:version]
 
       iface[:vendor] = Utils.get_pci_vendor("/sys/class/net/#{dev}/device/subsystem_vendor")
 
