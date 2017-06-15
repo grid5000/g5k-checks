@@ -67,6 +67,11 @@ optparse = OptionParser.new(USAGE) do |opts|
   opts.on_tail( '-v', '--verbose', "Enable verbose mode [default: #{$hashconf["verbose"]}]") do 
     $hashconf["verbose"] = true
   end
+
+  $hashconf["debug"] = false
+  opts.on_tail( '-d', '--debug', "Enable debug mode (shows all ohai plugins outputs) [default: #{$hashconf["debug"]}]") do 
+    $hashconf["debug"] = true
+  end
 end
 
 begin

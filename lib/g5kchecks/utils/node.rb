@@ -90,6 +90,10 @@ module Grid5000
     def ohai_description
       if !@ohai_description
         @ohai_description = Ohai::System.new
+        if @conf["debug"] == true
+          Ohai::Log.init(STDOUT)
+          Ohai::Log.level = :debug
+        end
         @ohai_description.all_plugins
       end
       @ohai_description
