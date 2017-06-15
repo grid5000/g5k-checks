@@ -44,11 +44,14 @@ describe "Network" do
       expect(ip_ohai).to eql(ip_api), "#{ip_ohai}, #{ip_api}, network_adapters, #{dev}, ip"
     end
 
-    it "should have the correct IPv6" do
-      ip6_api = @api[dev]['ip6'] rescue ""
-      ip6_ohai = iface[:ip6]
-      expect(ip6_ohai).to eql(ip6_api), "#{ip6_ohai}, #{ip6_api}, network_adapters, #{dev}, ip6"
-    end
+    # Disabled ipv6 test: g5kchecks sets interfaces up, so IPv6 Stateless Address Autoconfiguration assigns
+    # addresses to interfaces, which are not garanteed to be stable and derived from mac address,
+    # which we already check.
+    # it "should have the correct IPv6" do
+    #   ip6_api = @api[dev]['ip6'] rescue ""
+    #   ip6_ohai = iface[:ip6]
+    #   expect(ip6_ohai).to eql(ip6_api), "#{ip6_ohai}, #{ip6_api}, network_adapters, #{dev}, ip6"
+    # end
 
     it "should have the correct Driver" do
       driver_api = @api[dev]['driver'] rescue ""
