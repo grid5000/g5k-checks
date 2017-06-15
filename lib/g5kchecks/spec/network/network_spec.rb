@@ -38,11 +38,11 @@ describe "Network" do
       expect(type_ohai).to eql(type_api), "#{type_ohai}, #{type_api}, network_adapters, #{dev}, interface"
     end
 
-    it "should have the correct IPv4" do
-      ip_api = @api[dev]['ip'] rescue ""
-      ip_ohai = iface[:ip]
-      expect(ip_ohai).to eql(ip_api), "#{ip_ohai}, #{ip_api}, network_adapters, #{dev}, ip"
-    end
+    # it "should have the correct IPv4" do
+    #   ip_api = @api[dev]['ip'] rescue ""
+    #   ip_ohai = iface[:ip]
+    #   expect(ip_ohai).to eql(ip_api), "#{ip_ohai}, #{ip_api}, network_adapters, #{dev}, ip"
+    # end
 
     # Disabled ipv6 test: g5kchecks sets interfaces up, so IPv6 Stateless Address Autoconfiguration assigns
     # addresses to interfaces, which are not garanteed to be stable and derived from mac address,
