@@ -68,8 +68,7 @@ Ohai.plugin(:NetworkAdapters) do
           ethtool_infos = Utils.interface_ethtool(dev)
           #exit early if rate changed
           if (!ethtool_infos[:rate].nil? &&
-              (ethtool_infos[:rate] != ethtool[:rate]
-               || ethtool_infos[:rate].to_i != 0))
+              (ethtool_infos[:rate] != ethtool[:rate] || ethtool_infos[:rate].to_i != 0))
             break
           end
         end

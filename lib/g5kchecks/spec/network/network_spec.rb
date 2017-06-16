@@ -1,20 +1,20 @@
 
-def get_api_ifaces
-  ifaces = {}
-  net_adapters = RSpec.configuration.node.api_description["network_adapters"]
-  if net_adapters
-    net_adapters.each{ |iface|
-      ifaces[iface['device']] = iface
-      #Easy transition to predictable names
-      if !(iface['name'].nil? || iface['name'].empty?) && iface['device'] != iface['name']
-        ifaces[iface['name']] = iface
-      end
-    }
-  end
-  ifaces
-end
-
 describe "Network" do
+  
+  def get_api_ifaces
+    ifaces = {}
+    net_adapters = RSpec.configuration.node.api_description["network_adapters"]
+    if net_adapters
+      net_adapters.each{ |iface|
+        ifaces[iface['device']] = iface
+        #Easy transition to predictable names
+        if !(iface['name'].nil? || iface['name'].empty?) && iface['device'] != iface['name']
+          ifaces[iface['name']] = iface
+        end
+      }
+    end
+    ifaces
+  end
 
   before(:all) do
     @system = RSpec.configuration.node.ohai_description[:network][:interfaces]
@@ -75,7 +75,7 @@ describe "Network" do
 
     it "should have the correct Rate" do
       rate_api = @api[dev]['rate'].to_i rescue ""
-      rate_ohai = iface[:rate].to_i
+      rate_ohai = iface[:rate].to_i rescue 0
       expect(rate_ohai).to eql(rate_api), "#{rate_ohai}, #{rate_api}, network_adapters, #{dev}, rate"
     end
 
