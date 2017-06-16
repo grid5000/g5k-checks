@@ -42,10 +42,16 @@ Ohai.plugin(:Blockdevice) do
       v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'").stdout rescue nil
       #Handle the case where by_path cannot be fetched
       v['no_path'] = ((v['by_path'].nil?) || (v['by_path'].empty?))
-      stdout = Utils.shell_out("hdparm -I /dev/#{k} | grep 'Firmware Revision'").stdout.chomp()
-      v['rev_from_hdparm'] = stdout.sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
-      if vendors.key?("/dev/#{k}") 
+      if vendors.key?("/dev/#{k}")
         v['vendor_from_lshw'] = vendors["/dev/#{k}"]
+      end
+      stdout = Utils.shell_out("hdparm -I /dev/#{k} | grep 'Firmware Revision'").stdout.chomp()
+      rev_from_hdparm = stdout.sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
+      #in case ohai rev is a truncated value
+      if (!rev_from_hdparm.nil? && !v['rev'].nil? && !v['rev'].empty?)
+        if rev_from_hdparm.include?(v['rev'])
+          rev = rev_from_hdparm
+        end
       end
     }
   end
