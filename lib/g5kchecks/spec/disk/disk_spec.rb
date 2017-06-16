@@ -52,10 +52,9 @@ describe 'Disk' do
       #Check by_path only if we can get it from the system...
       by_path_api = get_api_value(api, ohai, k, 'by_path')
       by_path_ohai = get_ohai_value(api, ohai, k, 'by_path')
+
       if by_path_ohai.nil? || by_path_ohai.empty?
-        pending("Device #{k} 'by_path' not available, not testing") do
-          except(true).to be(true)
-        end
+        expect(true).to be(true), "Device #{k} 'by_path' not available, not testing"
       else
         expect(by_path_api).to eql(by_path_ohai), "#{by_path_ohai}, #{by_path_api}, storage_devices, #{k}, by_path"
       end
