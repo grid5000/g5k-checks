@@ -48,7 +48,7 @@ Ohai.plugin(:Blockdevice) do
       #in case ohai rev is a truncated value
       if (!rev_from_hdparm.nil? && !v['rev'].nil? && !v['rev'].empty?)
         if rev_from_hdparm.include?(v['rev'])
-          rev = rev_from_hdparm
+          v['rev'] = rev_from_hdparm
         end
       end
     }
