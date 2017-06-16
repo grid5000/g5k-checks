@@ -40,8 +40,6 @@ Ohai.plugin(:Blockdevice) do
     block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each { |k,v|
       v['by_id'] = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}' | grep '/wwn-'").stdout rescue nil
       v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'").stdout rescue nil
-      #Handle the case where by_path cannot be fetched
-      v['no_path'] = ((v['by_path'].nil?) || (v['by_path'].empty?))
       if vendors.key?("/dev/#{k}")
         v['vendor_from_lshw'] = vendors["/dev/#{k}"]
       end

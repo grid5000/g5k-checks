@@ -48,12 +48,15 @@ describe 'Disk' do
       expect(by_id_api).to eql(by_id_ohai), "#{by_id_ohai}, #{by_id_api}, storage_devices, #{k}, by_id"
     end
 
-    it 'should have the correct device path' do
+    it 'should have the correct (optional) device path' do
       #Check by_path only if we can get it from the system...
-      if get_ohai_value(api, ohai, k, 'no_path') == false
-        by_path_api = get_api_value(api, ohai, k, 'by_path')
-        by_path_ohai = get_ohai_value(api, ohai, k, 'by_path')
-
+      by_path_api = get_api_value(api, ohai, k, 'by_path')
+      by_path_ohai = get_ohai_value(api, ohai, k, 'by_path')
+      if by_path_ohai.nil? || by_path_ohai.empty?
+        pending("Device #{k} 'by_path' not available, not testing") do
+          except(true).to be(true)
+        end
+      else
         expect(by_path_api).to eql(by_path_ohai), "#{by_path_ohai}, #{by_path_api}, storage_devices, #{k}, by_path"
       end
     end
