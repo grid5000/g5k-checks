@@ -67,7 +67,9 @@ Ohai.plugin(:NetworkAdapters) do
         if status != "down" || Time.now.to_i >= now + timeout
           ethtool_infos = Utils.interface_ethtool(dev)
           #exit early if rate changed
-          if (!ethtool_infos[:rate].nil? && ethtool_infos[:rate] != ethtool[:rate])
+          if (!ethtool_infos[:rate].nil? &&
+              (ethtool_infos[:rate] != ethtool[:rate]
+               || ethtool_infos[:rate].to_i != 0))
             break
           end
         end
