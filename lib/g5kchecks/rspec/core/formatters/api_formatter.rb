@@ -46,6 +46,9 @@ module RSpec
         end
 
         def add_to_yaml_hash(array, value, hash)
+          if value.nil? || array.size == 0
+            return hash
+          end
           value = value.encode(Encoding.default_external)
           if array.size == 1
             # puts array[0]
