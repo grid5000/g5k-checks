@@ -71,9 +71,10 @@ module G5kChecks
         config.output_dir = conf["output_dir"]
       end
 
-      RSpec::Core::Runner::run(rspec_opts)
-    end
+      res = RSpec::Core::Runner::run(rspec_opts)
 
+      exit res
+    end
   end
 end
 
