@@ -1,28 +1,29 @@
+# coding: utf-8
 require 'restclient'
 require 'json'
 
 describe "Standard Environment Version" do
 
   before(:all) do
-    site = %x(hostname).split('.')[1]
-    @json = JSON.parse(RestClient::Resource.new("https://api.grid5000.fr/stable/sites/#{site}/internal/kadeployapi/environments?last=true&user=deploy&name=jessie-x64-std", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get())
-    @curStd, @curPost = nil;
-    File.open("/etc/grid5000/release", "r") do |infile|
-      @curStd = infile.gets.strip
-      @curPost = infile.gets.strip
-    end
+    @g5k = RSpec.configuration.node.ohai_description["g5k"]
   end
 
   it "should have environment version equals to standard env in kadeploy api" do
-    lastV = @json[0]["version"]
-    lastN = @json[0]["name"]
+    lastV = @g5k["kadeploy"]["stdenv"]["version"] rescue ""
+    lastN = @g5k["kadeploy"]["stdenv"]["name"] rescue ""
     lastStd = "#{lastN}-#{lastV}"
-    expect(@curStd).to eql(lastStd), "Standard Environment Version is #{@curStd} instead of #{lastStd}"
+    stdNameVersion = @g5k["env"]["name"] rescue ""
+    Utils.test(stdNameVersion, lastStd, "Standard Environment Version", true) do |v_system, v_api, error_msg|
+      expect(v_system).to eql(v_api), error_msg
+    end
   end
 
   it "should have postinstall version equals to version in kadeploy api" do
-    lastPost = @json[0]["postinstalls"][0]["archive"]
-    expect(@curPost).to eql(lastPost), "Postinstalls Version is #{@curPost} instead of #{lastPost}"
+    curPost = @g5k["env"]["postinstalls"] rescue ""
+    lastPost = @g5k["kadeploy"]["stdenv"]["postinstalls"][0]["archive"] rescue ""
+    Utils.test(curPost, lastPost, "Environment post-installs version", true) do |v_system, v_api, error_msg|
+      expect(v_system).to eql(v_api), error_msg
+    end
   end
 
 end
