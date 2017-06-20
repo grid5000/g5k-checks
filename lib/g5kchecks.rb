@@ -22,24 +22,7 @@ module G5kChecks
     def run(conf)
       rspec_opts = []
 
-      if conf["enabletestlist"] and conf["enabletestlist"][0] != "all"
-        conf["enabletestlist"].each{|t|
-          rspec_opts << File.dirname(__FILE__) + "/g5kchecks/spec/#{t}/#{t}_spec.rb"
-        }
-      else
-        Dir.foreach(File.dirname(__FILE__) + '/g5kchecks/spec/') do |c|
-          next if c == '.' or c == '..'
-          rspec_opts << File.dirname(__FILE__) + "/g5kchecks/spec/#{c}/#{c}_spec.rb"
-        end
-      end
-
-      if conf["removetestlist"]
-        conf["removetestlist"].each{|t|
-          test = File.dirname(__FILE__) + "/g5kchecks/spec/#{t}/#{t}_spec.rb"
-          i = rspec_opts.find_index(test)
-          rspec_opts.delete_at(i.to_i) if i
-        }
-      end
+      rspec_opts << Dir.glob(File.dirname(__FILE__) + "/g5kchecks/spec/**/*_spec.rb")
 
       if conf["verbose"] 
         require 'g5kchecks/rspec/core/formatters/verbose_formatter'
@@ -80,6 +63,10 @@ module G5kChecks
         config.deprecation_stream = "/dev/null"
         config.add_setting :node
         config.node = Grid5000::Node.new(conf)
+        if conf["mode"] == "api"
+          config.add_setting :api_yaml
+          config.api_yaml = Hash.new
+        end
         config.add_setting :output_dir
         config.output_dir = conf["output_dir"]
       end

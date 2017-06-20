@@ -204,4 +204,48 @@ module Utils
     DmiDecode.get_total_memory
   end
 
+  def Utils.add_to_yaml(path, value)
+    if value.nil? || value.to_s.empty?
+      return
+    end
+    hash = RSpec.configuration.api_yaml
+    paths = path.split(".")
+    while paths.size > 0
+      p = paths.delete_at(0)
+      next if p.empty?
+      if paths.size > 0
+        hash[p] ||= {}
+        hash = hash[p]
+      else
+        hash[p] = string_to_object(value.to_s.encode(Encoding.default_external))
+      end
+    end
+  end
+
+  def Utils.test_disabled?(test_path)
+    removetestlist = RSpec.configuration.node.conf["removetestlist"]
+    return false if removetestlist.nil? || removetestlist.empty?
+    removetestlist.each{ |testRegexp|
+      regexp = Regexp.new(testRegexp)
+      if regexp =~ test_path
+        return true
+      end
+    }
+    return false
+  end
+
+  #Utility method to do rspec test, only if enabled
+  #Construct a hash with system values in api mode
+  #Set skip_api to false if the value
+  def Utils.test(v_system, v_api, path_api, skip_api = false)
+    if (test_disabled?(path_api))
+      puts "Test #{path_api} is disabled" if RSpec.configuration.node.conf["verbose"]
+    else
+      run_mode = RSpec.configuration.node.conf["mode"]
+      if (run_mode == "api" && !skip_api)
+        add_to_yaml(path_api, v_system)
+      end
+      yield(v_system, v_api, "#{path_api}: '#{(v_system || 'nil').to_s}' doesn't match '#{(v_api || 'nil').to_s}'")
+    end
+  end
 end
