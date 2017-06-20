@@ -26,6 +26,11 @@ describe 'Disk' do
     end
   end
 
+  if RSpec.configuration.node.ohai_description["g5k"]["kadeploy"]["user_deployed"] == true
+    puts "Skipping disk tests on user-deployed environment with reservable disks"
+    break
+  end
+
   ohai = RSpec.configuration.node.ohai_description["block_device"].select { |key, value| key =~ /[sh]d.*/ && value['model'] != 'vmDisk' }
 
   # If g5k-checks is called with "-m api" option, then api = nil
