@@ -27,7 +27,7 @@ module RSpec
         end
 
         def example_failed(failedExampleNotification)
-          print_error("#{failedExampleNotification.example.exception.to_s} (FAILED - #{next_failure_index})")
+          print_error("#{failedExampleNotification.example.full_description.strip}. #{failedExampleNotification.example.execution_result.exception.to_s} (FAILED - #{next_failure_index})")
         end
 
         def print_success(msg)
