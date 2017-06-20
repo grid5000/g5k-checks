@@ -1,3 +1,4 @@
+
 describe "Architecture" do
 
   before(:all) do
@@ -9,18 +10,20 @@ describe "Architecture" do
     plat_api = ""
     plat_api = @api['platform_type'] if @api
     plat_ohai = @system[:kernel][:machine]
-    expect(plat_ohai).to eq(plat_api), "#{plat_ohai}, #{plat_api}, architecture, platform_type"
+    Utils.test(plat_ohai, plat_api, "architecture.platform_type") do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
+    end
   end
 
   [:nb_procs, :nb_cores, :nb_threads].each { |key|
-    
     it "should have the correct value for #{key}" do
       key_ohai = @system[:cpu][key]
-      
       key_api = nil
       key_api = @api[key.to_s] if @api
-      
-      expect(key_ohai).to eq(key_api), "#{key_ohai}, #{key_api}, architecture, #{key}"
+      Utils.test(key_ohai, key_api, "architecture.#{key}") do |v_ohai, v_api, error_msg|
+        expect(v_ohai).to eql(v_api), error_msg
+      end
     end
   }
+ # end
 end

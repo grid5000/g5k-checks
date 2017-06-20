@@ -16,7 +16,7 @@ describe "TestDisk" do
   RSpec.configuration.node.ohai_description["block_device"].select { |key,value| key =~ /[sh]da/ and value["model"] != "vmDisk" }.each { |k,v|
 
     it "should give good results in read" do
-      stdout = Utils.shell_out("fio #{File.dirname(__FILE__) + "/../../data/read.fio"}").stdout
+      stdout = Utils.shell_out("fio #{File.dirname(__FILE__) + "/../../data/read.fio"}").stdout rescue ""
       stdout.each_line do |line|
         if line =~ /READ/
           maxt_read = Hash[line.split(',').collect!{|s| s.strip.split('=')}]['maxt'].scan(/\d+/)[0].to_i
@@ -24,13 +24,15 @@ describe "TestDisk" do
           maxt_read_api = @api[k]["timeread"].to_i if (@api and @api[k] and @api[k]["timeread"])
 	  err = (maxt_read-maxt_read_api).abs
 	  expected =  maxt_read_api/10
-          expect(err).to be < expected, "#{maxt_read}, #{maxt_read_api}, storage_devices, #{k}, timeread"
+          Utils.test(err, expected, "storage_devices.#{k}.timeread", true) do |v_system, v_api, error_msg|
+            expect(v_system).to be < v_api, error_msg
+          end
         end
       end
     end
   
     it "should give good results in write" do
-      stdout = Utils.shell_out("fio #{File.dirname(__FILE__) + "/../../data/write.fio"}").stdout
+      stdout = Utils.shell_out("fio #{File.dirname(__FILE__) + "/../../data/write.fio"}").stdout rescue ""
       stdout.each_line do |line|
         if line =~ /WRITE/
           maxt_write = Hash[line.split(',').collect!{|s| s.strip.split('=')}]['maxt'].scan(/\d+/)[0].to_i
@@ -38,7 +40,9 @@ describe "TestDisk" do
           maxt_write_api = @api[k]["timewrite"].to_i if (@api and @api[k] and @api[k]["timewrite"])
        	  err = (maxt_write-maxt_write_api).abs
 	  expected =  maxt_write_api/10
-     	  expect(err).to be < expected, "#{maxt_write}, #{maxt_write_api}, storage_devices, #{k}, timewrite"
+          Utils.test(err, expected, "storage_devices.#{k}.timewrite", true) do |v_system, v_api, error_msg|
+            expect(v_system).to be < v_api, error_msg
+          end
         end
       end
     end

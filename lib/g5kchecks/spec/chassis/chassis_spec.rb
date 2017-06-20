@@ -12,12 +12,12 @@ describe "Chassis" do
     number_api = @api['serial'].to_s if @api
     number_ohai = @system['serial_number'].to_s.strip unless @system['serial_number'].nil?
     # si ohai nous retourne empty alors on va chercher dans base_board
+    #TODO move this to ohai
     if number_ohai == "empty"
-      number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip
-      # si c'est toujours empty alors on n'effectue pas le test (la bonne valeur est peut-être dans l'API
-      expect(number_ohai).to eq(number_api), "#{number_ohai}, #{number_api}, chassis, serial" if number_ohai != "empty"
-    else
-      expect(number_ohai).to eq(number_api), "#{number_ohai}, #{number_api}, chassis, serial"
+      number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip rescue ""
+    end
+    Utils.test(number_ohai, number_api, "chassis.serial") do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
     end
   end
 
@@ -26,11 +26,12 @@ describe "Chassis" do
     manufacturer_ohai = nil
     manufacturer_api = @api['manufacturer'] if @api
     manufacturer_ohai = @system['manufacturer'].strip
+    #TODO move this to ohai
     if manufacturer_ohai == "empty"
       manufacturer_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['manufacturer'].strip
-      expect(manufacturer_ohai).to eq(manufacturer_api), "#{manufacturer_ohai}, #{manufacturer_api}, chassis, manufacturer" if manufacturer_ohai != "empty"
-    else
-      expect(manufacturer_ohai).to eq(manufacturer_api), "#{manufacturer_ohai}, #{manufacturer_api}, chassis, manufacturer"
+    end
+    Utils.test(manufacturer_ohai, manufacturer_api, "chassis.manufacturer")  do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
     end
   end
 
@@ -39,12 +40,12 @@ describe "Chassis" do
     name_ohai = nil
     name_api = @api['name'] if @api
     name_ohai = @system['product_name'].strip
+    #TODO move this to ohai
     if name_ohai == "empty"
       name_ohai = RSpec.configuration.node.ohai_description.dmi['base_board']['product_name'].strip
-      expect(name_ohai).to eq(name_api), "#{name_ohai}, #{name_api}, chassis, name" if name_ohai != "empty"
-    else
-      expect(name_ohai).to eq(name_api), "#{name_ohai}, #{name_api}, chassis, name"
+    end
+    Utils.test(name_ohai, name_api, "chassis.name") do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
     end
   end
-
 end

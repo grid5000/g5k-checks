@@ -11,8 +11,10 @@ describe "BMC" do
     ip_api = ""
     ip_ohai = ""
     ip_api = @api['ip'] if @api
-    ip_ohai = @ohai['ip'] if @ohai 
-    expect(ip_ohai).to eql(ip_api), "#{ip_ohai}, #{ip_api}, network_adapters, bmc, ip"
+    ip_ohai = @ohai['ip'] if @ohai
+    Utils.test(ip_ohai, ip_api, "network_adapters.bmc.ip")  do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
+    end
   end
 
   it "should have the correct Mac Address" do
@@ -20,7 +22,9 @@ describe "BMC" do
     mac_ohai = ""
     mac_api = @api['mac'] if @api
     mac_ohai = @ohai['mac'] if @ohai
-    expect(mac_ohai).to eql(mac_api), "#{mac_ohai}, #{mac_api}, network_adapters, bmc, mac"
+    Utils.test(mac_ohai, mac_api, "network_adapters.bmc.mac")  do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
+    end
   end
 
   it "should be a management card" do
@@ -28,7 +32,8 @@ describe "BMC" do
     mgt_ohai = nil
     mgt_api = @api['management'] if @api
     mgt_ohai = @ohai['management'] if @ohai
-    expect(mgt_ohai).to eql(mgt_api), "#{mgt_ohai}, #{mgt_api}, network_adapters, bmc, management"
+    Utils.test(mgt_ohai, mgt_api, "network_adapters.bmc.management")  do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
+    end
   end
 end
-
