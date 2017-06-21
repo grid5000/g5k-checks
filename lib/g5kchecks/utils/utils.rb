@@ -204,6 +204,16 @@ module Utils
     DmiDecode.get_total_memory
   end
 
+  def Utils.write_api_files()
+    #Writing node api description files at and of run
+    File.open(File.join("/tmp/", RSpec.configuration.node.hostname + ".yaml"), 'w' ) { |f|
+      f.puts RSpec.configuration.api_yaml.to_yaml
+    }
+    File.open(File.join("/tmp/",RSpec.configuration.node.hostname + ".json"), 'w' ) { |f|
+      f.puts RSpec.configuration.api_yaml.to_json
+    }
+  end
+
   def Utils.add_to_yaml(path, value)
     if value.nil? || value.to_s.empty?
       return

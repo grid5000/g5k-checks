@@ -38,11 +38,6 @@ module G5kChecks
           c.add_formatter(RSpec::Core::Formatters::OarFormatter)
           c.add_formatter(RSpec::Core::Formatters::SyslogFormatter)
         end
-      elsif conf["mode"] == "api"
-        require 'g5kchecks/rspec/core/formatters/api_formatter'
-        RSpec.configure do |c|
-          c.add_formatter(RSpec::Core::Formatters::APIFormatter)
-        end
       elsif conf["mode"] == "jenkins"
         require 'g5kchecks/rspec/core/formatters/jenkins_formatter'
         RSpec.configure do |c|
@@ -73,9 +68,12 @@ module G5kChecks
 
       res = RSpec::Core::Runner::run(rspec_opts)
 
+      if conf["mode"] == "api"
+        #Finally writes /tmp/hostnmame.{yaml,json} if in API mode
+        Utils.write_api_files
+      end
+
       exit res
     end
   end
 end
-
-
