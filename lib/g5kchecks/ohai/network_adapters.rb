@@ -81,7 +81,10 @@ Ohai.plugin(:NetworkAdapters) do
       iface[:driver] = ethtool_infos[:driver]
       iface[:version] = ethtool_infos[:version]
 
-      iface[:vendor] = Utils.get_pci_vendor("/sys/class/net/#{dev}/device/subsystem_vendor")
+      iface[:vendor] = Utils.get_pci_vendor("/sys/class/net/#{dev}/device/vendor")
+      if !iface[:vendor]
+        iface[:vendor] = Utils.get_pci_vendor("/sys/class/net/#{dev}/device/subsystem_vendor")
+      end
 
       ip = iface[:addresses].select{|key,value| value[:family] == 'inet'}.to_a
       iface[:ip] = ip[0][0] if ip.size > 0
