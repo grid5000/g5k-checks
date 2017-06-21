@@ -36,12 +36,9 @@ module Grid5000
         end
         @node_path = [
           conf["retrieve_url"],
-          # "sites", site_uid,
-          # "clusters", cluster_uid,
-          # "nodes", node_uid
-          "sites", "grenoble",
-          "clusters", "edel",
-          "nodes", "edel-34"
+          "sites", site_uid,
+          "clusters", cluster_uid,
+          "nodes", node_uid
         ].join("/")
         begin
           @api_description = JSON.parse RestClient::Resource.new(@node_path+@branch, :user => @conf["apiuser"], :password => @conf["apipasswd"], :headers => {
