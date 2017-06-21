@@ -1,5 +1,4 @@
 # coding: utf-8
-require 'restclient'
 require 'json'
 
 describe "Standard Environment Version" do
