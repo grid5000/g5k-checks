@@ -28,7 +28,7 @@ Ohai.plugin(:FileSystem) do
         root_device = $1
         root_part = $2
         layout = {}
-        stdout = Utils.shell_out("parted #{root_device} print").stdout
+        stdout = Utils.shell_out("parted #{root_device} print").stdout rescue ""
         stdout.each_line do |line|
 	  num, tmp_layout = Utils.parse_line_layout(line)
 	  next if tmp_layout == nil
