@@ -1,7 +1,7 @@
 # retrieve node configuration (with Ohai) and the corresponding API
 # characteristics.
 require 'socket'
-require 'restclient'
+require 'rest-client'
 require 'json'
 require 'yaml'
 require 'ohai'
@@ -36,9 +36,12 @@ module Grid5000
         end
         @node_path = [
           conf["retrieve_url"],
-          "sites", site_uid,
-          "clusters", cluster_uid,
-          "nodes", node_uid
+          # "sites", site_uid,
+          # "clusters", cluster_uid,
+          # "nodes", node_uid
+          "sites", "grenoble",
+          "clusters", "edel",
+          "nodes", "edel-34"
         ].join("/")
         begin
           @api_description = JSON.parse RestClient::Resource.new(@node_path+@branch, :user => @conf["apiuser"], :password => @conf["apipasswd"], :headers => {

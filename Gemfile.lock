@@ -3,7 +3,7 @@ PATH
   specs:
     g5k-checks (0.7.12)
       ohai (~> 8.21.0)
-      restclient (>= 0.0.0)
+      rest-client (>= 0.0.0)
       rspec (~> 3.5.0)
 
 GEM
@@ -11,22 +11,30 @@ GEM
   specs:
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
-    chef-config (12.20.3)
+    chef-config (12.21.1)
       addressable
       fuzzyurl
       mixlib-config (~> 2.0)
       mixlib-shellout (~> 2.0)
     diff-lcs (1.3)
+    domain_name (0.5.20170404)
+      unf (>= 0.0.5, < 1.0.0)
     ffi (1.9.18)
     ffi-yajl (2.3.0)
       libyajl2 (~> 1.2)
     fuzzyurl (0.9.0)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
     ipaddress (0.8.3)
     libyajl2 (1.2.0)
+    mime-types (3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2016.0521)
     mixlib-cli (1.7.0)
     mixlib-config (2.2.4)
     mixlib-log (1.7.1)
     mixlib-shellout (2.2.7)
+    netrc (0.11.0)
     ohai (8.21.0)
       chef-config (>= 12.5.0.alpha.1, < 13)
       ffi (~> 1.9)
@@ -39,12 +47,13 @@ GEM
       plist (~> 3.1)
       systemu (~> 2.6.4)
       wmi-lite (~> 1.0)
-    paint (1.0.1)
     plist (3.3.0)
     public_suffix (2.0.5)
     rake (10.5.0)
-    restclient (0.14.4)
-      paint (~> 1.0)
+    rest-client (2.0.2)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -59,6 +68,9 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     systemu (2.6.5)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.4)
     wmi-lite (1.0.0)
 
 PLATFORMS
@@ -68,3 +80,6 @@ DEPENDENCIES
   bundler
   g5k-checks!
   rake
+
+BUNDLED WITH
+   1.13.6

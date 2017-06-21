@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
 
   s.add_runtime_dependency("ohai", ["~> 8.21.0"])
-  s.add_runtime_dependency("restclient", [">= 0.0.0"])
+  s.add_runtime_dependency("rest-client", [">= 0.0.0"])
   s.add_runtime_dependency("rspec", ["~> 3.5.0"])
 
   s.add_development_dependency('rake')
