@@ -16,7 +16,8 @@ describe "TestDisk" do
   RSpec.configuration.node.ohai_description["block_device"].select { |key,value| key =~ /[sh]da/ and value["model"] != "vmDisk" }.each { |k,v|
 
     it "should give good results in read" do
-      stdout = Utils.shell_out("fio #{File.dirname(__FILE__) + "/../../data/read.fio"}").stdout rescue ""
+      test_file = File.expand_path("../../data/read.fio", File.dirname(__FILE__))
+      stdout = Utils.shell_out("fio #{test_file}").stdout rescue ""
       stdout.each_line do |line|
         if line =~ /READ/
           maxt_read = Hash[line.split(',').collect!{|s| s.strip.split('=')}]['maxt'].scan(/\d+/)[0].to_i
@@ -32,7 +33,8 @@ describe "TestDisk" do
     end
   
     it "should give good results in write" do
-      stdout = Utils.shell_out("fio #{File.dirname(__FILE__) + "/../../data/write.fio"}").stdout rescue ""
+      test_file = File.expand_path("../../data/write.fio", File.dirname(__FILE__))
+      stdout = Utils.shell_out("fio #{test_file}").stdout rescue ""
       stdout.each_line do |line|
         if line =~ /WRITE/
           maxt_write = Hash[line.split(',').collect!{|s| s.strip.split('=')}]['maxt'].scan(/\d+/)[0].to_i
@@ -46,7 +48,6 @@ describe "TestDisk" do
         end
       end
     end
-
   }
 
 end
