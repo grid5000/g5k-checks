@@ -42,7 +42,7 @@ describe "Chassis" do
     name_ohai = @system['product_name'].strip
     #TODO move this to ohai
     if name_ohai == "empty"
-      name_ohai = RSpec.configuration.node.ohai_description.dmi['base_board']['product_name'].strip
+      name_ohai = RSpec.configuration.node.ohai_description['dmi']['base_board']['product_name'].strip
     end
     Utils.test(name_ohai, name_api, "chassis.name") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
