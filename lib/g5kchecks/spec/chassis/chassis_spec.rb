@@ -16,6 +16,9 @@ describe "Chassis" do
     if number_ohai == "empty"
       number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip rescue ""
     end
+    if number_ohai == "empty"
+      number_ohai = nil
+    end
     Utils.test(number_ohai, number_api, "chassis.serial") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
