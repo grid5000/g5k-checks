@@ -54,6 +54,8 @@ Ohai.plugin(:NetworkInfiniband) do
 
       # The interface is enabled iff state is 'Active' and /sys/class/infiniband/mlx4_0 exists.
       iface[:enabled] = iface[:enabled] && File.exist?('/sys/class/infiniband/mlx4_0')
+      # Check ibX ip addressed only if interface is enabled
+      iface[:check_ip] = iface[:enabled]
 
       ip = iface[:addresses].select{|key,value| value[:family] == 'inet'}.to_a
       iface[:ip] = ip[0][0] if ip.size > 0
