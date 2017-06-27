@@ -52,7 +52,7 @@ Ohai.plugin(:NetworkAdapters) do
       end
       now = Time.now.to_i
       if ifaceStatus == "down"
-        timeout = 10
+        timeout = 15
       else
         #If interface was already up, reduce timeout
         timeout = 5
@@ -65,7 +65,7 @@ Ohai.plugin(:NetworkAdapters) do
         status = Utils.interface_operstate(dev)
         #Make probing quicker if interface stays down
         if status == "down"
-          timeout = timeout - 1
+          timeout = timeout - 0.5
         end
         #Get infos only if interesting or is last run
         if status != "down" || Time.now.to_i >= now + timeout
