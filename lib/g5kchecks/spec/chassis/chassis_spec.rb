@@ -13,8 +13,8 @@ describe "Chassis" do
     number_ohai = @system['serial_number'].to_s.strip unless @system['serial_number'].nil?
     # si ohai nous retourne empty alors on va chercher dans base_board
     #TODO move this to ohai
-    if number_ohai == "empty"
-      number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip rescue ""
+    if number_ohai.nil? || number_ohai == "empty"
+      number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip rescue nil
     end
     if number_ohai == "empty"
       number_ohai = nil
