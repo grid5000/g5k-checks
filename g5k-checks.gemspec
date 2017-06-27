@@ -11,11 +11,12 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/grid5000/g5k-checks"
   s.files = Dir["bin/**/*"] + Dir["conf/**/*"] + Dir["lib/**/*"] + Dir['bundle/**/*']
   s.executables = ["g5k-checks"]
-  s.license = "MIT"
   s.bindir = 'bin'
 
   s.add_runtime_dependency("ohai", ["~> 8.21.0"])
   s.add_runtime_dependency("rest-client", [">= 0.0.0"])
+  s.add_runtime_dependency("peach", ["~> 0.5.1"])
+  s.add_runtime_dependency("ffi-yajl", ["2.3.0"])
   s.add_runtime_dependency("rspec", ["~> 3.5.0"])
 
   s.add_development_dependency('rake')
