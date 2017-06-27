@@ -97,8 +97,8 @@ describe "Network" do
     end
 
     it "should have the correct version" do
-      ver_api = @api[dev]['version'] rescue ""
-      ver_ohai = iface[:version]
+      ver_api = @api[dev]['version'].to_s rescue ""
+      ver_ohai = iface[:version].to_s rescue nil
       Utils.test(ver_ohai, ver_api, "network_adapters.#{dev}.version") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
