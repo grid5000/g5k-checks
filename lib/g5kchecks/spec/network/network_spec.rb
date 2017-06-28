@@ -80,7 +80,7 @@ describe "Network" do
       end
     else
       it "should have the correct Mac Address" do
-        mac_api = @api[dev]['mac'] rescue ""
+        mac_api = @api[dev][:mac] rescue ""
         mac_ohai = iface[:mac].downcase
         Utils.test(mac_ohai, mac_api, "network_adapters.#{dev}.mac") do |v_ohai, v_api, error_msg|
           expect(v_ohai).to eql(v_api), error_msg
@@ -96,17 +96,25 @@ describe "Network" do
       end
     end
 
-    it "should have the correct version" do
-      ver_api = @api[dev]['version'].to_s rescue ""
-      ver_ohai = iface[:version].to_s rescue nil
-      Utils.test(ver_ohai, ver_api, "network_adapters.#{dev}.version") do |v_ohai, v_api, error_msg|
+    it "should have the correct firmware version" do
+      ver_api = @api[dev]['firmware_version'].to_s rescue ""
+      ver_ohai = iface[:firmware_version].to_s rescue nil
+      Utils.test(ver_ohai, ver_api, "network_adapters.#{dev}.firmware_version") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
 
+    it "should have the correct model" do
+      ven_api = @api[dev]['model'].downcase rescue ""
+      ven_ohai = iface[:model].downcase rescue ""
+      Utils.test(ven_ohai, ven_api, "network_adapters.#{dev}.model") do |v_ohai, v_api, error_msg|
+        expect(v_ohai).to eql(v_api), error_msg
+      end
+    end
+    
     it "should have the correct vendor" do
-      ven_api = @api[dev]['vendor'] rescue ""
-      ven_ohai = iface['vendor']
+      ven_api = @api[dev]['vendor'].downcase rescue ""
+      ven_ohai = iface['vendor'].downcase rescue ""
       Utils.test(ven_ohai, ven_api, "network_adapters.#{dev}.vendor") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end

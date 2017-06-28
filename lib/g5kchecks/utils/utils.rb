@@ -68,20 +68,32 @@ module Utils
       if line =~ /^\s*driver: /
         infos[:driver] = line.chomp.split(": ").last
       end
-      if line =~ /^\s*version: /
-        infos[:version] = line.chomp.split(": ").last
+      if line =~ /^\s*firmware-version: /
+        infos[:firmware_version] = line.chomp.split(": ").last
       end
     end
     infos
   end
 
-  #Get vendor from pci vendor id
-  def Utils.get_pci_vendor(vendor_id_path)
+  #Get vendor/device name from sysfs/lspci
+  def Utils.get_pci_infos(sys_dev_path)
+    vendor_id_path = File.join(sys_dev_path, "vendor").to_s
+    device_id_path = File.join(sys_dev_path, "device").to_s
     vendor_id = Utils.shell_out("cat #{vendor_id_path}").stdout.strip.chomp rescue ""
-    vendor_id = vendor_id.sub('0x', '')
-    vendor = Utils.shell_out("grep '^#{vendor_id}' /usr/share/misc/pci.ids").stdout.chomp rescue ""
-    vendor = vendor.sub(/^#{vendor_id}/, '').strip()
-    return vendor
+    device_id = Utils.shell_out("cat #{device_id_path}").stdout.strip.chomp rescue ""
+    pci_infos = {}
+    return pci_infos if (device_id.empty? || vendor_id.empty?)
+    stdout = Utils.shell_out("/usr/bin/lspci -vmm -d #{vendor_id}:#{device_id}").stdout rescue ""
+    stdout.each_line{ |line|
+      line = line.chomp
+      if line =~ /^Device/
+        pci_infos[:device] = line.gsub(/^Device:/i, "").strip rescue nil
+      end
+      if line =~ /^Vendor/
+        pci_infos[:vendor] = line.gsub(/Vendor:/i, "").sub("Corporation", "").strip rescue nil
+      end
+    }
+    return pci_infos
   end
 
   # vraiment pas beau mais en ruby 1.9.3 les messages
