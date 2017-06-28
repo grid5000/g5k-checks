@@ -89,10 +89,10 @@ describe 'Disk' do
       end
     end
 
-    it 'should have the correct revision' do
+    it 'should have the correct firmware revision' do
       version_api = get_api_value(api, ohai, k, 'rev')
       version_ohai = get_ohai_value(api, ohai, k, 'rev')
-      Utils.test(version_ohai, version_api, "storage_devices.#{k}.rev") do |v_ohai, v_api, error_msg|
+      Utils.test(version_ohai, version_api, "storage_devices.#{k}.firmware_version") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
