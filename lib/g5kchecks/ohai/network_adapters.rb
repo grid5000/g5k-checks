@@ -1,5 +1,6 @@
 
 require 'g5kchecks/utils/utils'
+require 'peach'
 
 Ohai.plugin(:NetworkAdapters) do
 
@@ -26,7 +27,8 @@ Ohai.plugin(:NetworkAdapters) do
     }
 
     # Process all but infiniband and loopback
-    interfaces.reject{ |d,i| %w{ ib br }.include?(i[:type]) || d == "lo" }.each do |dev, iface|
+    # Paralell loop
+    interfaces.reject{ |d,i| %w{ ib br }.include?(i[:type]) || d == "lo" }.peach do |dev, iface|
 
       # Likely not a management interface if it is accessible from the OS.
       iface[:management] = false
