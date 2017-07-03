@@ -98,7 +98,7 @@ describe "Network" do
 
     it "should have the correct firmware version" do
       ver_api = @api[dev]['firmware_version'].to_s rescue ""
-      ver_ohai = iface[:firmware_version].to_s rescue nil
+      ver_ohai = iface[:firmware_version].to_s rescue ""
       Utils.test(ver_ohai, ver_api, "network_adapters.#{dev}.firmware_version") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
