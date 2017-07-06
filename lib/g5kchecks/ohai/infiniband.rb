@@ -59,12 +59,31 @@ Ohai.plugin(:NetworkInfiniband) do
       # Check ibX ip addressed only if interface is enabled
       iface[:check_ip] = iface[:enabled]
 
-      ip = iface[:addresses].select{|key,value| value[:family] == 'inet'}.to_a
+      ip = iface[:addresses].select{ |key,value| value[:family] == 'inet'}.to_a
       iface[:ip] = ip[0][0] if ip.size > 0
-      ip6 = iface[:addresses].select{|key,value| value[:family] == 'inet6'}.to_a
+      ip6 = iface[:addresses].select{ |key,value| value[:family] == 'inet6'}.to_a
       iface[:ip6] = ip6[0][0] if ip6.size > 0
       iface[:mounted] = ( not iface[:ip].nil? )
       iface[:driver] = "mlx4_core"
+
+      #Partition key management
+      #Skip parent interface if there is a sub-interface
+      #example: ib0.8100 based on physdev ib0
+      if File.exist?("/sys/class/net/#{dev}/parent")
+        parent = Utils.shell_out("cat /sys/class/net/#{dev}/parent").stdout rescue nil
+        if !(parent.nil? || parent.empty?)
+          #just delete the parent interface to skip testing it
+          if dev.include?(parent)
+            network[:interfaces].delete(parent)
+          end
+          # pkey = dev.sub(parent, '').sub('.', '') rescue nil
+          # if !(pkey.nil? || pkey.empty?)
+          #   network[:interfaces][parent][:pkey] = pkey
+          #   #Skip checks of 
+          #   network[:interfaces][parent][:skip] = true
+          # end
+        end
+      end
     end
   end
 end
