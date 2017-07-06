@@ -25,7 +25,7 @@ describe "TestDisk" do
           maxt_read_api = @api[k]["timeread"].to_i if (@api and @api[k] and @api[k]["timeread"])
 	  err = (maxt_read-maxt_read_api).abs
 	  expected =  maxt_read_api/10
-          Utils.test(err, expected, "storage_devices.#{k}.timeread", true) do |v_system, v_api, error_msg|
+          Utils.test(err, expected, "storage_devices/#{k}/timeread", true) do |v_system, v_api, error_msg|
             expect(v_system).to be < v_api, error_msg
           end
         end
@@ -42,7 +42,7 @@ describe "TestDisk" do
           maxt_write_api = @api[k]["timewrite"].to_i if (@api and @api[k] and @api[k]["timewrite"])
        	  err = (maxt_write-maxt_write_api).abs
 	  expected =  maxt_write_api/10
-          Utils.test(err, expected, "storage_devices.#{k}.timewrite", true) do |v_system, v_api, error_msg|
+          Utils.test(err, expected, "storage_devices/#{k}/timewrite", true) do |v_system, v_api, error_msg|
             expect(v_system).to be < v_api, error_msg
           end
         end

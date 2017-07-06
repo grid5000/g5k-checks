@@ -19,7 +19,7 @@ describe "Chassis" do
     if number_ohai == "empty"
       number_ohai = nil
     end
-    Utils.test(number_ohai, number_api, "chassis.serial") do |v_ohai, v_api, error_msg|
+    Utils.test(number_ohai, number_api, "chassis/serial") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
@@ -33,7 +33,7 @@ describe "Chassis" do
     if manufacturer_ohai.nil? || manufacturer_ohai.empty? || manufacturer_ohai == "empty"
       manufacturer_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['manufacturer'].strip
     end
-    Utils.test(manufacturer_ohai, manufacturer_api, "chassis.manufacturer")  do |v_ohai, v_api, error_msg|
+    Utils.test(manufacturer_ohai, manufacturer_api, "chassis/manufacturer")  do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
@@ -47,7 +47,7 @@ describe "Chassis" do
     if name_ohai.nil? || name_ohai.empty? || name_ohai == "empty"
       name_ohai = RSpec.configuration.node.ohai_description['dmi']['base_board']['product_name'].strip
     end
-    Utils.test(name_ohai, name_api, "chassis.name") do |v_ohai, v_api, error_msg|
+    Utils.test(name_ohai, name_api, "chassis/name") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end

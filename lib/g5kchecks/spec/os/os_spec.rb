@@ -9,7 +9,7 @@ describe "OS" do
     name_api = ""
     name_api = @api['name'] if @api
     name_ohai = @system[:platform]
-    Utils.test(name_ohai, name_api, "operating_system.name") do |v_ohai, v_api, error_msg|
+    Utils.test(name_ohai, name_api, "operating_system/name") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
@@ -18,7 +18,7 @@ describe "OS" do
     kernel_api = ""
     kernel_api = @api['kernel'] if @api
     kernel_ohai = @system[:kernel][:release]
-    Utils.test(kernel_ohai, kernel_api, "operating_system.kernel") do |v_ohai, v_api, error_msg|
+    Utils.test(kernel_ohai, kernel_api, "operating_system/kernel") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
@@ -28,7 +28,7 @@ describe "OS" do
     release_api = @api['version'] if @api
     release_ohai = @system[:platform_version]
     release_api = release_api.to_s unless release_api.is_a? String # release_ohai is a string but is saved as a float on the yaml output of g5k-checks (?)
-    Utils.test(release_ohai, release_api, "operating_system.version") do |v_ohai, v_api, error_msg|
+    Utils.test(release_ohai, release_api, "operating_system/version") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
@@ -43,7 +43,7 @@ describe "OS" do
       key_api = nil
       key_api = @api[key.to_s] if @api
 
-      Utils.test(key_ohai, key_api, "operating_system.#{key}") do |v_ohai, v_api, error_msg|
+      Utils.test(key_ohai, key_api, "operating_system/#{key}") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end

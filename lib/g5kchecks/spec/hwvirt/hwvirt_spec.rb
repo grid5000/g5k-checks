@@ -22,7 +22,7 @@ describe "Virtual Hardware" do
     end
     kmod_api = ""
     kmod_api = @api['virtual'] if @api
-    Utils.test(kmod, kmod_api, "supported_job_types.virtual") do |v_ohai, v_api, error_msg|
+    Utils.test(kmod, kmod_api, "supported_job_types/virtual") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
 

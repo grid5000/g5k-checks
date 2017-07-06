@@ -12,7 +12,7 @@ describe "BMC" do
     ip_ohai = ""
     ip_api = @api['ip'] if @api
     ip_ohai = @ohai['ip'] if @ohai
-    Utils.test(ip_ohai, ip_api, "network_adapters.bmc.ip")  do |v_ohai, v_api, error_msg|
+    Utils.test(ip_ohai, ip_api, "network_adapters/bmc/ip") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
@@ -22,7 +22,7 @@ describe "BMC" do
     mac_ohai = ""
     mac_api = @api['mac'] if @api
     mac_ohai = @ohai['mac'] if @ohai
-    Utils.test(mac_ohai, mac_api, "network_adapters.bmc.mac")  do |v_ohai, v_api, error_msg|
+    Utils.test(mac_ohai, mac_api, "network_adapters/bmc/mac") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
@@ -32,7 +32,7 @@ describe "BMC" do
     mgt_ohai = nil
     mgt_api = @api['management'] if @api
     mgt_ohai = @ohai['management'] if @ohai
-    Utils.test(mgt_ohai, mgt_api, "network_adapters.bmc.management")  do |v_ohai, v_api, error_msg|
+    Utils.test(mgt_ohai, mgt_api, "network_adapters/bmc/management") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end

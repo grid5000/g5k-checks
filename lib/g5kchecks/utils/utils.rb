@@ -235,7 +235,7 @@ module Utils
       return
     end
     hash = RSpec.configuration.api_yaml
-    paths = path.split(".")
+    paths = path.split("/")
     while paths.size > 0
       p = paths.delete_at(0)
       next if p.empty?

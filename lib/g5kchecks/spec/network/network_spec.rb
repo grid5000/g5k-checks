@@ -26,10 +26,12 @@ describe "Network" do
     dev =~ /^en/ || %w{ ib eth myri }.include?(iface[:type])
   }.each do |dev,iface|
 
+    
+
     it "should have the correct predictable name" do
       name_api = @api[dev]['name'] rescue ""
       name_ohai = iface[:name]
-      Utils.test(name_ohai, name_api, "network_adapters.#{dev}.name") do |v_ohai, v_api, error_msg|
+      Utils.test(name_ohai, name_api, "network_adapters/#{dev}/name") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -37,7 +39,7 @@ describe "Network" do
     it "should be the correct interface type" do
       type_api = @api[dev]['interface'] rescue ""
       type_ohai = Utils.interface_type(iface[:type])
-      Utils.test(type_ohai, type_api, "network_adapters.#{dev}.interface") do |v_ohai, v_api, error_msg|
+      Utils.test(type_ohai, type_api, "network_adapters/#{dev}/interface") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -47,7 +49,7 @@ describe "Network" do
       it "should have the correct IPv4" do
         ip_api = @api[dev]['ip'] rescue ""
         ip_ohai = iface[:ip]
-        Utils.test(ip_ohai, ip_api, "network_adapters.#{dev}.ip") do |v_ohai, v_api, error_msg|
+        Utils.test(ip_ohai, ip_api, "network_adapters/#{dev}/ip") do |v_ohai, v_api, error_msg|
           expect(v_ohai).to eql(v_api), error_msg
         end
       end
@@ -65,7 +67,7 @@ describe "Network" do
     it "should have the correct Driver" do
       driver_api = @api[dev]['driver'] rescue ""
       driver_ohai = iface[:driver]
-      Utils.test(driver_ohai, driver_api, "network_adapters.#{dev}.driver") do |v_ohai, v_api, error_msg|
+      Utils.test(driver_ohai, driver_api, "network_adapters/#{dev}/driver") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -74,7 +76,7 @@ describe "Network" do
       it "should have the correct guid" do
         mac_api = @api[dev]['guid'] rescue ""
         mac_ohai = iface[:mac].downcase
-        Utils.test(mac_ohai, mac_api, "network_adapters.#{dev}.guid") do |v_ohai, v_api, error_msg|
+        Utils.test(mac_ohai, mac_api, "network_adapters/#{dev}/guid") do |v_ohai, v_api, error_msg|
           expect(v_ohai).to eql(v_api), error_msg
         end
       end
@@ -82,7 +84,7 @@ describe "Network" do
       it "should have the correct Mac Address" do
         mac_api = @api[dev][:mac] rescue ""
         mac_ohai = iface[:mac].downcase
-        Utils.test(mac_ohai, mac_api, "network_adapters.#{dev}.mac") do |v_ohai, v_api, error_msg|
+        Utils.test(mac_ohai, mac_api, "network_adapters/#{dev}/mac") do |v_ohai, v_api, error_msg|
           expect(v_ohai).to eql(v_api), error_msg
         end
       end
@@ -91,7 +93,7 @@ describe "Network" do
     it "should have the correct Rate" do
       rate_api = @api[dev]['rate'].to_i rescue ""
       rate_ohai = iface[:rate].to_i rescue 0
-      Utils.test(rate_ohai, rate_api, "network_adapters.#{dev}.rate") do |v_ohai, v_api, error_msg|
+      Utils.test(rate_ohai, rate_api, "network_adapters/#{dev}/rate") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -99,7 +101,7 @@ describe "Network" do
     it "should have the correct firmware version" do
       ver_api = @api[dev]['firmware_version'].to_s rescue ""
       ver_ohai = iface[:firmware_version].to_s rescue ""
-      Utils.test(ver_ohai, ver_api, "network_adapters.#{dev}.firmware_version") do |v_ohai, v_api, error_msg|
+      Utils.test(ver_ohai, ver_api, "network_adapters/#{dev}/firmware_version") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -107,7 +109,7 @@ describe "Network" do
     it "should have the correct model" do
       ven_api = @api[dev]['model'].downcase rescue ""
       ven_ohai = iface[:model].downcase rescue ""
-      Utils.test(ven_ohai, ven_api, "network_adapters.#{dev}.model") do |v_ohai, v_api, error_msg|
+      Utils.test(ven_ohai, ven_api, "network_adapters/#{dev}/model") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -115,7 +117,7 @@ describe "Network" do
     it "should have the correct vendor" do
       ven_api = @api[dev]['vendor'].downcase rescue ""
       ven_ohai = iface['vendor'].downcase rescue ""
-      Utils.test(ven_ohai, ven_api, "network_adapters.#{dev}.vendor") do |v_ohai, v_api, error_msg|
+      Utils.test(ven_ohai, ven_api, "network_adapters/#{dev}/vendor") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -123,7 +125,7 @@ describe "Network" do
     it "should have the correct mounted mode" do
       mounted_api = @api[dev]['mounted'] rescue false
       mounted_ohai = iface[:mounted]
-      Utils.test(mounted_ohai, mounted_api, "network_adapters.#{dev}.mounted") do |v_ohai, v_api, error_msg|
+      Utils.test(mounted_ohai, mounted_api, "network_adapters/#{dev}/mounted") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -131,7 +133,7 @@ describe "Network" do
     it "should not be a management card" do
       mgt_api = @api[dev]['management'] rescue nil
       mgt_ohai = iface[:management]
-      Utils.test(mgt_ohai, mgt_api, "network_adapters.#{dev}.management") do |v_ohai, v_api, error_msg|
+      Utils.test(mgt_ohai, mgt_api, "network_adapters/#{dev}/management") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end

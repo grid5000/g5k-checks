@@ -45,7 +45,7 @@ describe 'Disk' do
     # in the yaml and json output files
     it 'should have the correct name' do
       name_api = api[k] if api
-      Utils.test(k, name_api, "storage_devices.#{k}.device") do |v_ohai, v_api, error_msg|
+      Utils.test(k, name_api, "storage_devices/#{k}/device") do |v_ohai, v_api, error_msg|
         expect(name_api).to_not eql(nil), error_msg
       end
     end
@@ -53,7 +53,7 @@ describe 'Disk' do
     it 'should have the correct device id' do
       by_id_api = get_api_value(api, ohai, k, 'by_id')
       by_id_ohai = get_ohai_value(api, ohai, k, 'by_id')
-      Utils.test(by_id_ohai, by_id_api, "storage_devices.#{k}.by_id")  do |v_ohai, v_api, error_msg|
+      Utils.test(by_id_ohai, by_id_api, "storage_devices/#{k}/by_id")  do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -62,7 +62,7 @@ describe 'Disk' do
       #Check by_path only if we can get it from the system...
       by_path_api = get_api_value(api, ohai, k, 'by_path')
       by_path_ohai = get_ohai_value(api, ohai, k, 'by_path')
-      Utils.test(by_path_ohai, by_path_api, "storage_devices.#{k}.by_path")  do |v_ohai, v_api, error_msg|
+      Utils.test(by_path_ohai, by_path_api, "storage_devices/#{k}/by_path")  do |v_ohai, v_api, error_msg|
         if by_path_ohai.nil? || by_path_ohai.empty?
           expect(true).to be(true), "Device #{k} 'by_path' not available, not testing"
         else
@@ -76,7 +76,7 @@ describe 'Disk' do
       size_ohai = 0
       size = get_ohai_value(api, ohai, k, 'size')
       size_ohai = size.to_i * 512 if !size.nil?
-      Utils.test(size_ohai, size_api, "storage_devices.#{k}.size") do |v_ohai, v_api, error_msg|
+      Utils.test(size_ohai, size_api, "storage_devices/#{k}/size") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -84,7 +84,7 @@ describe 'Disk' do
     it 'should have the correct model' do
       model_api = get_api_value(api, ohai, k, 'model')
       model_ohai = get_ohai_value(api, ohai, k, 'model')
-      Utils.test(model_ohai, model_api, "storage_devices.#{k}.model") do |v_ohai, v_api, error_msg|
+      Utils.test(model_ohai, model_api, "storage_devices/#{k}/model") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -92,7 +92,7 @@ describe 'Disk' do
     it 'should have the correct firmware revision' do
       version_api = get_api_value(api, ohai, k, 'rev')
       version_ohai = get_ohai_value(api, ohai, k, 'rev')
-      Utils.test(version_ohai, version_api, "storage_devices.#{k}.firmware_version") do |v_ohai, v_api, error_msg|
+      Utils.test(version_ohai, version_api, "storage_devices/#{k}/firmware_version") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
@@ -102,7 +102,7 @@ describe 'Disk' do
       vendor_ohai = get_ohai_value(api, ohai, k, 'vendor')
       vendor_from_lshw = get_ohai_value(api, ohai, k, 'vendor_from_lshw')
       vendor_ohai = vendor_from_lshw  if !vendor_from_lshw.nil?
-      Utils.test(vendor_ohai, vendor_api, "storage_devices.#{k}.vendor") do |v_ohai, v_api, error_msg|
+      Utils.test(vendor_ohai, vendor_api, "storage_devices/#{k}/vendor") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
