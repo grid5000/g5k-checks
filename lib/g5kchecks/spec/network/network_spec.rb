@@ -26,7 +26,8 @@ describe "Network" do
     dev =~ /^en/ || %w{ ib eth myri }.include?(iface[:type])
   }.each do |dev,iface|
 
-    
+    #Skip interface if we decided to do so in ohai
+    next if iface[:skip] == true
 
     it "should have the correct predictable name" do
       name_api = @api[dev]['name'] rescue ""
@@ -54,15 +55,6 @@ describe "Network" do
         end
       end
     end
-
-    # Disabled ipv6 test: g5kchecks sets interfaces up, so IPv6 Stateless Address Autoconfiguration assigns
-    # addresses to interfaces, which are not garanteed to be stable and derived from mac address,
-    # which we already check.
-    # it "should have the correct IPv6" do
-    #   ip6_api = @api[dev]['ip6'] rescue ""
-    #   ip6_ohai = iface[:ip6]
-    #   expect(ip6_ohai).to eql(ip6_api), "#{ip6_ohai}, #{ip6_api}, network_adapters, #{dev}, ip6"
-    # end
 
     it "should have the correct Driver" do
       driver_api = @api[dev]['driver'] rescue ""

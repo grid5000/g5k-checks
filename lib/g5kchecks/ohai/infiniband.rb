@@ -69,19 +69,17 @@ Ohai.plugin(:NetworkInfiniband) do
       #Partition key management
       #Skip parent interface if there is a sub-interface
       #example: ib0.8100 based on physdev ib0
+      #This could also be applied to standard interfaces
       if File.exist?("/sys/class/net/#{dev}/parent")
-        parent = Utils.shell_out("cat /sys/class/net/#{dev}/parent").stdout rescue nil
+        parent = Utils.shell_out("cat /sys/class/net/#{dev}/parent").stdout.strip.chomp rescue nil
         if !(parent.nil? || parent.empty?)
-          #just delete the parent interface to skip testing it
+          #Skip parent interface as it is juste an 'empty shell' for this one
           if dev.include?(parent)
-            network[:interfaces].delete(parent)
+            iface[:parent] = parent
+            network[:interfaces][parent][:skip] = true
+            #Inherit missing properties from parent
+            iface = network[:interfaces][parent].merge(iface)
           end
-          # pkey = dev.sub(parent, '').sub('.', '') rescue nil
-          # if !(pkey.nil? || pkey.empty?)
-          #   network[:interfaces][parent][:pkey] = pkey
-          #   #Skip checks of 
-          #   network[:interfaces][parent][:skip] = true
-          # end
         end
       end
     end
