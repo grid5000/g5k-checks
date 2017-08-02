@@ -1,6 +1,6 @@
 
 describe "Network" do
-  
+
   def get_api_ifaces
     ifaces = {}
     net_adapters = RSpec.configuration.node.api_description["network_adapters"]
@@ -74,7 +74,7 @@ describe "Network" do
       end
     else
       it "should have the correct Mac Address" do
-        mac_api = @api[dev][:mac] rescue ""
+        mac_api = @api[dev]['mac'] rescue ""
         mac_ohai = iface[:mac].downcase
         Utils.test(mac_ohai, mac_api, "network_adapters/#{dev}/mac") do |v_ohai, v_api, error_msg|
           expect(v_ohai).to eql(v_api), error_msg
