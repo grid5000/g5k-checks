@@ -11,13 +11,13 @@ describe "Chassis" do
     number_ohai = nil
     number_api = @api['serial'].to_s if @api
     number_ohai = @system['serial_number'].to_s.strip unless @system['serial_number'].nil?
-    # si ohai nous retourne empty alors on va chercher dans base_board
+    # si ohai (dmidecode) nous retourne empty alors on va chercher dans base_board
     #TODO move this to ohai
     if number_ohai.nil? || number_ohai.empty? || number_ohai == "empty"
-      number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip rescue nil
+      number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip rescue ''
     end
     if number_ohai == "empty"
-      number_ohai = nil
+      number_ohai = ''
     end
     Utils.test(number_ohai, number_api, "chassis/serial") do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
