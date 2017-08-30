@@ -21,19 +21,16 @@ Ohai.plugin(:G5k) do
 
     api_base_url = conf["retrieve_url"]
 
+    std_env_name = conf["std_env_name"] || "jessie-x64-std"
+
     # KADEPLOY environments infos
     begin
-      json_envs = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get()) rescue nil
+      json_envs = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy&name=#{std_env_name}", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get()) rescue nil
     end
 
-    if json_envs && json_envs.size > 0
-      json_envs.sort_by{|env| - env["version"]}.each{ |env|
-        #Get last std env definition
-        if (env['name'].end_with?("-std"))
-          infos["kadeploy"]["stdenv"] = env
-          break
-        end
-      }
+    if json_envs && json_envs.size == 1
+      env = json_envs[0]
+      infos["kadeploy"]["stdenv"] = env
     end
 
     if File.exists?("/etc/grid5000/release")
