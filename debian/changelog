@@ -1,3 +1,105 @@
+g5kchecks (0.7.13) sid; urgency=low
+
+  * 4342c96 Added std_env_name configuration entry
+  * 9e75d2d Use std environment name from configuration instead of deducing it from kadeploy env list
+  * 4a5e92c Do not downcase values for model and vendor of network_adapters
+  * 2ed614a Fixed wrong property name for disk firmware version
+  * 1bba0c3 chassis serial_number defaults to empty string instead of nil
+  * 4e26b67 Fixed typo on network adapter mac value access
+  * 5baf044 Revert changes on ohai infiniband
+  * 9596483 Infiniband pkey interface inherits parent properties
+  * 68dcba5 Partition key management of infiniband interfaces
+  * 30fd1eb Changed api path separator to '/' in APi mode
+  * 7834e90 Handle empty network firmware version from ethtool
+  * f035254 Added vendor and model to infiniband interfaces
+  * c633bf9 Network interfaces: renamed version into firmware_version and added model property
+  * 1196ba5 Renamed disk rev into firmware_version
+  * 8f8f369 Paralell loop over network interfaces
+  * f27918b Fixed ruby gem ffi-yajl version to 2.3.0 and added ruby-peach
+  * 0e5224e Force net interfaces version check as string
+  * cdbfb8b Improved values checks in chassis spec
+  * 03f7a3f Fixed chassis serial spec
+  * 288376a Increased wait time for network interface rate probing
+  * dc91f6c Remove 'empty' value for chassis serial number in API mode
+  * 7ddf298 Fixed chassis product name spec
+  * dc35a10 Fixed infiniband interfaces IP check
+  * cbff9e6 Ignore skip disk checks in API mode
+  * aaaa831 Use vendor and subsystem_vendor for network_adapter vendor lookup
+  * e660cf1 Removed test code again
+  * 44d849d Disk time{read/write} specs disabled by default
+  * d1efcd0 Set reference-repository branch to g5kchecks_updates for tests
+  * 6d98e5b Added more missing dependencies to deb package
+  * 8efdee4 Completed deb package dependencies
+  * a98bd2e Fail-safe call for parted
+  * 2da8095 Corrected gem 'rest-client' instead of 'restclient'
+  * a2292e3 Removed useless restclient require
+  * ae24d9d Removed unnecessary api formatter
+  * d482e4a Reservable disks support: skipping disk checks on used deployed environment
+  * b9a5fe1 Adapted reference configuration file
+  * 10339ae Program return code according to test results
+  * 76b21cf No more special cases in oar formatter: every failed test result in checklog file creation
+  * 1d05d5a Show value details for failed tests in verbose mode
+  * 1de8145 Std env spec rework. Moved information gathering to g5k ohai plugin
+  * 75e9d2b Adapted all rspec tests to new Utils call
+  * b2bae0e Rework disabled tests functionality and api mode hash creation
+  * e1634f0 Disabled debian helper verbose mode
+  * e256636 network adapters: check IPv4 only for initially mounted interfaces
+  * dc632bd Fixed mistake for disk revision in ohai
+  * fb4d3bc removed pending rspec example for disk by_path optional check
+  * c13ccf6 Fix on optional disk by_path check
+  * 131a72e Handle empty values in api_formatter
+  * 04a6570 Fixed syntax and default network rate to 0
+  * 4e14e7d ohai network_adapters: exit early if found rate != 0
+  * e2cc3e7 disk revision update: take hdparm value only if it includes ohai one
+  * 947732b Fixed error in ohai network adapters
+  * bec56f8 Added debug mode
+  * b97c038 Temporarily disabled ipv4 test
+  * 5f6af09 Disabled ipv6 test
+  * 15a9cab More time for network rate to settle
+  * e58cc87 Optionally check disks by_path property
+  * 262992a Removed sdparm dependency
+  * c197a9e Revert "Use sdparm instead of hdparm to get disks revision"
+  * 28725c3 Removed unused oar-node file
+  * 6ca3234 Fixed bug for bmc cards
+  * 59c63da Use sdparm instead of hdparm to get disks revision
+  * 5bab10c removed debug logs
+  * 48e7a57 Declare sdparm as debian package dependency
+  * 4a935cd Various fixes in network adapters ohai plugin
+  * 0c0a3e2 Get vendor of infiniband interfaces
+  * fe79877 Added utility method for network interfaces vendor
+  * c41c967 Handle predictable interfaces names in network specs
+  * 9fba1d6 Fixed bmc specs
+  * a2743bc Utils: get firmware version from ethtool
+  * 3e8d751 Fixed infiniband ohai plugin
+  * 3327b63 ohai block_device: move lshw parsing out of loop
+  * a3b5cd2 Fixed ohai disk revision from hdparm
+  * 53d62e0 More explicit error message for failed bundle installation
+  * 1eb06e1 Move build files to build directory
+  * 0fa6a07 Debian build enhancement: include ruby dependencies
+  * c02fb19 Gemfile dependencies from gemspec
+  * 4c92a03 Added gemspec
+  * 62b8105 Better version management
+  * 014b6d2 Removed mistakenly added debug code
+  * bd530f1 Added Gemfile for project
+  * dda3995 Utils rework of fstab/layout functions
+  * 08e1d4b Added ethtool report for an interface to Utils
+  * 31880a1 Support predictable interfaces names in Utils interface type report
+  * 5e5d307 Better partitions spec error handling
+  * c9a5cfa Added comment about ntpdate/ntpd
+  * 5807225 Oar formatter cleanup
+  * f6f4f7a Rework network ohai and specs. Supports predictable interfaces names
+  * a81a089 Removed popen4 and replace it by a Utils function (based on mixlib::shell_out)
+  * 0f0c322 Colors in verbose formatter only on tty
+  * 0ce2166 Removed popen4 and replace it by a Utils function (based on mixlib::shell_out)
+  * a720685 Send RSpec deprecation warnings to /dev/null
+  * 7d4a9c2 Use new RSPec version way of declaring tests
+  * 7477839 Adapted RSpec custom formatters to new API
+  * b4af7ea Added cli options to support basic authentication outside of g5k network
+  * 8c79bb4 Changed ohai plugin declaration to new syntax (ohai >= v7)
+  * a6c67a0 Update file VERSION
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 30 Aug 2017 18:05:57 +0200
+
 g5kchecks (0.7.12) sid; urgency=medium
 
   * c1a323f Fix disk revision (types mismatch)
