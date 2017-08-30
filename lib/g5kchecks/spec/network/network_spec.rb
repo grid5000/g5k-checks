@@ -99,16 +99,16 @@ describe "Network" do
     end
 
     it "should have the correct model" do
-      ven_api = @api[dev]['model'].downcase rescue ""
-      ven_ohai = iface[:model].downcase rescue ""
+      ven_api = @api[dev]['model'] rescue ""
+      ven_ohai = iface[:model] rescue ""
       Utils.test(ven_ohai, ven_api, "network_adapters/#{dev}/model") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
-    
+
     it "should have the correct vendor" do
-      ven_api = @api[dev]['vendor'].downcase rescue ""
-      ven_ohai = iface['vendor'].downcase rescue ""
+      ven_api = @api[dev]['vendor'] rescue ""
+      ven_ohai = iface['vendor'] rescue ""
       Utils.test(ven_ohai, ven_api, "network_adapters/#{dev}/vendor") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
