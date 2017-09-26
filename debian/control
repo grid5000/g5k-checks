@@ -1,7 +1,7 @@
 Source: g5kchecks
 Section: ruby
 Priority: optional
-Maintainer: Émile Morel <emile.morel@inria.fr>
+Maintainer: Grid'5000 team <support-staff@lists.grid5000.fr>
 Build-Depends: debhelper (>= 8.0.0), gem2deb (>= 0.2.7~)
 Standards-Version: 3.9.3
 XS-Ruby-Versions: all
