@@ -271,7 +271,7 @@ module Utils
       if (run_mode == "api" && !skip_api)
         add_to_yaml(path_api, v_system)
       end
-      yield(v_system, v_api, "#{path_api}: '#{(v_system || 'nil').to_s}' doesn't match '#{(v_api || 'nil').to_s}'")
+      yield(v_system, v_api, "#{path_api}: '#{(v_system || 'nil').to_s}' doesn't match api:'#{(v_api || 'nil').to_s}'")
     end
   end
 end
