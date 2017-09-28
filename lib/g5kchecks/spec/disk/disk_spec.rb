@@ -8,7 +8,7 @@ describe 'Disk' do
 
   # If devices names are unstable : reorder devices taken from the ref-api
   def unstable_device_value(api, key, v)
-    api = api.values.select { |x| x['by_id'] == v['by_id'] }.first
+    api = api.values.select { |x| x['by_id'] == v['by_id'].chomp }.first
     return api[key]
   end
 
