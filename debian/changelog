@@ -1,3 +1,14 @@
+g5kchecks (0.7.14) sid; urgency=low
+
+  * ce966aa Added .chomp to ohai disk device value
+  * 580bdbc Enforce mixlib-shellout version for ruby 2.1 compatibility
+  * 4c51314 Improve error message (bug 8592)
+  * 3e53a70 Bump debian/compat to 9 to avoid a warning when building the package
+  * 9b1a7fa Fix maintainer address: point to support-staff@
+  * dd716ed Removed systemctl spec for dev version
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Thu, 28 Sep 2017 17:58:25 +0200
+
 g5kchecks (0.7.13) sid; urgency=low
 
   * 4342c96 Added std_env_name configuration entry
