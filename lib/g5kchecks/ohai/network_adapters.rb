@@ -26,7 +26,7 @@ Ohai.plugin(:NetworkAdapters) do
       end
     }
 
-    # Process all but infiniband and loopback
+    # Process all but bridge, infiniband and loopback
     # Paralell loop
     interfaces.reject{ |d,i| %w{ ib br }.include?(i[:type]) || d == "lo" }.peach do |dev, iface|
 
