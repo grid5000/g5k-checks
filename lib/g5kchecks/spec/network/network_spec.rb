@@ -83,7 +83,7 @@ describe "Network" do
     end
 
     it "should have the correct Rate" do
-      rate_api = @api[dev]['rate'].to_i rescue ""
+      rate_api = @api[dev]['rate'].to_i rescue 0
       rate_ohai = iface[:rate].to_i rescue 0
       Utils.test(rate_ohai, rate_api, "network_adapters/#{dev}/rate") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
