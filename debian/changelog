@@ -1,3 +1,12 @@
+g5kchecks (0.7.15) sid; urgency=low
+
+  * dde0fac Handle missing rate from api, defaults to 0
+  * bffe654 Removed spec about os.{version,name,kernel_version}
+  * 1b6d795 Better comment
+  * b6f7abf Fixed rake publish target
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 15 Nov 2017 16:43:48 +0100
+
 g5kchecks (0.7.14) sid; urgency=low
 
   * ce966aa Added .chomp to ohai disk device value

@@ -1,5 +1,5 @@
 module G5kChecks
 
-  VERSION = '0.7.14'
+  VERSION = '0.7.15'
 
 end # module
