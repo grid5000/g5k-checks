@@ -163,8 +163,8 @@ Ohai.plugin(:Cpu) do
       :cstate_enabled => 'ProcCStates',
     }
 
-    execute('/opt/dell/toolkit/bin/syscfg -o /tmp/syscfg-bios.conf') rescue []
-    syscfg = File.read('/tmp/syscfg-bios.conf') rescue ''
+    execute('/opt/dell/toolkit/bin/syscfg -o /tmp/syscfg-bios.txt') rescue []
+    syscfg = File.read('/tmp/syscfg-bios.txt') rescue ''
 
     cpu['configuration'] ||= {}
     syscfg_list.each {|k,v|
