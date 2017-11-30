@@ -1,3 +1,10 @@
+g5kchecks (0.7.16) sid; urgency=low
+
+  * 6d75e77 Ignore 'Limited' in vendors name
+  * efe3836 Fix arg name passed to dell's syscfg stretch version
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Thu, 30 Nov 2017 17:34:06 +0100
+
 g5kchecks (0.7.15) sid; urgency=low
 
   * dde0fac Handle missing rate from api, defaults to 0
