@@ -94,7 +94,7 @@ module Utils
         pci_infos[:device] = line.gsub(/^Device:/i, "").strip rescue nil
       end
       if line =~ /^Vendor/
-        pci_infos[:vendor] = line.gsub(/Vendor:/i, "").sub("Corporation", "").strip rescue nil
+        pci_infos[:vendor] = line.gsub(/Vendor:/i, "").sub("Limited", "").sub("Corporation", "").strip rescue nil
       end
     }
     return pci_infos
