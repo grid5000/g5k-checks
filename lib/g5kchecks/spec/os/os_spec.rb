@@ -5,10 +5,8 @@ describe "OS" do
     @system = RSpec.configuration.node.ohai_description
   end
 
-  [:ht_enabled, 
-   :pstate_driver, :pstate_governor, #, :pstate_max_cpu_speed, :pstate_min_cpu_speed, 
-   :turboboost_enabled, 
-   :cstate_driver, :cstate_governor, :cstate_max_id].each { |key|
+  [ :ht_enabled, :pstate_driver, :pstate_governor, :turboboost_enabled, 
+    :cstate_driver, :cstate_governor].each { |key|
 
     it "should have the correct value for #{key}" do
       key_ohai = @system[:cpu][key]

@@ -35,15 +35,16 @@ describe "Bios" do
     end
   end
 
-  [:ht_enabled, :turboboost_enabled, :cstate_c1e, :cstate_enabled].each { |key|
+  # [:cstate_c1e, :cstate_enabled].each { |key|
 
-    it "should have the correct value for #{key}" do
-      key_ohai = @system2[:cpu]['configuration'][key]
-      key_api = nil
-      key_api = @api['configuration'][key.to_s] if @api && @api.key?('configuration')
-      Utils.test(key_ohai, key_api, "bios/configuration/#{key}")  do |v_ohai, v_api, error_msg|
-        expect(v_ohai).to eql(v_api), error_msg
-      end
-    end
-  }
+  #   it "should have the correct value for #{key}" do
+  #     key_ohai = @system2[:cpu]['configuration'][key]
+  #     key_api = nil
+  #     key_api = @api['configuration'][key.to_s] if @api && @api.key?('configuration')
+  #     Utils.test(key_ohai, key_api, "bios/configuration/#{key}")  do |v_ohai, v_api, error_msg|
+  #       expect(v_ohai).to eql(v_api), error_msg
+  #     end
+  #   end
+  # }
+
 end
