@@ -1,3 +1,9 @@
+g5kchecks (0.7.17) sid; urgency=low
+
+  * d8b6701 Removed dependency to dell's syscfg and disabled cstate checks
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Mon, 11 Dec 2017 17:34:43 +0100
+
 g5kchecks (0.7.16) sid; urgency=low
 
   * 6d75e77 Ignore 'Limited' in vendors name
