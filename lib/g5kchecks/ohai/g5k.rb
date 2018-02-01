@@ -42,14 +42,16 @@ Ohai.plugin(:G5k) do
     end
     # end KADEPLOY environments infos
 
-    # KADEPLOY node deployment state
-    begin
-      node_deploy_state = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/nodes/#{hostname}", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get()) rescue nil
+    # If property 'soft'=='free', the standard environment is being
+    # deployed by an admin (outside a job) or phoenix.
+    # Else, it is a user that is deploying the standard environment
+    # For the different states, see:
+    # https://github.com/grid5000/g5k-api/lib/oar/resource.rb
+    json = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/status?disks=no&job_details=no&waiting=no&network_address=#{hostname}", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get()) rescue nil
+    if json
+      infos['status'] = {}
+      infos['status']['user_deployed'] = (json['nodes'][hostname]['soft'] != 'free')
     end
-    if node_deploy_state
-      infos["kadeploy"]["user_deployed"] = (node_deploy_state["user"] != "oar")
-    end
-    # end KADEPLOY deployement infos
 
     #Sets ohai data
     g5k infos

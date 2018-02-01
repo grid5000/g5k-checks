@@ -28,8 +28,7 @@ describe 'Disk' do
 
   #Skipping disk checks if we are in a user deployed env
   #Ignore if api mode to dump correct information
-  #TODO improve this once we have correct calls in OAR rest API
-  if RSpec.configuration.node.ohai_description["g5k"]["kadeploy"]["user_deployed"] == true && RSpec.configuration.node.conf["mode"] != "api"
+  if RSpec.configuration.node.ohai_description["g5k"]["status"]["user_deployed"] == true && RSpec.configuration.node.conf["mode"] != "api"
     puts "Skipping disk tests on user-deployed environment with reservable disks"
     break
   end
