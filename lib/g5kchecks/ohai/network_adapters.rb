@@ -37,7 +37,8 @@ Ohai.plugin(:NetworkAdapters) do
       iface[:mac] = iface[:addresses].select{|key,value| value[:family] == 'lladdr'}.keys[0]
 
       #Get the predictable name of the interface
-      iface[:name] = Utils.shell_out("/sbin/udevadm test 2>&1 /sys/class/net/#{dev} | grep ID_NET_NAME_PATH | cut -d'=' -f2").stdout.chomp() rescue nil
+      #iface[:name] = Utils.shell_out("/sbin/udevadm test 2>&1 /sys/class/net/#{dev} | grep ID_NET_NAME_PATH | cut -d'=' -f2").stdout.chomp() rescue nil
+      iface[:name] = Utils.interface_predictable_name(dev)
 
       #true if predictable names are in use
       iface[:use_predictable_name] = iface[:name] == dev

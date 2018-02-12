@@ -39,6 +39,15 @@ module Utils
     end
   end
 
+  #See https://lists.debian.org/debian-user/2017/02/msg00914.html for details
+  def Utils.interface_predictable_name(device)
+    ['ID_NET_NAME_ONBOARD', 'ID_NET_NAME_SLOT', 'ID_NET_NAME_PATH'].each { |udev_property|
+      name = Utils.shell_out("/sbin/udevadm test 2>&1 /sys/class/net/#{dev} | grep #{udev_property} | cut -d'=' -f2").stdout.chomp() rescue nil
+      break if name != nil
+    }
+    return name || device
+  end
+  
   #Get the given interface up/down status
   def Utils.interface_operstate(dev)
     ifaceState = "down"
