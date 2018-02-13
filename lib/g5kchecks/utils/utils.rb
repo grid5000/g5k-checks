@@ -44,7 +44,7 @@ module Utils
     iface_name = nil
     ['ID_NET_NAME_ONBOARD', 'ID_NET_NAME_SLOT', 'ID_NET_NAME_PATH'].each { |udev_property|
       iface_name = Utils.shell_out("/sbin/udevadm test 2>&1 /sys/class/net/#{dev} | grep #{udev_property} | cut -d'=' -f2").stdout.chomp() rescue nil
-      break if iface_name != nil || iface_name != ""
+      break if iface_name != nil && iface_name != ""
     }
     iface_name = dev if iface_name == nil || iface_name == ""
     return iface_name
