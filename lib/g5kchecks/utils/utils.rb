@@ -79,8 +79,8 @@ module Utils
       if line =~ /^\s*driver: /
         infos[:driver] = line.chomp.split(": ").last
       end
-      if line =~ /^\s*firmware-version: /
-        split_line = line.chomp.split(": ")
+      if line =~ /^\s*firmware-version:/
+        split_line = line.chomp.split(": ", 2)
         if split_line && split_line.length > 1
           #It is possible that ethtool doesn't return this value
           infos[:firmware_version] = split_line.last
