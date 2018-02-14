@@ -1,3 +1,17 @@
+g5kchecks (0.7.18) sid; urgency=low
+
+  * a85c08c Removed peach for interfaces iteration in ohai
+  * 49683b9 Fixed logic error in predictable name method
+  * 670c795 More resilient parsing of ethtool firmware version
+  * b1cca58 Handle empty value from udevadm
+  * 1ccad0a Fixed typo in new predictable interface name method
+  * 06afcde Better extraction of interface predictable name
+  * 19aeef4 Fix bug 8935: use status API to detect if the environment is deployed by a user
+  * d8ae9b5 Merge pull request #15 from sphilippot/master
+  * d4c36da [clk_spec.rb] change ntp.nancy by ntp #bug 8888
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 14 Feb 2018 18:27:27 +0100
+
 g5kchecks (0.7.17) sid; urgency=low
 
   * d8b6701 Removed dependency to dell's syscfg and disabled cstate checks
