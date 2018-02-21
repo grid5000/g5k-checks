@@ -26,15 +26,16 @@ describe 'Disk' do
     end
   end
 
-  #Skipping disk checks if we are in a user deployed env
-  #Ignore if api mode to dump correct information
-  if RSpec.configuration.node.ohai_description["g5k"]["status"]["user_deployed"] == true && RSpec.configuration.node.conf["mode"] != "api"
-    puts "Skipping disk tests on user-deployed environment with reservable disks"
-    break
+  # If we are in a user deployed env, only look for main disk +
+  # reserved disks.
+  # Ignore if api mode, to dump correct information
+  if RSpec.configuration.node.ohai_description['g5k']['user_deployed'] == true && RSpec.configuration.node.conf['mode'] != 'api'
+    disks = RSpec.configuration.node.ohai_description['g5k']['disks']
+    api = api.select { |key, value| disks.include?(key) }
   end
 
   ohai = RSpec.configuration.node.ohai_description["block_device"].select { |key, value| key =~ /[sh]d.*/ && value['model'] != 'vmDisk' }
-
+  
   # If g5k-checks is called with "-m api" option, then api = nil
   # and we use ohai as a reference. Else we use api as a reference.
   reference = api.nil? ? ohai : api

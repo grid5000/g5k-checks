@@ -1,4 +1,3 @@
-
 require 'socket'
 require 'g5kchecks/utils/utils'
 
@@ -42,17 +41,31 @@ Ohai.plugin(:G5k) do
     end
     # end KADEPLOY environments infos
 
-    # If property 'soft'=='free', the standard environment is being
-    # deployed by an admin (outside a job) or phoenix.
-    # Else, it is a user that is deploying the standard environment
-    # For the different states, see:
-    # https://github.com/grid5000/g5k-api/lib/oar/resource.rb
-    json = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/status?disks=no&job_details=no&waiting=no&network_address=#{hostname}", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get()) rescue nil
-    if json
-      infos['status'] = {}
-      infos['status']['user_deployed'] = (json['nodes'][hostname]['soft'] != 'free')
+    # infos['user_deployed'] is true if the environment is deployed
+    # inside a job (in particular, this excludes phoenix), and the job
+    # is of type 'deploy'
+    json_job = nil
+    json_status = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/status?disks=no&waiting=no&network_address=#{hostname}", :user => RSpec.configuration.node.conf['apiuser'], :password => RSpec.configuration.node.conf['apipasswd']).get()) rescue nil
+
+    # If the environment is deployed inside a job
+    if !(json_status.nil?) && (json_status['nodes'][hostname]['soft'] != 'free')
+      job_id = json_status['nodes'][hostname]['reservations'].select{ |e| e['state'] == 'running' }.first['uid']
+      json_job = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/jobs/#{job_id}", :user => RSpec.configuration.node.conf['apiuser'], :password => RSpec.configuration.node.conf['apipasswd']).get()) rescue nil
     end
 
+    if json_job.nil?
+      infos['user_deployed'] = false
+    else
+      # Test if the job is of type 'deploy'
+      infos['user_deployed'] = json_job['types'].include?('deploy')
+      if json_job['resources_by_type']['disks'].nil?
+        infos['disks'] = ['sda']
+      else
+        # sda + reserved_disks
+        infos['disks'] = ['sda'] + json_job['resources_by_type']['disks'].map{ |e| e.split('.').first }
+      end
+    end
+    
     #Sets ohai data
     g5k infos
   end
