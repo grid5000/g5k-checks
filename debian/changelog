@@ -1,3 +1,10 @@
+g5kchecks (0.8.0) sid; urgency=low
+
+  * 305b386 Updated default std environnement
+  * 97cc1c8 For user deployed envs, only check sda + reserved disks
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Tue, 17 Apr 2018 15:32:02 +0200
+
 g5kchecks (0.7.18) sid; urgency=low
 
   * a85c08c Removed peach for interfaces iteration in ohai
