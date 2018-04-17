@@ -20,7 +20,7 @@ Ohai.plugin(:G5k) do
 
     api_base_url = conf["retrieve_url"]
 
-    std_env_name = conf["std_env_name"] || "jessie-x64-std"
+    std_env_name = conf["std_env_name"] || "debian9-x64-std"
 
     # KADEPLOY environments infos
     begin
