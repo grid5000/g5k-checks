@@ -1,3 +1,9 @@
+g5kchecks (0.8.1) sid; urgency=low
+
+  * edcec39 Handle empty ohai data for g5k disks
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 18 Apr 2018 15:25:06 +0200
+
 g5kchecks (0.8.0) sid; urgency=low
 
   * 305b386 Updated default std environnement
