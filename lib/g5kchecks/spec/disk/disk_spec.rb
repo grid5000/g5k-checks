@@ -29,8 +29,9 @@ describe 'Disk' do
   # If we are in a user deployed env, only look for main disk +
   # reserved disks.
   # Ignore if api mode, to dump correct information
-  if RSpec.configuration.node.ohai_description['g5k']['user_deployed'] == true && RSpec.configuration.node.conf['mode'] != 'api'
-    disks = RSpec.configuration.node.ohai_description['g5k']['disks']
+  g5k_ohai = RSpec.configuration.node.ohai_description['g5k']
+  if g5k_ohai && g5k_ohai['user_deployed'] == true && RSpec.configuration.node.conf['mode'] != 'api'
+    disks = g5k_ohai['disks']
     api = api.select { |key, value| disks.include?(key) }
   end
 
