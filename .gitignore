@@ -4,3 +4,7 @@ debian/g5kchecks/*
 debian/files
 build/
 bundle/
+debian/.debhelper
+.bundle/
+Gemfile.lock
+*~
