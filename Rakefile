@@ -119,7 +119,7 @@ namespace :package do
    puts "--> Publish on web.grid5000.fr".green
    pkg = "#{NAME}_#{VERSION}_amd64.deb"
    sh "scp ./build/#{pkg} #{WEB_HOST}:"
-   sh "ssh web.adm \"sudo su -c 'mv ~g5kadmin/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/ ; ln -s -f /var/www/www.grid5000.fr/htdocs/packages/debian/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/g5kchecks_all.deb'\""
+   sh "ssh #{WEB_HOST} \"sudo su -c 'mv ~g5kadmin/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/ ; ln -s -f /var/www/www.grid5000.fr/htdocs/packages/debian/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/g5kchecks_all.deb'\""
   end
 
   #Publish debian package to apt and web.grid5000.fr
@@ -137,6 +137,6 @@ namespace :package do
    puts "--> Publish on web.grid5000.fr".green
    pkg = "#{NAME}_#{VERSION}_amd64.deb"
    sh "scp ./build/#{pkg} #{WEB_HOST}:"
-   sh "ssh web.adm \"sudo su -c 'mv ~g5kadmin/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/ ; ln -s -f /var/www/www.grid5000.fr/htdocs/packages/debian/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/g5kchecks_all.deb'\""
+   sh "ssh #{WEB_HOST} \"sudo su -c 'mv ~g5kadmin/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/ ; ln -s -f /var/www/www.grid5000.fr/htdocs/packages/debian/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/g5kchecks_all.deb'\""
   end
 end
