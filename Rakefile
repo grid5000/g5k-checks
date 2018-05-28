@@ -16,8 +16,8 @@ NAME = "g5kchecks"
 USER_NAME = %x{git config --get user.name}.chomp
 USER_EMAIL = %x{git config --get user.email}.chomp
 
-APT_HOST = ENV['HOST'] || 'apt.g5kadmin'
-WEB_HOST = ENV['WEB_HOST'] || 'web.g5kadmin'
+APT_HOST = ENV['HOST'] || 'apt.adm'
+WEB_HOST = ENV['WEB_HOST'] || 'web.adm'
 
 class String
   def yellow
@@ -92,14 +92,39 @@ namespace :package do
   desc "Build the binary package (#{NAME} v#{VERSION})"
   task :build do
     puts "--> Build package".green
-    sh "debuild"
+    sh "debuild -us -uc"
     sh "mkdir -p ./build/"
     sh "mv ../#{NAME}_#{VERSION}* ./build/"
   end
 
-  #Publish debian package to apt and web.grid5000.fr
+  desc "Build the binary package for stretch (#{NAME} v#{VERSION})"
+  task :build_stretch do
+    puts "--> build package".green
+    sh "debuild -us -uc"
+    sh "mkdir -p ./build/"
+    sh "mv ../#{name}_#{version}_stretch* ./build/"
+  end
+
+  #publish debian package to apt and web.grid5000.fr
   desc "Publish #{"#{NAME}-#{VERSION}".green} in APT and web repositories"
   task :publish do
+   puts "--> Upload to #{APT_HOST}".green
+   pkg = "#{NAME}_#{VERSION}_amd64.deb #{NAME}_#{VERSION}.dsc"
+   pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz #{NAME}_#{VERSION}_amd64.build"
+   sh "cd ./build/ ; scp #{pkg} #{APT_HOST}:/tmp"
+   puts "--> Move packages to incoming directory".green
+   sh "ssh #{APT_HOST} 'cd /tmp; sudo mv #{pkg} /var/www/debian/incoming/'"
+   puts "--> Run debarchiver (sid main)".green
+   sh "ssh #{APT_HOST} 'sudo /usr/bin/debarchiver --scanall --configfile /etc/debarchiver.conf --index -a'"
+   puts "--> Publish on web.grid5000.fr".green
+   pkg = "#{NAME}_#{VERSION}_amd64.deb"
+   sh "scp ./build/#{pkg} #{WEB_HOST}:"
+   sh "ssh web.adm \"sudo su -c 'mv ~g5kadmin/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/ ; ln -s -f /var/www/www.grid5000.fr/htdocs/packages/debian/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/g5kchecks_all.deb'\""
+  end
+
+  #Publish debian package to apt and web.grid5000.fr
+  desc "Publish stretch package #{"#{NAME}-#{VERSION}".green} in APT and web repositories"
+  task :publish_stretch do
    puts "--> Upload to #{APT_HOST}".green
    pkg = "#{NAME}_#{VERSION}_amd64.deb #{NAME}_#{VERSION}.dsc"
    pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz #{NAME}_#{VERSION}_amd64.build"
