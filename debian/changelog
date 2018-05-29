@@ -1,3 +1,16 @@
+g5kchecks (0.8.2) sid; urgency=low
+
+  * af3031f Added Vagrant file for stretch packaging
+  * d48af1d Fix use of WEB_HOST
+  * dfb3559 Delte old version file
+  * 61bb5e6 Added stretch build and publish tasks in Rakefile
+  * ef2b2dc Checking oar hard status == Alive for user deployed reservation ohai data
+  * 1d16037 Checking oar hard status == busy for user deployed reservation ohai data
+  * ebef863 Fix gitignore files + rm Gemfile.lock and g5kchecks.subtvars
+  * 2844da5 Fix CPU version for skylake (Gold XXXX), and rework a bit for others.
+
+ -- Saint-Marcel Frederic <frederic.saint-marcel@inria.fr>  Tue, 29 May 2018 10:30:14 +0200
+
 g5kchecks (0.8.1) sid; urgency=low
 
   * edcec39 Handle empty ohai data for g5k disks
