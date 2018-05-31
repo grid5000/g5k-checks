@@ -7,6 +7,15 @@ Ohai.plugin(:NetworkInfiniband) do
   depends "network"
   depends "hostname"
 
+  def get_mac_address(guid)
+    mac = File.read(File.join('/sys/class/net', dev, 'address'))
+    if guid == ""
+      return mac
+    else
+      return guid + mac.chomp.split(':')[5..20].join(':')
+    end
+  end
+
   collect_data do
 
     # Process ib interfaces
@@ -20,13 +29,13 @@ Ohai.plugin(:NetworkInfiniband) do
       iface[:model] = pci_infos[:device]
 
       # Get MAC address
-      if File.exist?('/sys/class/infiniband/mthca0/ports')
-        guid_prefix = "20:00:55:04:01:"
+      if File.exist?('/sys/class/infiniband/hfi1_0/ports')
+        iface[:mac] = get_mac_address("")
+      elsif File.exist?('/sys/class/infiniband/mthca0/ports')
+        iface[:mac] = get_mac_address("20:00:55:04:01:")
       elsif File.exist?('/sys/class/infiniband/mlx4_0/ports')
-        guid_prefix = "20:00:55:00:41:"
-        #FIXME: else ???
+        iface[:mac] = get_mac_address("20:00:55:00:41:")
       end
-      iface[:mac] = guid_prefix + File.read(File.join('/sys/class/net', dev, 'address')).chomp.split(':')[5..20].join(':')
 
       ca = ""
       stdout = Utils.shell_out("ibstat").stdout
@@ -37,7 +46,12 @@ Ohai.plugin(:NetworkInfiniband) do
           ca = ca.gsub("'","")
         end
         if line =~ /^[[:blank:]]*CA type/
-          iface[:version] = line.chomp.split(": ").last
+          iface[:version] = line.chomp.split(": ")[1]
+          # empty CA type with Intel Omnipath card
+          if iface[:version].nil? and File.exist?('/sys/class/infiniband/hfi1_0/ports')
+            stdout = Utils.shell_out("hfi1_control -i").stdout
+            iface[:version] = stdout.match('.*BoardId: (.*)')[1]
+          end
         end
       end
 
@@ -54,8 +68,11 @@ Ohai.plugin(:NetworkInfiniband) do
         end
       end
 
-      # The interface is enabled iff state is 'Active' and /sys/class/infiniband/mlx4_0 exists.
-      iface[:enabled] = iface[:enabled] && File.exist?('/sys/class/infiniband/mlx4_0')
+      # The interface is enabled if state is 'Active' and
+      # /sys/class/infiniband/<mlx4_0|hfi1_0> exists.
+      iface[:enabled] = iface[:enabled] && (
+        File.exist?('/sys/class/infiniband/mlx4_0') ||
+        File.exist?('/sys/class/infiniband/hfi1_0')
       # Check ibX ip addressed only if interface is enabled
       iface[:check_ip] = iface[:enabled]
 
@@ -64,7 +81,13 @@ Ohai.plugin(:NetworkInfiniband) do
       ip6 = iface[:addresses].select{ |key,value| value[:family] == 'inet6'}.to_a
       iface[:ip6] = ip6[0][0] if ip6.size > 0
       iface[:mounted] = ( not iface[:ip].nil? )
-      iface[:driver] = "mlx4_core"
+
+      if File.exist?('/sys/class/infiniband/hfi1_0/ports')
+        iface[:driver] = "hfi1"
+      elsif File.exist?('/sys/class/infiniband/mlx4_0/ports')
+        iface[:driver] = "mlx4_core"
+      end
+
 
       #Partition key management
       #Skip parent interface if there is a sub-interface
