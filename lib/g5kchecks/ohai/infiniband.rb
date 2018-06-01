@@ -72,7 +72,7 @@ Ohai.plugin(:NetworkInfiniband) do
       # /sys/class/infiniband/<mlx4_0|hfi1_0> exists.
       iface[:enabled] = iface[:enabled] && (
         File.exist?('/sys/class/infiniband/mlx4_0') ||
-        File.exist?('/sys/class/infiniband/hfi1_0')
+        File.exist?('/sys/class/infiniband/hfi1_0'))
       # Check ibX ip addressed only if interface is enabled
       iface[:check_ip] = iface[:enabled]
 
