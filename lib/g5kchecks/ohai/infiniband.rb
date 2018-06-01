@@ -7,10 +7,10 @@ Ohai.plugin(:NetworkInfiniband) do
   depends "network"
   depends "hostname"
 
-  def get_mac_address(guid)
+  def get_mac_address(guid, dev)
     mac = File.read(File.join('/sys/class/net', dev, 'address'))
     if guid == ""
-      return mac
+      return mac.chomp
     else
       return guid + mac.chomp.split(':')[5..20].join(':')
     end
@@ -30,11 +30,11 @@ Ohai.plugin(:NetworkInfiniband) do
 
       # Get MAC address
       if File.exist?('/sys/class/infiniband/hfi1_0/ports')
-        iface[:mac] = get_mac_address("")
+        iface[:mac] = get_mac_address("", "#{dev}")
       elsif File.exist?('/sys/class/infiniband/mthca0/ports')
-        iface[:mac] = get_mac_address("20:00:55:04:01:")
+        iface[:mac] = get_mac_address("20:00:55:04:01:", "#{dev}")
       elsif File.exist?('/sys/class/infiniband/mlx4_0/ports')
-        iface[:mac] = get_mac_address("20:00:55:00:41:")
+        iface[:mac] = get_mac_address("20:00:55:00:41:", "#{dev}")
       end
 
       ca = ""
