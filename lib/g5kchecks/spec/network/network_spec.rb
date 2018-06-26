@@ -39,7 +39,7 @@ describe "Network" do
 
     it "should be the correct interface type" do
       type_api = @api[dev]['interface'] rescue ""
-      type_ohai = Utils.interface_type(iface[:type])
+      type_ohai = Utils.interface_type(iface)
       Utils.test(type_ohai, type_api, "network_adapters/#{dev}/interface") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
       end
@@ -64,19 +64,20 @@ describe "Network" do
       end
     end
 
+    it "should have the correct Mac Address" do
+      mac_api = @api[dev]['mac'] rescue ""
+      mac_ohai = iface[:mac].downcase
+      Utils.test(mac_ohai, mac_api, "network_adapters/#{dev}/mac") do |v_ohai, v_api, error_msg|
+        expect(v_ohai).to eql(v_api), error_msg
+      end
+    end
+
+    #Omni-Path/Infiniband specific
     if dev =~ /ib/
       it "should have the correct guid" do
         mac_api = @api[dev]['guid'] rescue ""
-        mac_ohai = iface[:mac].downcase
+        mac_ohai = iface[:guid].downcase rescue nil
         Utils.test(mac_ohai, mac_api, "network_adapters/#{dev}/guid") do |v_ohai, v_api, error_msg|
-          expect(v_ohai).to eql(v_api), error_msg
-        end
-      end
-    else
-      it "should have the correct Mac Address" do
-        mac_api = @api[dev]['mac'] rescue ""
-        mac_ohai = iface[:mac].downcase
-        Utils.test(mac_ohai, mac_api, "network_adapters/#{dev}/mac") do |v_ohai, v_api, error_msg|
           expect(v_ohai).to eql(v_api), error_msg
         end
       end

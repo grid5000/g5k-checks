@@ -29,12 +29,13 @@ module Utils
     Hash.new {|ht,k| ht[k] = autovivifying_hash}
   end
 
-  def Utils.interface_type(type)
+  def Utils.interface_type(iface)
     #Ref API: interface
-    case type
+    case iface[:type]
     when /^en/,"eth" then return 'Ethernet'
     when "br"        then return 'Bridge'
-    when "ib"        then return 'InfiniBand'
+    #ib can be Infiniband or OPA, return the good value defined in ohai plugin
+    when "ib"        then return iface[:interface]
     when "myri"      then return 'Myrinet'
     end
   end
