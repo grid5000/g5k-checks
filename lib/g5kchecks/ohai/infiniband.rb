@@ -30,6 +30,9 @@ Ohai.plugin(:NetworkInfiniband) do
       iface[:vendor] = pci_infos[:vendor]
       iface[:model] = pci_infos[:device]
 
+      # Get MAC address
+      iface[:mac] = iface[:addresses].select{|key,value| value[:family] == 'lladdr'}.keys[0]
+
       if File.exist?('/sys/class/infiniband/hfi1_0/ports')
         iface[:interface] = "Omni-Path"
         iface[:driver] = "hfi1"
@@ -54,8 +57,8 @@ Ohai.plugin(:NetworkInfiniband) do
         num = "#{(iface[:number].to_i)+1}"
         stdout = Utils.shell_out("ibstat #{ca.chomp!} #{num}").stdout
         stdout.each_line do |line|
-          if line =~ /^[[:blank:]]*Port GUID/
-            iface[:guid] = line.chomp.split(": ")[1]
+          if line =~ /^Port GUID/
+            iface[:guid] = line.chomp.split(": ").last
           end
           if line =~ /^Rate/
             iface[:rate] = line.chomp.split(": ").last.to_i * 1000000000
