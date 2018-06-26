@@ -55,15 +55,15 @@ Ohai.plugin(:NetworkInfiniband) do
 
       if !ca.empty?
         num = "#{(iface[:number].to_i)+1}"
-        stdout = Utils.shell_out("ibstat #{ca.chomp!} #{num}").stdout
+        stdout = Utils.shell_out("ibstat #{ca.chomp} #{num}").stdout
         stdout.each_line do |line|
-          if line =~ /^Port GUID/
+          if line =~ /Port[[:blank:]]GUID/
             iface[:guid] = line.chomp.split(": ").last
           end
-          if line =~ /^Rate/
+          if line =~ /Rate/
             iface[:rate] = line.chomp.split(": ").last.to_i * 1000000000
           end
-          if line =~ /^State/
+          if line =~ /State/
             iface[:enabled] = line.chomp.split(": ").last.eql?('Active') #or line.chomp.split(": ").last.eql?('Initializing')) See #7250 and #7244
           end
         end
