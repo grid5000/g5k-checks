@@ -102,7 +102,7 @@ namespace :package do
     puts "--> build package".green
     sh "debuild -us -uc"
     sh "mkdir -p ./build/"
-    sh "mv ../#{name}_#{version}_stretch* ./build/"
+    sh "mv ../#{NAME}_#{VERSION}_stretch* ./build/"
   end
 
   #publish debian package to apt and web.grid5000.fr
