@@ -37,10 +37,10 @@ Ohai.plugin(:NetworkInfiniband) do
         iface[:interface] = "Omni-Path"
         iface[:driver] = "hfi1"
       elsif File.exist?('/sys/class/infiniband/mthca0/ports')
-        iface[:interface] = "Infiniband"
+        iface[:interface] = "InfiniBand"
         iface[:driver] = "mthca" #Might never be used
       elsif File.exist?('/sys/class/infiniband/mlx4_0/ports')
-        iface[:interface] = "Infiniband"
+        iface[:interface] = "InfiniBand"
         iface[:driver] = "mlx4_core"
       end
 
