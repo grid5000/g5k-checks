@@ -1,3 +1,17 @@
+g5kchecks (0.8.3) sid; urgency=low
+
+  * 65bb9a6 Merge branch 'omnipath' Omnipath support
+  * cd22808 Fixed typo in Rakefile
+  * bb1cd4a Fixed typo in infiniband name
+  * 28b70e8 Fixed parsing of ibstat
+  * 0f6dd1f Added mac address report for infiniband and opa
+  * 8c09c9f Adapter infiniband ohai report for omni-path
+  * c78c289 infiniband: fix parenthesis syntax error
+  * c1b113d infiniband: fix omnipath support with mac address
+  * 118da72 add Intel Omnipath support into infiniband
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 27 Jun 2018 13:26:40 +0200
+
 g5kchecks (0.8.2) sid; urgency=low
 
   * af3031f Added Vagrant file for stretch packaging
