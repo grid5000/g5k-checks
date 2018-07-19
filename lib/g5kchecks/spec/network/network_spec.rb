@@ -20,7 +20,7 @@ describe "Network" do
   }
 
   it "should not lack any of the interfaces from the API" do
-    expect(net_adapters.reject { |e| (not e['mountable']) or ohai_ifaces.include?(e['name']) or ohai_ifaces.include?(e['name']) }).to be_empty
+    expect(net_adapters.reject { |e| (not e['mountable']) or ohai_ifaces.include?(e['name']) or ohai_ifaces.include?(e['device']) }).to be_empty
   end
 
   ohai_ifaces.each do |dev,iface|
