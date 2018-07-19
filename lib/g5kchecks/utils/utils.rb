@@ -123,7 +123,7 @@ module Utils
   end
 
   def Utils.shell_out(command, **options)
-    Ohai::Mixin::Command::shell_out(command, options) rescue {}
+    Ohai::Mixin::Command::shell_out(command, options)
   end
 
   @@data_layout = nil
