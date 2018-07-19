@@ -8,6 +8,25 @@ require 'ohai'
 
 Ohai.config[:plugin_path] << File.expand_path(File.join(File.dirname(__FILE__), '/../ohai'))
 
+# This is a monkey-patch of Ohai::DSL::Plugin to detect when a plugin fails.
+# By default, Ohai only logs the exception
+module Ohai
+  module DSL
+    class Plugin
+      old_run = instance_method(:run)
+      define_method(:run) do
+        begin
+          old_run.bind(self).call
+        rescue Exception => e
+          STDERR.puts "ERROR: plugin #{self.name} returned an exception. Exiting."
+          STDERR.puts "#{e.inspect} #{e.backtrace.join("\n")}"
+          exit!(1)
+        end
+      end
+    end
+  end
+end
+
 module Grid5000
   class Node
     attr_reader :hostname
