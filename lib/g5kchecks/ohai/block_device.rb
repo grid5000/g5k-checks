@@ -38,8 +38,8 @@ Ohai.plugin(:Blockdevice) do
     # It is also truncated in lshw -class disk -class storage -json but value might be retrieve using hdparm
     #
     block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each { |k,v|
-      v['by_id'] = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}' | grep '/wwn-'").stdout rescue nil
-      v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}' | grep '/pci-'").stdout rescue nil
+      v['by_id'] = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}'").stdout.split("\n").grep(/\/wwn-/).first
+      v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}'").stdout.split("\n").grep(/\/pci-/).first
       if vendors.key?("/dev/#{k}")
         v['vendor_from_lshw'] = vendors["/dev/#{k}"]
       end
