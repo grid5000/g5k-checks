@@ -72,14 +72,6 @@ describe 'Disk' do
       end
     end
 
-    it 'should have the correct storage type' do
-      storage_api = get_api_value(api, ohai, k, 'storage')
-      storage_ohai = (get_ohai_value(api, ohai, k, 'rotational') == 1 ? 'HDD' : 'SSD')
-      Utils.test(storage_ohai, storage_api, "storage_devices/#{k}/storage") do |v_ohai, v_api, error_msg|
-        expect(v_ohai).to eql(v_api), error_msg
-      end
-    end
-
     it 'should have the correct size' do
       size_api = get_api_value(api, ohai, k, 'size')
       size_ohai = 0
