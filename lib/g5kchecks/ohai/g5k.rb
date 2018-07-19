@@ -23,13 +23,11 @@ Ohai.plugin(:G5k) do
     std_env_name = conf["std_env_name"] || "debian9-x64-std"
 
     # KADEPLOY environments infos
-    begin
-      json_envs = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy&name=#{std_env_name}", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get()) rescue nil
-    end
-
-    if json_envs && json_envs.size == 1
-      env = json_envs[0]
-      infos["kadeploy"]["stdenv"] = env
+    json_envs = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy&name=#{std_env_name}", :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get())
+    if json_envs.size == 1
+      infos["kadeploy"]["stdenv"] = json_envs[0]
+    else
+      raise "More than one environment returned by Kadeploy API"
     end
 
     if File.exists?("/etc/grid5000/release")
@@ -45,12 +43,12 @@ Ohai.plugin(:G5k) do
     # inside a job (in particular, this excludes phoenix), and the job
     # is of type 'deploy'
     json_job = nil
-    json_status = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/status?disks=no&waiting=no&network_address=#{hostname}", :user => RSpec.configuration.node.conf['apiuser'], :password => RSpec.configuration.node.conf['apipasswd']).get()) rescue nil
+    json_status = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/status?disks=no&waiting=no&network_address=#{hostname}", :user => RSpec.configuration.node.conf['apiuser'], :password => RSpec.configuration.node.conf['apipasswd']).get())
 
     # If the environment is deployed inside a job
     if (!json_status.nil?) && json_status['nodes'][hostname]['hard'] == 'alive' && json_status['nodes'][hostname]['soft'] != 'free'
       job_id = json_status['nodes'][hostname]['reservations'].select{ |e| e['state'] == 'running' }.first['uid']
-      json_job = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/jobs/#{job_id}", :user => RSpec.configuration.node.conf['apiuser'], :password => RSpec.configuration.node.conf['apipasswd']).get()) rescue nil
+      json_job = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/jobs/#{job_id}", :user => RSpec.configuration.node.conf['apiuser'], :password => RSpec.configuration.node.conf['apipasswd']).get())
     end
 
     if json_job.nil?
