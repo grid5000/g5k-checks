@@ -44,7 +44,7 @@ module Utils
   def Utils.interface_predictable_name(dev)
     iface_name = nil
     ['ID_NET_NAME_ONBOARD', 'ID_NET_NAME_SLOT', 'ID_NET_NAME_PATH'].each { |udev_property|
-      iface_name = Utils.shell_out("/sbin/udevadm test 2>&1 /sys/class/net/#{dev} | grep #{udev_property} | cut -d'=' -f2").stdout.chomp() rescue nil
+      iface_name = Utils.shell_out("/sbin/udevadm test 2>&1 /sys/class/net/#{dev} | grep #{udev_property} | cut -d'=' -f2").stdout.chomp
       break if iface_name != nil && iface_name != ""
     }
     iface_name = dev if iface_name == nil || iface_name == ""
@@ -95,18 +95,18 @@ module Utils
   def Utils.get_pci_infos(sys_dev_path)
     vendor_id_path = File.join(sys_dev_path, "vendor").to_s
     device_id_path = File.join(sys_dev_path, "device").to_s
-    vendor_id = Utils.shell_out("cat #{vendor_id_path}").stdout.strip.chomp rescue ""
-    device_id = Utils.shell_out("cat #{device_id_path}").stdout.strip.chomp rescue ""
+    vendor_id = Utils.shell_out("cat #{vendor_id_path}").stdout.strip.chomp
+    device_id = Utils.shell_out("cat #{device_id_path}").stdout.strip.chomp
     pci_infos = {}
     return pci_infos if (device_id.empty? || vendor_id.empty?)
-    stdout = Utils.shell_out("/usr/bin/lspci -vmm -d #{vendor_id}:#{device_id}").stdout rescue ""
+    stdout = Utils.shell_out("/usr/bin/lspci -vmm -d #{vendor_id}:#{device_id}").stdout
     stdout.each_line{ |line|
       line = line.chomp
       if line =~ /^Device/
-        pci_infos[:device] = line.gsub(/^Device:/i, "").strip rescue nil
+        pci_infos[:device] = line.gsub(/^Device:/i, "").strip
       end
       if line =~ /^Vendor/
-        pci_infos[:vendor] = line.gsub(/Vendor:/i, "").sub("Limited", "").sub("Corporation", "").strip rescue nil
+        pci_infos[:vendor] = line.gsub(/Vendor:/i, "").sub("Limited", "").sub("Corporation", "").strip
       end
     }
     return pci_infos
