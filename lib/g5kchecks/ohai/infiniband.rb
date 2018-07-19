@@ -45,7 +45,6 @@ Ohai.plugin(:NetworkInfiniband) do
       end
 
       #Channel adapter
-      ca = Utils.shell_out("ibstat -l").stdout.chomp.gsub(" ","").gsub("'","") rescue ""
       stdout = Utils.shell_out("ibstat").stdout
       stdout.each_line do |line|
         if line =~ /^[[:blank:]]*Firmware version/
@@ -53,6 +52,7 @@ Ohai.plugin(:NetworkInfiniband) do
         end
       end
 
+      ca = Utils.shell_out("ibstat -l").stdout.chomp.gsub(" ","").gsub("'","") rescue ""
       if !ca.empty?
         num = "#{(iface[:number].to_i)+1}"
         stdout = Utils.shell_out("ibstat #{ca.chomp} #{num}").stdout
