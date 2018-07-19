@@ -109,6 +109,8 @@ module Grid5000
     def ohai_description
       if !@ohai_description
         @ohai_description = Ohai::System.new
+        # Disable plugins that always fail to run and are not needed by G5K-checks
+        Ohai::Config[:disabled_plugins] = [:Eucalyptus, :Virtualbox, :Chef, :SSHHostKey]
         if @conf["debug"] == true
           Ohai::Log.init(STDOUT)
           Ohai::Log.level = :debug
