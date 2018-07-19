@@ -141,45 +141,5 @@ Ohai.plugin(:Cpu) do
     # cstate
     cpu[:cstate_driver] = fileread('/sys/devices/system/cpu/cpuidle/current_driver') rescue 'none'
     cpu[:cstate_governor] = fileread('/sys/devices/system/cpu/cpuidle/current_governor_ro') rescue 'none'
-
-    # The following block doesn't work.
-    # We can't expect to enter/leave all possible cstates by simply stressing/resting CPU for 1second
-
-    # if cpu[:cstate_driver] != 'none'
-    #   cstate_names = execute('cat /sys/devices/system/cpu/cpu0/cpuidle/state*/name') rescue nil
-
-    #   # Attempt to force CPU to enter or leave idle state (it updates /sys/devices/system/cpu/cpu*/cpuidle/state*/)
-    #   # convert to array of int
-    #   a = execute("cat /sys/devices/system/cpu/cpu*/cpuidle/state*/usage").map!{|x| x.to_i}
-    #   execute("stress -t 1 -c #{cpu[:nb_threads]}") rescue nil
-    #   sleep 1
-    #   b = execute("cat /sys/devices/system/cpu/cpu*/cpuidle/state*/usage").map!{|x| x.to_i}
-    #   # b-a elements by elements and also group by cpu_id
-    #   diff = [b, a].transpose.map {|v| v.reduce(:-)}.each_slice(cstate_names.size).to_a
-    #   # sum states of all the cpus
-    #   diff = diff.transpose.map{|v| v.reduce(:+)}
-
-    #   # deeper cstate ?
-    #   cpu[:cstate_max_id] = diff.size - diff.reverse.index { |x| x != 0 } - 1
-    # end
-
-    # #bios configuration (using sysctl)
-    # syscfg_list = {
-    #   :ht_enabled => 'LogicalProc',
-    #   :turboboost_enabled => 'ProcTurboMode',
-    #   :cstate_c1e => 'ProcC1E',
-    #   :cstate_enabled => 'ProcCStates',
-    # }
-
-    # Disabled syscfg from dell (see bug https://intranet.grid5000.fr/bugzilla/show_bug.cgi?id=8827)
-
-    # execute('/opt/dell/toolkit/bin/syscfg -o /tmp/syscfg-bios.txt') rescue []
-    # syscfg = File.read('/tmp/syscfg-bios.txt') rescue ''
-
-    # cpu['configuration'] ||= {}
-    # syscfg_list.each {|k,v|
-    #   cpu['configuration'][k] = (syscfg.match(/^[;]?#{v}=(.*)/)[1] == 'enable' rescue nil)
-    # }
-
   end
 end
