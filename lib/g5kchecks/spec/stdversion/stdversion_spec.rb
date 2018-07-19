@@ -8,18 +8,18 @@ describe "Standard Environment Version" do
   end
 
   it "should have environment version equals to standard env in kadeploy api" do
-    lastV = @g5k["kadeploy"]["stdenv"]["version"] rescue ""
-    lastN = @g5k["kadeploy"]["stdenv"]["name"] rescue ""
+    lastV = @g5k["kadeploy"]["stdenv"]["version"]
+    lastN = @g5k["kadeploy"]["stdenv"]["name"]
     lastStd = "#{lastN}-#{lastV}"
-    stdNameVersion = @g5k["env"]["name"] rescue ""
+    stdNameVersion = @g5k["env"]["name"]
     Utils.test(stdNameVersion, lastStd, "Standard Environment Version", true) do |v_system, v_api, error_msg|
       expect(v_system).to eql(v_api), error_msg
     end
   end
 
   it "should have postinstall version equals to version in kadeploy api" do
-    curPost = @g5k["env"]["postinstalls"] rescue ""
-    lastPost = @g5k["kadeploy"]["stdenv"]["postinstalls"][0]["archive"] rescue ""
+    curPost = @g5k["env"]["postinstalls"]
+    lastPost = @g5k["kadeploy"]["stdenv"]["postinstalls"][0]["archive"]
     Utils.test(curPost, lastPost, "Environment post-installs version", true) do |v_system, v_api, error_msg|
       expect(v_system).to eql(v_api), error_msg
     end
