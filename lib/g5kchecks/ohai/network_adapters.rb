@@ -27,7 +27,6 @@ Ohai.plugin(:NetworkAdapters) do
     }
 
     # Process all but bridge, infiniband and loopback
-    # Paralell loop
     interfaces.reject{ |d,i| %w{ ib br }.include?(i[:type]) || d == "lo" }.each do |dev, iface|
 
       # Likely not a management interface if it is accessible from the OS.
