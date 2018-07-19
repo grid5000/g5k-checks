@@ -2,3 +2,6 @@
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 g5k-checks -o `dirname $CHECKLOGFILE`
+if [ $? -ne 0 ]; then
+  echo "g5k-checks exited with code $?, != 0" > $CHECKLOGFILE
+fi
