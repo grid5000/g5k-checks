@@ -126,16 +126,13 @@ module Utils
     Ohai::Mixin::Command::shell_out(command, options) rescue {}
   end
 
+  @@data_layout = nil
   def Utils.layout
     layout = {}
-    if !File.exist?(File.dirname(__FILE__) + "/../data/layout")
-      %x{mkdir -p #{File.join(File.dirname(__FILE__))}/../data/}
-      %x{parted /dev/sda print > #{File.join(File.dirname(__FILE__), '/../data/layout')} 2>/dev/null}
+    if @@data_layout.nil?
+      @@data_layout = %x{parted /dev/sda print 2>/dev/null}
     end
-    file = File.open(File.dirname(__FILE__) + "/../data/layout")
-    cmdline = file.read
-    file.close
-    cmdline.each_line do |line|
+    @@data_layout.each_line do |line|
       num, parsed_line = Utils.parse_line_layout(line)
       layout.merge!(parsed_line) if parsed_line != nil
     end
