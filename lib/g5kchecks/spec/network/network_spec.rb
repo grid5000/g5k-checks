@@ -15,10 +15,15 @@ describe "Network" do
   end
 
   ohai = RSpec.configuration.node.ohai_description[:network][:interfaces]
-  ohai.select { |dev, iface|
+  ohai_ifaces = ohai.select { |dev, iface|
     dev =~ /^en/ || %w{ ib eth myri }.include?(iface[:type])
-  }.each do |dev,iface|
+  }
 
+  it "should not lack any of the interfaces from the API" do
+    expect(net_adapters.reject { |e| (not e['mountable']) or ohai_ifaces.include?(e['name']) or ohai_ifaces.include?(e['name']) }).to be_empty
+  end
+
+  ohai_ifaces.each do |dev,iface|
     #Skip interface if we decided to do so in ohai
     next if iface[:skip] == true
 
