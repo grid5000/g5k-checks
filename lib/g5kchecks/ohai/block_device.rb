@@ -43,12 +43,15 @@ Ohai.plugin(:Blockdevice) do
       if vendors.key?("/dev/#{k}")
         v['vendor_from_lshw'] = vendors["/dev/#{k}"]
       end
-      stdout = Utils.shell_out("hdparm -I /dev/#{k} | grep 'Firmware Revision'").stdout.chomp()
-      rev_from_hdparm = stdout.sub('Firmware Revision:', '').strip.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '') rescue nil
-      #in case ohai rev is a truncated value
-      if (!rev_from_hdparm.nil? && !v['rev'].nil? && !v['rev'].empty?)
-        if rev_from_hdparm.include?(v['rev'])
-          v['rev'] = rev_from_hdparm
+      stdout = Utils.shell_out("hdparm -I /dev/#{k}").stdout.encode!('utf-8', 'binary', :invalid => :replace, :undef => :replace, :replace => '')
+      firmware_revision = rev_from_hdparm = stdout.split("\n").grep(/Firmware Revision/).first
+      if not firmware_revision.nil?
+        rev_from_hdparm = firmware_revision.chomp.sub('Firmware Revision:', '').strip
+        #in case ohai rev is a truncated value
+        if (!rev_from_hdparm.nil? && !v['rev'].nil? && !v['rev'].empty?)
+          if rev_from_hdparm.include?(v['rev'])
+            v['rev'] = rev_from_hdparm
+          end
         end
       end
     }
