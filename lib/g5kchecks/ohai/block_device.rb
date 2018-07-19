@@ -41,6 +41,7 @@ Ohai.plugin(:Blockdevice) do
       id = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}'").stdout.split("\n").grep(/\/wwn-/).first
       v['by_id'] = id || '' # empty string if nil
       v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}'").stdout.split("\n").grep(/\/pci-/).first
+      v['rotational'] = IO::read("/sys/block/#{k}/queue/rotational").to_i
       if vendors.key?("/dev/#{k}")
         v['vendor_from_lshw'] = vendors["/dev/#{k}"]
       end
