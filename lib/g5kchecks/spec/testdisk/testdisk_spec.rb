@@ -17,7 +17,7 @@ describe "TestDisk" do
 
     it "should give good results in read" do
       test_file = File.expand_path("../../data/read.fio", File.dirname(__FILE__))
-      stdout = Utils.shell_out("fio #{test_file}").stdout rescue ""
+      stdout = Utils.shell_out("fio #{test_file}").stdout
       stdout.each_line do |line|
         if line =~ /READ/
           maxt_read = Hash[line.split(',').collect!{|s| s.strip.split('=')}]['maxt'].scan(/\d+/)[0].to_i
@@ -34,7 +34,7 @@ describe "TestDisk" do
   
     it "should give good results in write" do
       test_file = File.expand_path("../../data/write.fio", File.dirname(__FILE__))
-      stdout = Utils.shell_out("fio #{test_file}").stdout rescue ""
+      stdout = Utils.shell_out("fio #{test_file}").stdout
       stdout.each_line do |line|
         if line =~ /WRITE/
           maxt_write = Hash[line.split(',').collect!{|s| s.strip.split('=')}]['maxt'].scan(/\d+/)[0].to_i

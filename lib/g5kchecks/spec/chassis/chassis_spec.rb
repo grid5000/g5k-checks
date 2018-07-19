@@ -14,7 +14,7 @@ describe "Chassis" do
     # si ohai (dmidecode) nous retourne empty alors on va chercher dans base_board
     #TODO move this to ohai
     if number_ohai.nil? || number_ohai.empty? || number_ohai == "empty"
-      number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip rescue ''
+      number_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['serial_number'].strip
     end
     if number_ohai == "empty"
       number_ohai = ''
@@ -28,7 +28,7 @@ describe "Chassis" do
     manufacturer_api = ""
     manufacturer_ohai = nil
     manufacturer_api = @api['manufacturer'] if @api
-    manufacturer_ohai = @system['manufacturer'].strip rescue nil
+    manufacturer_ohai = @system['manufacturer'].strip
     #TODO move this to ohai
     if manufacturer_ohai.nil? || manufacturer_ohai.empty? || manufacturer_ohai == "empty"
       manufacturer_ohai = RSpec.configuration.node.ohai_description["dmi"]['base_board']['manufacturer'].strip
@@ -42,7 +42,7 @@ describe "Chassis" do
     name_api = ""
     name_ohai = nil
     name_api = @api['name'] if @api
-    name_ohai = @system['product_name'].strip rescue nil
+    name_ohai = @system['product_name'].strip
     #TODO move this to ohai
     if name_ohai.nil? || name_ohai.empty? || name_ohai == "empty"
       name_ohai = RSpec.configuration.node.ohai_description['dmi']['base_board']['product_name'].strip
