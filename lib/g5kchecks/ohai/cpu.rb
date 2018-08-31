@@ -35,6 +35,11 @@ Ohai.plugin(:Cpu) do
         if cpu[:'0'][:model_name] =~ /Processor[^\w]*(.*)/
           cpu[:version] = $1
         end
+      elsif cpu[:'0'][:model_name] =~ /EPYC/
+        cpu[:model] = "AMD EPYC"
+        if cpu[:'0'][:model_name] =~ /AMD EPYC\s+(\d+)\s+(.*)/
+          cpu[:version] = $1
+        end
       end
     else
       cpu[:vendor] = "Intel"
