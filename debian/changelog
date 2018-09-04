@@ -1,3 +1,40 @@
+g5kchecks (0.8.4) sid; urgency=low
+
+  * 6c1a472 Handle new AMD EPYC CPUs
+  * 459fa9d Revert "Collect whether disk is rotational or not (Bug 9500)"
+  * ebe5c2b Fix typo: check both name and device
+  * b3c7b38 Collect whether disk is rotational or not (Bug 9500)
+  * 84cdca1 Check that all interfaces in the API are visible in Ohai (Bug 9416)
+  * dc5cf38 network_spec: make it work in API mode (without api data)
+  * 5cc11a5 Fix handling of disks without by_id (sagittaire)
+  * 55d96b0 network_adapters: remove incorrect comment
+  * b3476a8 clock: no need to restart ntp
+  * 49e773e testdisk: only run tests if there's a value in API
+  * c06d5c7 utils: another useless rescue. We want to know it if a command fails.
+  * 3f87fb2 cleanup: remove commented code
+  * 0fb145a utils: more useless rescues
+  * 4d7be3b stdversion: remove wildcard rescues
+  * 228d56a bmc,systemctl: remove wildcard rescues
+  * 1054378 chassis, testdisk: remove wildcard rescues
+  * 7448369 network_spec: remove wildcard rescues
+  * 8fa48dd part_spec: remove wildcard rescues
+  * bae7a7a cleanup: remove commented code
+  * b456668 Re-indent
+  * 401b018 Remove wildcard rescue
+  * 50085a6 Ohai::Config is now deprecated
+  * 5d1d7aa Add OAR error when g5k-checks exits with error
+  * 70659ff Disable broken Ohai plugins
+  * 4cfe6a1 Monkey-patch Ohai to exit when there's an exception
+  * d52260b Remove wildcard rescue
+  * 1dce818 Reorder for readability
+  * 2a99031 Improve error handling and remove wildcard rescue
+  * 5328141 Remove use of external grep and wildcard rescue
+  * 4da7794 Remove exceptions handling that was hiding real issues
+  * 5164ce7 Remove use of temporary file (that was written in the libraries dir!)
+  * 2673fa8 Load libraries from source tree if possible
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Tue, 04 Sep 2018 13:48:03 +0200
+
 g5kchecks (0.8.3) sid; urgency=low
 
   * 65bb9a6 Merge branch 'omnipath' Omnipath support
