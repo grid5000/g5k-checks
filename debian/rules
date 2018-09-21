@@ -9,7 +9,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-NAME="g5kchecks"
+NAME="g5k-checks"
 
 %:
 	dh $@ --buildsystem=ruby --with ruby

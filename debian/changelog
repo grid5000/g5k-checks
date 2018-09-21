@@ -1,4 +1,4 @@
-g5kchecks (0.8.4) sid; urgency=low
+g5k-checks (0.8.4) sid; urgency=low
 
   * 6c1a472 Handle new AMD EPYC CPUs
   * 459fa9d Revert "Collect whether disk is rotational or not (Bug 9500)"
@@ -35,7 +35,7 @@ g5kchecks (0.8.4) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Tue, 04 Sep 2018 13:48:03 +0200
 
-g5kchecks (0.8.3) sid; urgency=low
+g5k-checks (0.8.3) sid; urgency=low
 
   * 65bb9a6 Merge branch 'omnipath' Omnipath support
   * cd22808 Fixed typo in Rakefile
@@ -49,7 +49,7 @@ g5kchecks (0.8.3) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 27 Jun 2018 13:26:40 +0200
 
-g5kchecks (0.8.2) sid; urgency=low
+g5k-checks (0.8.2) sid; urgency=low
 
   * af3031f Added Vagrant file for stretch packaging
   * d48af1d Fix use of WEB_HOST
@@ -57,25 +57,25 @@ g5kchecks (0.8.2) sid; urgency=low
   * 61bb5e6 Added stretch build and publish tasks in Rakefile
   * ef2b2dc Checking oar hard status == Alive for user deployed reservation ohai data
   * 1d16037 Checking oar hard status == busy for user deployed reservation ohai data
-  * ebef863 Fix gitignore files + rm Gemfile.lock and g5kchecks.subtvars
+  * ebef863 Fix gitignore files + rm Gemfile.lock and g5k-checks.subtvars
   * 2844da5 Fix CPU version for skylake (Gold XXXX), and rework a bit for others.
 
  -- Saint-Marcel Frederic <frederic.saint-marcel@inria.fr>  Tue, 29 May 2018 10:30:14 +0200
 
-g5kchecks (0.8.1) sid; urgency=low
+g5k-checks (0.8.1) sid; urgency=low
 
   * edcec39 Handle empty ohai data for g5k disks
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 18 Apr 2018 15:25:06 +0200
 
-g5kchecks (0.8.0) sid; urgency=low
+g5k-checks (0.8.0) sid; urgency=low
 
   * 305b386 Updated default std environnement
   * 97cc1c8 For user deployed envs, only check sda + reserved disks
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Tue, 17 Apr 2018 15:32:02 +0200
 
-g5kchecks (0.7.18) sid; urgency=low
+g5k-checks (0.7.18) sid; urgency=low
 
   * a85c08c Removed peach for interfaces iteration in ohai
   * 49683b9 Fixed logic error in predictable name method
@@ -89,20 +89,20 @@ g5kchecks (0.7.18) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 14 Feb 2018 18:27:27 +0100
 
-g5kchecks (0.7.17) sid; urgency=low
+g5k-checks (0.7.17) sid; urgency=low
 
   * d8b6701 Removed dependency to dell's syscfg and disabled cstate checks
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Mon, 11 Dec 2017 17:34:43 +0100
 
-g5kchecks (0.7.16) sid; urgency=low
+g5k-checks (0.7.16) sid; urgency=low
 
   * 6d75e77 Ignore 'Limited' in vendors name
   * efe3836 Fix arg name passed to dell's syscfg stretch version
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Thu, 30 Nov 2017 17:34:06 +0100
 
-g5kchecks (0.7.15) sid; urgency=low
+g5k-checks (0.7.15) sid; urgency=low
 
   * dde0fac Handle missing rate from api, defaults to 0
   * bffe654 Removed spec about os.{version,name,kernel_version}
@@ -111,7 +111,7 @@ g5kchecks (0.7.15) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 15 Nov 2017 16:43:48 +0100
 
-g5kchecks (0.7.14) sid; urgency=low
+g5k-checks (0.7.14) sid; urgency=low
 
   * ce966aa Added .chomp to ohai disk device value
   * 580bdbc Enforce mixlib-shellout version for ruby 2.1 compatibility
@@ -122,7 +122,7 @@ g5kchecks (0.7.14) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Thu, 28 Sep 2017 17:58:25 +0200
 
-g5kchecks (0.7.13) sid; urgency=low
+g5k-checks (0.7.13) sid; urgency=low
 
   * 4342c96 Added std_env_name configuration entry
   * 9e75d2d Use std environment name from configuration instead of deducing it from kadeploy env list
@@ -151,7 +151,7 @@ g5kchecks (0.7.13) sid; urgency=low
   * aaaa831 Use vendor and subsystem_vendor for network_adapter vendor lookup
   * e660cf1 Removed test code again
   * 44d849d Disk time{read/write} specs disabled by default
-  * d1efcd0 Set reference-repository branch to g5kchecks_updates for tests
+  * d1efcd0 Set reference-repository branch to g5k-checks_updates for tests
   * 6d98e5b Added more missing dependencies to deb package
   * 8efdee4 Completed deb package dependencies
   * a98bd2e Fail-safe call for parted
@@ -224,27 +224,27 @@ g5kchecks (0.7.13) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 30 Aug 2017 18:05:57 +0200
 
-g5kchecks (0.7.12) sid; urgency=medium
+g5k-checks (0.7.12) sid; urgency=medium
 
   * c1a323f Fix disk revision (types mismatch)
 
  -- Florent Didier <florent.didier@inria.fr>  Wed, 12 Apr 2017 09:35:00 +0200
 
-g5kchecks (0.7.11) sid; urgency=medium
+g5k-checks (0.7.11) sid; urgency=medium
 
   * ca252f4 Check disks from the ref-api disk list instead of only disks enabled on the node
   * 76af035 v0.7.11
 
  -- Florent Didier <florent.didier@inria.fr>  Wed, 05 Apr 2017 16:00:00 +0200
 
-g5kchecks (0.7.10) sid; urgency=low
+g5k-checks (0.7.10) sid; urgency=low
 
   * 5c348b0 [cpu] Change unknown turbo_boost state to false
   * 5b638ab v0.7.10
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Thu, 02 Mar 2017 17:15:49 +0100
 
-g5kchecks (0.7.10) sid; urgency=low
+g5k-checks (0.7.10) sid; urgency=low
 
   * 0f1c89b Changed wrong file modes
   * ce41348 Removed enabled spec test and renamed tests variables
@@ -253,14 +253,14 @@ g5kchecks (0.7.10) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 01 Mar 2017 14:23:08 +0100
 
-g5kchecks (0.7.9) sid; urgency=low
+g5k-checks (0.7.9) sid; urgency=low
 
   * 77c2d2f Fixed network interface operstate
   * de6c462 Disabled mountable test and improved enabled check
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Mon, 20 Feb 2017 17:18:04 +0100
 
-g5kchecks (0.7.8) sid; urgency=low
+g5k-checks (0.7.8) sid; urgency=low
 
   * 011ba45 Fix the rev_from_hdparm property
   * 18bae7e Changed chassis serial comparison format
@@ -271,13 +271,13 @@ g5kchecks (0.7.8) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 01 Feb 2017 12:40:41 +0100
 
-g5kchecks (0.7.7) sid; urgency=low
+g5k-checks (0.7.7) sid; urgency=low
 
   * 70d1fa2 Add unstable_device_name property management
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Mon, 16 Jan 2017 17:36:03 +0100
 
-g5kchecks (0.7.6) sid; urgency=low
+g5k-checks (0.7.6) sid; urgency=low
   * 59f7ddc v0.7.6
   * 3f1b653 Fix bios version and disk revision
   * 4235fe1 Add by_id and by_path properties, and fix the rev_from_hdparm property
@@ -287,7 +287,7 @@ g5kchecks (0.7.6) sid; urgency=low
 
  -- Florent Didier <florent.didier@inria.fr>  Wed, 04 Jan 2017 17:28:00 +0100
 
-g5kchecks (0.7.5) sid; urgency=low
+g5k-checks (0.7.5) sid; urgency=low
 
   * ab0c1d5 [cpu] Removed harmless debug code
   * 86aa2c9 Merge pull request #12 from nmichon/master
@@ -302,13 +302,13 @@ g5kchecks (0.7.5) sid; urgency=low
 
  -- Nicolas Michon <nicolas.michon@inria.fr>  Tue, 06 Dec 2016 16:07:51 +0100
 
-g5kchecks (0.7.4) sid; urgency=low
+g5k-checks (0.7.4) sid; urgency=low
 
 
 
  -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Tue, 20 Sep 2016 16:26:22 +0200
 
-g5kchecks (0.7.3) sid; urgency=low
+g5k-checks (0.7.3) sid; urgency=low
 
   * 15c381c [network] disabled the test of the "enabled" property
   * 9744ebd [block_device] hdparm output is messed up on granduc
@@ -319,7 +319,7 @@ g5kchecks (0.7.3) sid; urgency=low
 
  -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Tue, 20 Sep 2016 15:44:49 +0200
 
-g5kchecks (0.7.2) sid; urgency=low
+g5k-checks (0.7.2) sid; urgency=low
 
   * de04580 [disk] Temporarily disable vendor test and revert changes on version test for next release
   * 0aba3a1 [processor] Fixed ht_capable for grimani
@@ -329,14 +329,14 @@ g5kchecks (0.7.2) sid; urgency=low
 
  -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Thu, 15 Sep 2016 09:51:12 +0200
 
-g5kchecks (0.7.1) sid; urgency=low
+g5k-checks (0.7.1) sid; urgency=low
 
   * b117d00 [bmc] Handle the case where ohai does not find the BMC interface (missing ipmitools)
   * 577a46a [os] Fixed type conversion in the OS version check
 
  -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Mon, 12 Sep 2016 10:38:54 +0200
 
-g5kchecks (0.7.0) sid; urgency=low
+g5k-checks (0.7.0) sid; urgency=low
 
   * abdbc4d [bios] Skip BIOS configuration tests when both the values cannot be retrieved and the ref-api does not have the BIOS configuration info
   * 43810bc [network,bmc,disk,testdisk,chassis] G5K API naming convention in rspec outputs
@@ -356,44 +356,44 @@ g5kchecks (0.7.0) sid; urgency=low
 
  -- Jérémie Gaidamour <jeremie.gaidamour@inria.fr>  Mon, 05 Sep 2016 15:14:16 +0200
 
-g5kchecks (0.6.2) sid; urgency=low
+g5k-checks (0.6.2) sid; urgency=low
 
   * 8dc6524 Send fails to centralized syslog
 
  -- Arthur Garnier <arthur.garnier@inria.fr>  Wed, 27 Apr 2016 10:40:42 +0200
 
-g5kchecks (0.6.1) sid; urgency=low
+g5k-checks (0.6.1) sid; urgency=low
 
   * 3d8f618 [Rights] Add sudo-g5k check
 
  -- Arthur Garnier <arthur.garnier@inria.fr>  Wed, 20 Apr 2016 10:51:55 +0200
 
-g5kchecks (0.6.0) sid; urgency=low
+g5k-checks (0.6.0) sid; urgency=low
 
   * c214965 new check : std version and postinstall version
 
  -- Arthur Garnier <arthur.garnier@inria.fr>  Thu, 07 Apr 2016 16:50:02 +0200
 
-g5kchecks (0.5.1) sid; urgency=low
+g5k-checks (0.5.1) sid; urgency=low
 
   * 0822df4 Be more tolerant for memory checking
 
  -- Simon Delamare <simon.delamare@ens-lyon.fr>  Wed, 02 Dec 2015 14:54:07 +0100
 
-g5kchecks (0.5.0) sid; urgency=low
+g5k-checks (0.5.0) sid; urgency=low
 
   * a7e7ef1 Use hwloc utils instead of ohai to check mem
   * 0a27cf3 Add utils to fetch memory using hwloc
 
  -- Simon Delamare <simon.delamare@ens-lyon.fr>  Wed, 09 Sep 2015 14:23:15 +0200
 
-g5kchecks (0.4.16) sid; urgency=low
+g5k-checks (0.4.16) sid; urgency=low
 
   * efe3c78 Fix verbose output for older version of rspec
 
  -- Simon Delamare <simon.delamare@ens-lyon.fr>  Wed, 01 Jul 2015 13:40:58 +0200
 
-g5kchecks (0.4.15) sid; urgency=low
+g5k-checks (0.4.15) sid; urgency=low
 
   * 18cbbc1 Workaround for an old Ohai bug related to Ruby string encoding
   * 305c7fb Fix regexp that matches cpu version (g5k #6034)
@@ -407,39 +407,39 @@ g5kchecks (0.4.15) sid; urgency=low
 
  -- Simon Delamare <simon.delamare@ens-lyon.fr>  Tue, 30 Jun 2015 15:26:16 +0200
 
-g5kchecks (0.4.15) sid; urgency=low
+g5k-checks (0.4.15) sid; urgency=low
 
   * 307096c [rights] Checks rights on /tmp
 
  -- Pascal Morillon <pascal.morillon@irisa.fr>  Mon, 13 Oct 2014 11:27:04 +0000
 
-g5kchecks (0.4.14) sid; urgency=low
+g5k-checks (0.4.14) sid; urgency=low
 
   * 942e414 [network] remove enabled check
 
  -- Émile Morel <emile.morel@inria.fr>  Tue, 15 Apr 2014 11:20:56 +0200
 
-g5kchecks (0.4.13) sid; urgency=low
+g5k-checks (0.4.13) sid; urgency=low
 
   * 6295778 [network] change enabled check
 
  -- Émile Morel <emile.morel@inria.fr>  Tue, 08 Apr 2014 16:50:53 +0200
 
-g5kchecks (0.4.12) sid; urgency=low
+g5k-checks (0.4.12) sid; urgency=low
 
   * 2b5cfa7 [utils] add ServiceUnavailable rescue (Bug 5457)
   * a9666bc Rakefile debuild to build package
 
  -- Émile Morel <emile.morel@inria.fr>  Wed, 12 Mar 2014 17:26:11 +0100
 
-g5kchecks (0.4.11) sid; urgency=low
+g5k-checks (0.4.11) sid; urgency=low
 
   * 37b70dd rakefile imporve
   * 6576d65 [conf] add testing branch by default
 
  -- Émile Morel <emile.morel@inria.fr>  Wed, 12 Mar 2014 13:20:21 +0100
 
-g5kchecks (0.4.10) sid; urgency=low
+g5k-checks (0.4.10) sid; urgency=low
 
   * 5157bac [network] remove mountable check
   * 99aa795 [conf] remove mounted points
@@ -447,21 +447,21 @@ g5kchecks (0.4.10) sid; urgency=low
 
  -- Émile Morel <emile.morel@inria.fr>  Tue, 11 Mar 2014 17:39:21 +0100
 
-g5kchecks (0.4.9) sid; urgency=low
+g5k-checks (0.4.9) sid; urgency=low
 
   * 4581700 rename outputdir
   * 0a3ba67 [scripts] jenkins - add check disk performances
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 23 Dec 2013 10:11:53 +0100
 
-g5kchecks (0.4.8) sid; urgency=low
+g5k-checks (0.4.8) sid; urgency=low
 
   * 19a150a [mountpoint] check differences between fstab file and mount command
   * 8c239fc [utils] grep mount less robust
 
  -- Émile Morel <emile.morel@inria.fr>  Sat, 21 Dec 2013 17:48:00 +0100
 
-g5kchecks (0.4.7) sid; urgency=low
+g5k-checks (0.4.7) sid; urgency=low
 
   * 3e025f3 retrieve_dir instead of retrieve_url for file
   * 38c9e4e [bmc] strongest tests
@@ -469,30 +469,30 @@ g5kchecks (0.4.7) sid; urgency=low
   * 9c37ba9 [mountpoint] better output
   * 2459b20 add verbose option
   * 740425a option refactoring
-  * aa7d3b8 gitignore - debian/g5kchecks.substvars
+  * aa7d3b8 gitignore - debian/g5k-checks.substvars
   * 3dabf96 change output dir variable
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 16 Dec 2013 11:56:54 +0100
 
-g5kchecks (0.4.6) sid; urgency=low
+g5k-checks (0.4.6) sid; urgency=low
 
   * b0f9b74 uniformization of parameters
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 09 Dec 2013 14:38:23 +0100
 
-g5kchecks (0.4.5) sid; urgency=low
+g5k-checks (0.4.5) sid; urgency=low
 
   * 32b640b add fallback branch for API
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 09 Dec 2013 14:02:24 +0100
 
-g5kchecks (0.4.4) sid; urgency=low
+g5k-checks (0.4.4) sid; urgency=low
 
   * aa55377 [pkg] add fio in dependency
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 25 Nov 2013 15:31:07 +0100
 
-g5kchecks (0.4.3) sid; urgency=low
+g5k-checks (0.4.3) sid; urgency=low
 
   * 656ca46 [scripts] jenkins - remove line in conf file for test testdisk
   * b0dce35 [testdisk] init
@@ -500,28 +500,28 @@ g5kchecks (0.4.3) sid; urgency=low
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 25 Nov 2013 15:19:51 +0100
 
-g5kchecks (0.4.2) sid; urgency=low
+g5k-checks (0.4.2) sid; urgency=low
 
   * ae949e6 [scripts] jenkins - wrong dir and display result
   * 48d1037 [formatter] change gsub! to gsub (cause nil)
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 21 Nov 2013 18:02:17 +0100
 
-g5kchecks (0.4.1) sid; urgency=low
+g5k-checks (0.4.1) sid; urgency=low
 
   * 74709f9 [mountpoint] init
   * ca0ea0e factorization search line function
 
  -- Émile Morel <emile.morel@inria.fr>  Wed, 20 Nov 2013 14:41:19 +0100
 
-g5kchecks (0.4.0) sid; urgency=low
+g5k-checks (0.4.0) sid; urgency=low
 
   * e32e54e [chassis] best results
   * d356997 add É for sign
 
  -- Émile Morel <emile.morel@inria.fr>  Wed, 13 Nov 2013 13:04:49 +0100
 
-g5kchecks (0.3.6) sid; urgency=low
+g5k-checks (0.3.6) sid; urgency=low
 
   * 8e46d42 add branch on API url
   * 735a22d add VERSION and Rakefile
@@ -529,25 +529,25 @@ g5kchecks (0.3.6) sid; urgency=low
 
  -- Émile Morel <emile.morel@inria.fr>  Wed, 13 Nov 2013 12:53:17 +0100
 
-g5kchecks (0.3-5) unstable; urgency=low
+g5k-checks (0.3-5) unstable; urgency=low
 
     * 256f426 [pkg] improve scripts 
 
  -- Émile Morel <emile.morel@inria.fr>  Fri, 11 Oct 2013 14:12:45 +0100
 
-g5kchecks (0.3-4) unstable; urgency=low
+g5k-checks (0.3-4) unstable; urgency=low
 
     * [pkg] add bridge-utils 
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 02 Oct 2013 16:50:23 +0100
 
-g5kchecks (0.3-3) unstable; urgency=low
+g5k-checks (0.3-3) unstable; urgency=low
 
     * [scripts] update jenkin and API scripts 
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 28 Sep 2013 18:27:05 +0100
 
-g5kchecks (0.3-2) unstable; urgency=low
+g5k-checks (0.3-2) unstable; urgency=low
 
     * [part] don't check fstype too 
     * [formatter] change yaml to json
@@ -555,14 +555,14 @@ g5kchecks (0.3-2) unstable; urgency=low
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 24 Sep 2013 19:56:08 +0100
 
-g5kchecks (0.3-1) unstable; urgency=low
+g5k-checks (0.3-1) unstable; urgency=low
 
     * [disk] check good disk
     * [part] DON'T check the 3 partition 
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 24 Sep 2013 17:17:23 +0100
 
-g5kchecks (0.3) unstable; urgency=low
+g5k-checks (0.3) unstable; urgency=low
 
     * [part] don't check the third partition file system type (ext4/ext3)
     * [conf] add PATH variable
@@ -571,20 +571,20 @@ g5kchecks (0.3) unstable; urgency=low
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 05 Sep 2013 15:33:00 +0100
 
-g5kchecks (0.2-15) unstable; urgency=low
+g5k-checks (0.2-15) unstable; urgency=low
 
     * [script] jenkins - remov chassis serial_number and sensor
     * [cpu] more accurate frequency
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 27 Aug 2013 14:13:00 +0100
 
-g5kchecks (0.2-14) unstable; urgency=low
+g5k-checks (0.2-14) unstable; urgency=low
 
     * [cpu] change frequency test
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 26 Aug 2013 12:42:00 +0100
 
-g5kchecks (0.2-13) unstable; urgency=low
+g5k-checks (0.2-13) unstable; urgency=low
 
     * [cpu] round frequency (Bug #5189 )
     * [scripts] automatic update of ref api repo
@@ -595,55 +595,55 @@ g5kchecks (0.2-13) unstable; urgency=low
 
  -- Émile Morel <emile.morel@inria.fr>  Mon, 26 Aug 2013 11:14:00 +0100
 
-g5kchecks (0.2-12) unstable; urgency=low
+g5k-checks (0.2-12) unstable; urgency=low
 
     * gsub error (bios)
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 18 Aug 2013 15:45:00 +0100
 
-g5kchecks (0.2-11) unstable; urgency=low
+g5k-checks (0.2-11) unstable; urgency=low
 
     * add sanitize for graphene bios version (graphene)
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 18 Aug 2013 15:39:00 +0100
 
-g5kchecks (0.2-10) unstable; urgency=low
+g5k-checks (0.2-10) unstable; urgency=low
 
     * adapt to ruby 1.9 and wheezy
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 23 May 2013 12:00:00 +0100
 
-g5kchecks (0.2-9) unstable; urgency=low
+g5k-checks (0.2-9) unstable; urgency=low
 
     * don't consider vmDisk (luxembourg)
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 23 May 2013 12:00:00 +0100
 
-g5kchecks (0.2-8) unstable; urgency=low
+g5k-checks (0.2-8) unstable; urgency=low
 
     * more robust variables for chassis
 
  -- Émile Morel <emile.morel@inria.fr>  Wed, 22 May 2013 16:30:00 +0100
 
-g5kchecks (0.2-7) unstable; urgency=low
+g5k-checks (0.2-7) unstable; urgency=low
 
     * change chomp to strip
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 21 May 2013 18:00:00 +0100
 
-g5kchecks (0.2-6) unstable; urgency=low
+g5k-checks (0.2-6) unstable; urgency=low
 
     * less strict on frequency error
 
  -- Émile Morel <emile.morel@inria.fr>  Fri, 17 May 2013 16:18:00 +0100
 
-g5kchecks (0.2-5) unstable; urgency=low
+g5k-checks (0.2-5) unstable; urgency=low
 
     * test if brctl is available
 
  -- Émile Morel <emile.morel@inria.fr>  Fri, 17 May 2013 14:12:00 +0100
 
-g5kchecks (0.2-4) unstable; urgency=low
+g5k-checks (0.2-4) unstable; urgency=low
 
     * compute an error rate on frequency instead of strict comparison
     * add ethtool in depends
@@ -651,27 +651,27 @@ g5kchecks (0.2-4) unstable; urgency=low
 
  -- Émile Morel <emile.morel@inria.fr>  Fri, 17 May 2013 11:07:00 +0100
 
-g5kchecks (0.2-3) unstable; urgency=low
+g5k-checks (0.2-3) unstable; urgency=low
 
   * ensure g5-ckecks is running under ruby 1.8
   * compute an error rate on memory instead of strict comparison
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 14 May 2013 19:41:00 +0100
 
-g5kchecks (0.2-2) unstable; urgency=low
+g5k-checks (0.2-2) unstable; urgency=low
 
   * change g5k-checks in oar script
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 14 May 2013 09:40:00 +0100
 
-g5kchecks (0.2-1) unstable; urgency=low
+g5k-checks (0.2-1) unstable; urgency=low
 
   * change fdisk to parted
   * fix bugs
 
  -- Émile Morel <emile.morel@inria.fr>  Thu, 13 May 2013 11:20:00 +0100
 
-g5kchecks (0.1-1) unstable; urgency=low
+g5k-checks (0.1-1) unstable; urgency=low
 
   * Initial release
 

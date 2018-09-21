@@ -1,4 +1,4 @@
-Source: g5kchecks
+Source: g5k-checks
 Section: ruby
 Priority: optional
 Maintainer: Grid'5000 team <support-staff@lists.grid5000.fr>
@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 8.0.0), gem2deb (>= 0.2.7~)
 Standards-Version: 3.9.3
 XS-Ruby-Versions: all
 
-Package: g5kchecks
+Package: g5k-checks
 Architecture: amd64
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, rake,

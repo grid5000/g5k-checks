@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-NAME = "g5kchecks"
+NAME = "g5k-checks"
 
 puts 'Installing vendored g5k-checks dependencies...'
 
