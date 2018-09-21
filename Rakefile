@@ -9,15 +9,14 @@ require 'g5kchecks/version'
 ROOT_DIR = File.expand_path(File.dirname(__FILE__))
 CHANGELOG_FILE = File.join(ROOT_DIR, "debian", "changelog")
 
+PACKAGES_DIR = File.join(Dir.pwd, 'pkg')
+
 VERSION_FILE = "lib/g5kchecks/version.rb"
 VERSION = G5kChecks::VERSION
 
-NAME = "g5kchecks"
+NAME = "g5k-checks"
 USER_NAME = %x{git config --get user.name}.chomp
 USER_EMAIL = %x{git config --get user.email}.chomp
-
-APT_HOST = ENV['HOST'] || 'apt.adm'
-WEB_HOST = ENV['WEB_HOST'] || 'web.adm'
 
 class String
   def yellow
@@ -89,54 +88,39 @@ namespace :package do
     end
   end
 
-  desc "Build the binary package (#{NAME} v#{VERSION})"
-  task :build do
-    puts "--> Build package".green
-    sh "debuild -us -uc"
-    sh "mkdir -p ./build/"
-    sh "mv ../#{NAME}_#{VERSION}* ./build/"
+  namespace :build do
+
+    desc "Prepare for building debian package"
+    task :prepare do
+      mkdir_p "#{PACKAGES_DIR}"
+      sh "git archive HEAD > /tmp/#{NAME}_#{VERSION}.tar"
+      Dir.chdir("/tmp") do
+        mkdir_p "#{NAME}_#{VERSION}"
+        sh "tar -xvf #{NAME}_#{VERSION}.tar -C #{NAME}_#{VERSION} && rm #{NAME}_#{VERSION}.tar"
+      end
+    end
+
+    desc "Build debian package"
+    task :debian => :prepare do
+      build_dir = "/tmp/#{NAME}_#{VERSION}"
+      Dir.chdir(build_dir) do
+        sh "debuild --no-lintian -i -us -uc -b"
+        sh "mkdir -p #{PACKAGES_DIR}"
+        sh "mv #{File.expand_path('..', build_dir)}/#{NAME}_#{VERSION}_*.deb #{PACKAGES_DIR}"
+        #Clean temp build files and unused targets
+        sh "rm -rf #{File.expand_path('..', build_dir)}/#{NAME}*"
+      end
+    end
   end
 
-  desc "Build the binary package for stretch (#{NAME} v#{VERSION})"
-  task :build_stretch do
-    puts "--> build package".green
-    sh "debuild -us -uc"
-    sh "mkdir -p ./build/"
-    sh "mv ../#{NAME}_#{VERSION}_stretch* ./build/"
-  end
-
-  #publish debian package to apt and web.grid5000.fr
-  desc "Publish #{"#{NAME}-#{VERSION}".green} in APT and web repositories"
+  # Deprecated - Kept for manual deploy
+  desc "Publish the last version (#{VERSION}) packages to packages.grid5000.fr DEPRECATED: automatically built and deployed by .gitlab-ci.yaml"
   task :publish do
-   puts "--> Upload to #{APT_HOST}".green
-   pkg = "#{NAME}_#{VERSION}_amd64.deb #{NAME}_#{VERSION}.dsc"
-   pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz #{NAME}_#{VERSION}_amd64.build"
-   sh "cd ./build/ ; scp #{pkg} #{APT_HOST}:/tmp"
-   puts "--> Move packages to incoming directory".green
-   sh "ssh #{APT_HOST} 'cd /tmp; sudo mv #{pkg} /var/www/debian/incoming/'"
-   puts "--> Run debarchiver (sid main)".green
-   sh "ssh #{APT_HOST} 'sudo /usr/bin/debarchiver --scanall --configfile /etc/debarchiver.conf --index -a'"
-   puts "--> Publish on web.grid5000.fr".green
-   pkg = "#{NAME}_#{VERSION}_amd64.deb"
-   sh "scp ./build/#{pkg} #{WEB_HOST}:"
-   sh "ssh #{WEB_HOST} \"sudo su -c 'mv ~g5kadmin/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/ ; ln -s -f /var/www/www.grid5000.fr/htdocs/packages/debian/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/g5kchecks_all.deb'\""
+    puts "Uploading package to packages.grid5000.fr ..."
+    system "scp #{PACKAGES_DIR}/#{NAME}_#{VERSION}_*.deb g5kadmin@packages.grid5000.fr:/srv/packages/deb/#{NAME}/"
+    puts "Updating packages list"
+    system "ssh g5kadmin@packages.grid5000.fr sudo g5k-debrepo -d /srv/packages/deb/#{NAME}"
+    puts "Done."
   end
 
-  #Publish debian package to apt and web.grid5000.fr
-  desc "Publish stretch package #{"#{NAME}-#{VERSION}".green} in APT and web repositories"
-  task :publish_stretch do
-   puts "--> Upload to #{APT_HOST}".green
-   pkg = "#{NAME}_#{VERSION}_amd64.deb #{NAME}_#{VERSION}.dsc"
-   pkg += " #{NAME}_#{VERSION}_amd64.changes #{NAME}_#{VERSION}.tar.gz #{NAME}_#{VERSION}_amd64.build"
-   sh "cd ./build/ ; scp #{pkg} #{APT_HOST}:/tmp"
-   puts "--> Move packages to incoming directory".green
-   sh "ssh #{APT_HOST} 'cd /tmp; sudo mv #{pkg} /var/www/debian/incoming/'"
-   puts "--> Run debarchiver (sid main)".green
-   sh "ssh #{APT_HOST} 'sudo /usr/bin/debarchiver --scanall --configfile /etc/debarchiver.conf --index -a'"
-
-   puts "--> Publish on web.grid5000.fr".green
-   pkg = "#{NAME}_#{VERSION}_amd64.deb"
-   sh "scp ./build/#{pkg} #{WEB_HOST}:"
-   sh "ssh #{WEB_HOST} \"sudo su -c 'mv ~g5kadmin/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/ ; ln -s -f /var/www/www.grid5000.fr/htdocs/packages/debian/#{pkg} /var/www/www.grid5000.fr/htdocs/packages/debian/g5kchecks_all.deb'\""
-  end
 end
