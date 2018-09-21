@@ -1,6 +1,6 @@
-debian/g5kchecks.debhelper.log
-debian/g5kchecks.substvars
-debian/g5kchecks/*
+debian/g5k-checks.debhelper.log
+debian/g5k-checks.substvars
+debian/g5k-checks/*
 debian/files
 build/
 bundle/
@@ -8,3 +8,4 @@ debian/.debhelper
 .bundle/
 Gemfile.lock
 *~
+pkg/
