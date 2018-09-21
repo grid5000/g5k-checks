@@ -9,7 +9,7 @@ deb:
     - docker
   script:
    - apt-get update
-   - apt-get install -y git git-core bundler rake libxml2-dev autoconf bison build-essential libssl-dev libmysqlclient-dev libxslt-dev nodejs libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev curl pkg-config debhelper gem2deb
+   - apt-get install -y git git-core bundler rake libxml2-dev autoconf bison build-essential libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev curl pkg-config debhelper gem2deb
    - bundle install --path vendor/bundle
    - rake package:build:debian
   artifacts:
