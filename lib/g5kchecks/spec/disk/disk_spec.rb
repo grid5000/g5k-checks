@@ -35,7 +35,7 @@ describe 'Disk' do
     api = api.select { |key, value| disks.include?(key) }
   end
 
-  ohai = RSpec.configuration.node.ohai_description["block_device"].select { |key, value| key =~ /[sh]d.*/ && value['model'] != 'vmDisk' }
+  ohai = RSpec.configuration.node.ohai_description["block_device"].select { |key, value| (key =~ /[sh]d.*/ or key =~ /nvme.*/) && value['model'] != 'vmDisk' }
   
   # If g5k-checks is called with "-m api" option, then api = nil
   # and we use ohai as a reference. Else we use api as a reference.
@@ -94,7 +94,11 @@ describe 'Disk' do
       version_api = get_api_value(api, ohai, k, 'firmware_version')
       version_ohai = get_ohai_value(api, ohai, k, 'rev')
       Utils.test(version_ohai, version_api, "storage_devices/#{k}/firmware_version") do |v_ohai, v_api, error_msg|
-        expect(v_ohai).to eql(v_api), error_msg
+        if version_ohai.nil?
+          expect(true).to be(true), "Device #{k} 'firmware revision' not available, not testing"
+        else
+          expect(v_ohai).to eql(v_api), error_msg
+        end
       end
     end
 
@@ -104,7 +108,11 @@ describe 'Disk' do
       vendor_from_lshw = get_ohai_value(api, ohai, k, 'vendor_from_lshw')
       vendor_ohai = vendor_from_lshw  if !vendor_from_lshw.nil?
       Utils.test(vendor_ohai, vendor_api, "storage_devices/#{k}/vendor") do |v_ohai, v_api, error_msg|
-        expect(v_ohai).to eql(v_api), error_msg
+        if vendor_ohai.nil? || vendor_ohai.empty?
+          expect(true).to be(true), "Device #{k} 'vendor' not available, not testing"
+        else
+          expect(v_ohai).to eql(v_api), error_msg
+        end
       end
     end
   end
