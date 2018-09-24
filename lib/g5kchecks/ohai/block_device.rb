@@ -37,8 +37,8 @@ Ohai.plugin(:Blockdevice) do
     # See github issue #6: ohai gets the 'rev' info from /sys/block/sda/device/rev (see ohai/lib/ohai/plugins/linux/block_device.rb) and the data is actually truncated on some clusters
     # It is also truncated in lshw -class disk -class storage -json but value might be retrieve using hdparm
     #
-    block_device.select { |key,value| key =~ /[sh]d.*/ and value["model"] != "vmDisk" }.each { |k,v|
-      id = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}'").stdout.split("\n").grep(/\/wwn-/).first
+    block_device.select { |key,value| (key =~ /[sh]d.*/ or key =~ /nvme.*/) and value["model"] != "vmDisk" }.each { |k,v|
+      id = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}'").stdout.split("\n").grep(/\/(wwn-|nvme-eui)/).first
       v['by_id'] = id || '' # empty string if nil
       v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}'").stdout.split("\n").grep(/\/pci-/).first
       if vendors.key?("/dev/#{k}")
