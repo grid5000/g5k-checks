@@ -7,6 +7,10 @@ Standards-Version: 3.9.3
 XS-Ruby-Versions: all
 
 Package: g5k-checks
+Replaces: g5kchecks
+Breaks: g5kchecks
+Conflicts: g5kchecks
+Provides: g5kchecks
 Architecture: amd64
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, rake,
