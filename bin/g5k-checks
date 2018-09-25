@@ -2,7 +2,7 @@
 
 begin
   #Hard-coded path for deployed bundle...
-  require '/usr/lib/ruby/bundles/g5kchecks/bundler/setup'
+  require '/usr/lib/ruby/bundles/g5k-checks/bundler/setup'
 rescue LoadError
   #puts "Running in development mode, dependencies load path managed by bundler"
 end
