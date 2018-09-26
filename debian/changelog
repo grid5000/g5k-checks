@@ -1,3 +1,15 @@
+g5k-checks (0.8.5) sid; urgency=low
+
+  * 61c1005 Correct deb package meta after rename from g5kchecks
+  * c67f318 Fix bundle load path after package rename
+  * e193321 Adapted .gitignore to new name + added pkg/ dir
+  * 34a6f8f Removed unecessary build dependencies
+  * b62b1d9 Setup automatic deb package build from gitlab-ci
+  * fdca188 Renamed all g5kchecks to g5k-checks
+  * 3acfd7d Added standard /vagrant share
+
+ -- Nicolas Michon <nicolas.michon@inria.fr>  Wed, 26 Sep 2018 11:40:54 +0200
+
 g5k-checks (0.8.4) sid; urgency=low
 
   * 6c1a472 Handle new AMD EPYC CPUs
