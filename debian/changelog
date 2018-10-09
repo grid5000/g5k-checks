@@ -1,3 +1,9 @@
+g5k-checks (0.8.6) sid; urgency=low
+
+  * 8bf3d98 add nvme disk detection
+
+ -- Saint-Marcel Frederic <frederic.saint-marcel@inria.fr>  Tue, 09 Oct 2018 16:25:20 +0200
+
 g5k-checks (0.8.5) sid; urgency=low
 
   * 61c1005 Correct deb package meta after rename from g5kchecks
