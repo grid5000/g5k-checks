@@ -87,40 +87,4 @@ namespace :package do
       bump(0)
     end
   end
-
-  namespace :build do
-
-    desc "Prepare for building debian package"
-    task :prepare do
-      mkdir_p "#{PACKAGES_DIR}"
-      sh "git archive HEAD > /tmp/#{NAME}_#{VERSION}.tar"
-      Dir.chdir("/tmp") do
-        mkdir_p "#{NAME}_#{VERSION}"
-        sh "tar -xvf #{NAME}_#{VERSION}.tar -C #{NAME}_#{VERSION} && rm #{NAME}_#{VERSION}.tar"
-      end
-    end
-
-    desc "Build debian package"
-    task :debian => :prepare do
-      build_dir = "/tmp/#{NAME}_#{VERSION}"
-      Dir.chdir(build_dir) do
-        sh "debuild --no-lintian -i -us -uc -b"
-        sh "mkdir -p #{PACKAGES_DIR}"
-        sh "mv #{File.expand_path('..', build_dir)}/#{NAME}_#{VERSION}_*.deb #{PACKAGES_DIR}"
-        #Clean temp build files and unused targets
-        sh "rm -rf #{File.expand_path('..', build_dir)}/#{NAME}*"
-      end
-    end
-  end
-
-  # Deprecated - Kept for manual deploy
-  desc "Publish the last version (#{VERSION}) packages to packages.grid5000.fr DEPRECATED: automatically built and deployed by .gitlab-ci.yaml"
-  task :publish do
-    puts "Uploading package to packages.grid5000.fr ..."
-    system "scp #{PACKAGES_DIR}/#{NAME}_#{VERSION}_*.deb g5kadmin@packages.grid5000.fr:/srv/packages/deb/#{NAME}/"
-    puts "Updating packages list"
-    system "ssh g5kadmin@packages.grid5000.fr sudo g5k-debrepo -d /srv/packages/deb/#{NAME}"
-    puts "Done."
-  end
-
 end

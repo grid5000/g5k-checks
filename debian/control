@@ -2,7 +2,7 @@ Source: g5k-checks
 Section: ruby
 Priority: optional
 Maintainer: Grid'5000 team <support-staff@lists.grid5000.fr>
-Build-Depends: debhelper (>= 8.0.0), gem2deb (>= 0.2.7~)
+Build-Depends: debhelper (>= 8.0.0), gem2deb (>= 0.2.7~), rake, git, bundler, libxml2-dev, libssl-dev, libyaml-dev, libreadline6-dev, zlib1g-dev, libncurses5-dev, libffi-dev, curl, pkg-config
 Standards-Version: 3.9.3
 XS-Ruby-Versions: all
 

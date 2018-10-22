@@ -1,0 +1,37 @@
+#!/usr/bin/ruby
+
+# This is a script to test g5k-checks on a node, executed from a gitlab-ci runner
+
+gem 'ruby-cute', ">=0.11"
+require 'cute'
+require 'net/scp'
+require 'pp'
+require 'logger'
+
+g5k = Cute::G5K::API.new
+logger = Logger.new(STDOUT)
+STDERR.reopen(STDOUT)
+STDOUT.sync = true
+
+logger.info("Dumping CI_* ENV variables:")
+puts ENV.to_a.select { |e| e[0] =~ /^CI_/ }.map { |e| e.join(' ') }.join("\n")
+logger.info("Reserving node...")
+job = g5k.reserve(:site => 'nancy', :queue => 'production', :nodes => 1, :walltime => '0:15', :type => :allow_classic_ssh, :wait => true, :name => 'gitlab g5k-checks')
+logger.info("Job #{job['uid']} created.")
+node = job['assigned_nodes'].first
+logger.info("Running on: #{node}")
+logger.info("Running sudo-g5k")
+ssh = Net::SSH::start(node, g5k.g5k_user, {:keys => ['/home/gitlab-runner/.ssh/id_rsa']})
+ssh.exec3!("sudo-g5k")
+scp = Net::SCP.start(node, g5k.g5k_user)
+gl = Dir::glob('g5k-checks_*deb')
+if gl.length != 1
+  raise "no file to upload"
+end
+logger.info("Copying and installing artifact")
+scp.upload!(gl.first, "/tmp/g5k-checks.deb")
+ssh.exec3!('sudo dpkg -i /tmp/g5k-checks.deb')
+logger.info("Running g5k-checks")
+ssh.exec3!('sudo g5k-checks --remove-tests="User used sudo-g5k" -v')
+ssh.close
+g5k.release(job)
