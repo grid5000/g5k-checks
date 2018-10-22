@@ -16,7 +16,7 @@ NAME="g5k-checks"
 
 # Run 'bundle install --standalone' at the beginning of the Debian build process
 override_dh_auto_build:
-	ruby build.rb
+	debian/setup_bundle
 	dh_auto_build
 
 BUNDLEDIR="usr/lib/ruby/bundles/${NAME}"
