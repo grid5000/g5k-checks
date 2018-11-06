@@ -46,9 +46,11 @@ Ohai.plugin(:G5k) do
     json_status = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/status?disks=no&waiting=no&network_address=#{hostname}", :user => RSpec.configuration.node.conf['apiuser'], :password => RSpec.configuration.node.conf['apipasswd']).get())
 
     # If the environment is deployed inside a job
-    if (!json_status.nil?) && json_status['nodes'][hostname]['hard'] == 'alive' && json_status['nodes'][hostname]['soft'] != 'free'
+    if (!json_status.nil?) && json_status['nodes'] != {} && json_status['nodes'][hostname]['hard'] == 'alive' && json_status['nodes'][hostname]['soft'] != 'free'
       job_id = json_status['nodes'][hostname]['reservations'].select{ |e| e['state'] == 'running' }.first['uid']
       json_job = JSON.parse(RestClient::Resource.new(api_base_url + "/sites/#{site_uid}/jobs/#{job_id}", :user => RSpec.configuration.node.conf['apiuser'], :password => RSpec.configuration.node.conf['apipasswd']).get())
+    else
+      json_job = nil
     end
 
     if json_job.nil?
