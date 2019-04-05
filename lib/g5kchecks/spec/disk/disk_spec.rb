@@ -102,16 +102,5 @@ describe 'Disk' do
       end
     end
 
-    it 'should have the correct vendor' do
-      vendor_api = get_api_value(api, ohai, k, 'vendor')
-      vendor_ohai = get_ohai_value(api, ohai, k, 'vendor')
-      Utils.test(vendor_ohai, vendor_api, "storage_devices/#{k}/vendor") do |v_ohai, v_api, error_msg|
-        if vendor_ohai.nil? || vendor_ohai.empty?
-          expect(true).to be(true), "Device #{k} 'vendor' not available, not testing"
-        else
-          expect(v_ohai).to eql(v_api), error_msg
-        end
-      end
-    end
   end
 end
