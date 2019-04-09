@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.executables = ["g5k-checks"]
   s.bindir = 'bin'
 
+  s.add_runtime_dependency("mixlib-cli", ["~> 1.7.0"])
   s.add_runtime_dependency("ohai", ["~> 8.21.0"])
   s.add_runtime_dependency("rest-client", [">= 0.0.0"])
   s.add_runtime_dependency("peach", ["~> 0.5.1"])
