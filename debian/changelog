@@ -1,3 +1,12 @@
+g5k-checks (0.8.7) sid; urgency=low
+
+  * 464854b Do not check for disk vendor
+  * 57b9e92 fix mixlib-cli version
+  * 2769294 Stop using lshw
+  * 70890a5 Deal with the case of nodes that are not known to OAR yet
+
+ -- Alexandre Merlin <alexandre.merlin@inria.fr>  Tue, 09 Apr 2019 10:25:15 +0200
+
 g5k-checks (0.8.6) sid; urgency=low
 
   * 8bf3d98 add nvme disk detection
