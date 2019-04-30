@@ -104,8 +104,13 @@ Ohai.plugin(:NetworkAdapters) do
     # Process management interface
     # Get MAC address from ipmitool if possible
     if File.exist?('/usr/bin/ipmitool')
-      stdout = Utils.shell_out("/usr/bin/ipmitool lan print").stdout
-      stdout.each_line do |line|
+      shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
+      try = 1
+      while (shell_out.stderr.include? "No data available") && (try < 4) do
+        shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
+        try +=1
+      end
+      shell_out.stdout.each_line do |line|
         if line =~ /^[[:blank:]]*MAC Address/
           interfaces["bmc"] ||= {}
           interfaces["bmc"][:mac] = line.chomp.split(": ").last
