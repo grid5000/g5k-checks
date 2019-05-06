@@ -1,3 +1,9 @@
+g5k-checks (0.8.8) sid; urgency=low
+
+  * 3b7cb9d Add a retry if ipmitool failed
+
+ -- Albin PETIT <Albin.Petit@imag.fr>  Mon, 06 May 2019 08:54:20 +0200
+
 g5k-checks (0.8.7) sid; urgency=low
 
   * 464854b Do not check for disk vendor
