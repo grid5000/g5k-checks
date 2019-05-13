@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   config.vm.box_download_insecure=true
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "debian/stretch64"
+  config.vm.box = "debian/contrib-stretch64"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -48,8 +48,8 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "./", "/home/vagrant/g5k-checks", type: "rsync", rsync__auto: true
-  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+  config.vm.synced_folder "./", "/home/vagrant/g5k-checks"
+  config.vm.synced_folder ".", "/vagrant"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
