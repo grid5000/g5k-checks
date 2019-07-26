@@ -84,7 +84,7 @@ module Grid5000
           else
             raise "Node not find with url #{@node_path+@branch}"
           end
-        rescue RestClient::ServiceUnavailable => error
+        rescue => error
           @retries ||= 0
           if @retries < @max_retries
             @retries += 1
