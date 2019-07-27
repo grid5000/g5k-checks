@@ -111,7 +111,8 @@ Ohai.plugin(:NetworkAdapters) do
         shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
         raise "ipmitool returned an error" if shell_out.stderr.chomp != ''
       rescue
-        if try < 4
+        if try < 5
+          sleep 0.5
           retry
         else
           raise "Failed to get IP/MAC for BMC (ipmitool error)"
