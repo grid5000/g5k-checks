@@ -106,9 +106,14 @@ Ohai.plugin(:NetworkAdapters) do
     if File.exist?('/usr/bin/ipmitool')
       shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
       try = 1
-      while (shell_out.stderr.include? "No data available") && (try < 4) do
-        shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
-        try +=1
+      # if there's something on stderr, we retry.
+      while (shell_out.stderr.chomp != '') do
+        if try < 4
+          shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
+          try += 1
+        else
+          raise "Failed to get IP/MAC for BMC: ipmitool error: #{shell_out.stderr.chomp}"
+        end
       end
       shell_out.stdout.each_line do |line|
         if line =~ /^[[:blank:]]*MAC Address/
