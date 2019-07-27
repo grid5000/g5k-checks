@@ -30,7 +30,18 @@ class Cluster
     if @test
       @api_description =  YAML.load_file(File.join("#{@site}-#{@cluster}.yaml"))
     else
-      @api_description = JSON.parse RestClient.get(@cluster_uri, :accept => :json)
+      begin
+        @api_description = JSON.parse RestClient.get(@cluster_uri, :accept => :json)
+      rescue
+        @retries ||= 0
+        if @retries < 3
+          @retries += 1
+          sleep 1
+          retry
+        else
+          raise "Fetching #{@cluster_uri} failed too many times..."
+        end
+      end
     end
     self
   end
