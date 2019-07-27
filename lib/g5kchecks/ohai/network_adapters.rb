@@ -104,15 +104,17 @@ Ohai.plugin(:NetworkAdapters) do
     # Process management interface
     # Get MAC address from ipmitool if possible
     if File.exist?('/usr/bin/ipmitool')
-      shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
-      try = 1
-      # if there's something on stderr, we retry.
-      while (shell_out.stderr.chomp != '') do
+      try = 0
+      shell_out = nil
+      begin
+        try += 1
+        shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
+        raise "ipmitool returned an error" if shell_out.stderr.chomp != ''
+      rescue
         if try < 4
-          shell_out = Utils.shell_out("/usr/bin/ipmitool lan print")
-          try += 1
+          retry
         else
-          raise "Failed to get IP/MAC for BMC: ipmitool error: #{shell_out.stderr.chomp}"
+          raise "Failed to get IP/MAC for BMC (ipmitool error)"
         end
       end
       shell_out.stdout.each_line do |line|
