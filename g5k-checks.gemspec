@@ -1,8 +1,6 @@
-require './lib/g5kchecks/version'
-
 Gem::Specification.new do |s|
   s.name = "g5k-checks"
-  s.version = G5kChecks::VERSION
+  s.version = '0.1'
   s.authors = ["Grid'5000"]
   s.licenses = ['CECILL-B']
   s.email = "support-staff@lists.grid5000.fr"
