@@ -1,3 +1,12 @@
+g5k-checks (0.8.9) unstable; urgency=low
+
+  * 7ac37d7 Improve ipmitool retry policy
+  * a8eabbe [bugs/#10559] add retries when g5k-checks checks API
+  * 6358235 display proper return code in logs (10561)
+  * 382d9c7 Use debian/contrib-stretch64
+
+ -- Lucas Nussbaum <lucas.nussbaum@loria.fr>  Sat, 27 Jul 2019 11:14:23 +0200
+
 g5k-checks (0.8.8) sid; urgency=low
 
   * 3b7cb9d Add a retry if ipmitool failed
