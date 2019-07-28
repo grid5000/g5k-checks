@@ -1,3 +1,11 @@
+g5k-checks (0.8.10) unstable; urgency=low
+
+  * 1e1acd7 Drop VERSION handling in lib/g5kchecks/version.rb
+  * 3f2748a BMC addresses: improve retry policy
+  * 5702e4c Use begin..rescue..retry to also catch exceptions in shell_out
+
+ -- Lucas Nussbaum <lucas.nussbaum@loria.fr>  Sun, 28 Jul 2019 07:48:16 +0200
+
 g5k-checks (0.8.9) unstable; urgency=low
 
   * 7ac37d7 Improve ipmitool retry policy
