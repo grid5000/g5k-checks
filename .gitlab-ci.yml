@@ -8,7 +8,7 @@ stages:
  - test
  - deploy
 
-build:
+build-stretch:
   stage: build
   tags:
    - grid5000-docker
@@ -17,20 +17,39 @@ build:
    - apt-get update && apt-get -y --no-install-recommends install devscripts build-essential equivs
    - mk-build-deps -ir -t 'apt-get -y --no-install-recommends'
    - dpkg-buildpackage
-   - cp ../*deb . # needed to upload it as artifact
+   - mkdir stretch
+   - cp ../*deb stretch/ # needed to upload it as artifact
   except:
      - tags
   artifacts: # generate artifacts for files we want to publish
      paths:
-      - ./*.deb
+      - stretch
      expire_in: '1 day'
 
-test:
+build-buster:
+  stage: build
+  tags:
+   - grid5000-docker
+  image: debian:buster
+  script:
+   - apt-get update && apt-get -y --no-install-recommends install devscripts build-essential equivs
+   - mk-build-deps -ir -t 'apt-get -y --no-install-recommends'
+   - dpkg-buildpackage
+   - mkdir buster
+   - cp ../*deb buster/ # needed to upload it as artifact
+  except:
+     - tags
+  artifacts: # generate artifacts for files we want to publish
+     paths:
+      - buster
+     expire_in: '1 day'
+
+test-stretch:
   stage: test
   tags:
     - grid5000-shell
   script:
-    - .gitlab-ci/test-g5k-checks
+    - .gitlab-ci/test-g5k-checks stretch
   except:
     - tags
 
@@ -43,4 +62,5 @@ push-package:
     - master
   when: manual
   script:
-    - g5k-deploy-files --only-if-tag --debian --directory deb/g5k-checks
+    - g5k-deploy-files --only-if-tag --files 'stretch/*.deb' --directory deb/g5k-checks/stretch
+    - g5k-deploy-files --only-if-tag --files 'buster/*.deb' --directory deb/g5k-checks/buster
