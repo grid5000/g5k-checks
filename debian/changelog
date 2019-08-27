@@ -1,3 +1,9 @@
+g5k-checks (0.8.12) unstable; urgency=low
+
+  * 817190 Nvidia GPU detection
+
+ -- Patrice Ringot <patrice.ringot@loria.fr>  Tue, 27 Aug 2019 22:36:59 +0200
+
 g5k-checks (0.8.11) unstable; urgency=low
 
   * 4bb0ca7 remove hwloc from the list dependencies
