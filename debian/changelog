@@ -1,3 +1,10 @@
+g5k-checks (0.8.13) unstable; urgency=low
+
+  * 3f73756 skip env version test in case of job deploy
+  * bc2887a remove debian9-x64-std assignment
+
+ -- Frederic Saint-Marcel <frederic.saint-marcel@inria.fr>  Wed, 18 Sep 2019 10:02:09 +0200
+
 g5k-checks (0.8.12) unstable; urgency=low
 
   * 817190 Nvidia GPU detection
