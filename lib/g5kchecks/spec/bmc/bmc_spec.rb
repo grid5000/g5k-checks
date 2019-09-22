@@ -36,4 +36,14 @@ describe "BMC" do
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
+
+  it "should have the correct version" do
+    mgt_api = nil
+    mgt_ohai = nil
+    mgt_api = RSpec.configuration.node.api_description['bmc_version']
+    mgt_ohai = RSpec.configuration.node.ohai_description[:bmc]['version']
+    Utils.test(mgt_ohai, mgt_api, "bmc_version") do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
+    end
+  end
 end
