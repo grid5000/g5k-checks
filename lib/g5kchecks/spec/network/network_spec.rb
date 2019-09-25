@@ -81,6 +81,14 @@ describe "Network" do
           expect(v_ohai).to eql(v_api), error_msg
         end
       end
+
+      it "should be enabled (active)" do
+        enabled_api = api['enabled']
+        enabled_ohai = iface['enabled']
+        Utils.test(enabled_ohai, enabled_api, "network_adapters/#{dev}/enabled") do |v_ohai, v_api, error_msg|
+          expect(v_ohai).to eql(v_api), error_msg
+        end
+      end
     end
 
     it "should have the correct Rate" do
