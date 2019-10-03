@@ -146,5 +146,8 @@ Ohai.plugin(:Cpu) do
     # cstate
     cpu[:cstate_driver] = fileread('/sys/devices/system/cpu/cpuidle/current_driver') rescue 'none'
     cpu[:cstate_governor] = fileread('/sys/devices/system/cpu/cpuidle/current_governor_ro') rescue 'none'
+
+    # microcode version
+    cpu[:microcode] = fileread('/proc/cpuinfo').grep(/microcode\t: /)[0].split(': ')[1] rescue 'unknown'
   end
 end
