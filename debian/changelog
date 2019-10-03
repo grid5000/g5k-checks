@@ -1,3 +1,17 @@
+g5k-checks (0.8.14) unstable; urgency=low
+
+  [ Patrice RINGOT ]
+  * [649d0f8] collect and check microcode version
+  * [54ebdda] collect and check BMC version
+
+  [ Dimitri DELABROYE ]
+  * [c9a418d] [spec/network] check that ib interface are active/enabled #10886
+
+  [ Patrice RINGOT ]
+  * [f5d2977] ci test must be now executed on buster (current release for std env)
+
+ -- Patrice RINGOT <patrice.ringot@loria.fr>  Thu, 03 Oct 2019 18:25:24 +0200
+
 g5k-checks (0.8.13) unstable; urgency=low
 
   * 3f73756 skip env version test in case of job deploy
