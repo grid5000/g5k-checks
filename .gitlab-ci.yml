@@ -44,12 +44,12 @@ build-buster:
       - buster
      expire_in: '1 day'
 
-test-stretch:
+test-buster:
   stage: test
   tags:
     - grid5000-shell
   script:
-    - .gitlab-ci/test-g5k-checks stretch
+    - .gitlab-ci/test-g5k-checks buster
   except:
     - tags
 
