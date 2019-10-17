@@ -42,6 +42,9 @@ Ohai.plugin(:NetworkInfiniband) do
       elsif File.exist?('/sys/class/infiniband/mlx4_0/ports')
         iface[:interface] = "InfiniBand"
         iface[:driver] = "mlx4_core"
+      elsif File.exist?('/sys/class/infiniband/mlx5_0/ports')
+        iface[:interface] = "InfiniBand"
+        iface[:driver] = "mlx5_core"
       end
 
       #Channel adapter
@@ -73,6 +76,7 @@ Ohai.plugin(:NetworkInfiniband) do
       # /sys/class/infiniband/<mlx4_0|hfi1_0> exists.
       iface[:enabled] = iface[:enabled] && (
         File.exist?('/sys/class/infiniband/mlx4_0') ||
+        File.exist?('/sys/class/infiniband/mlx5_0') ||
         File.exist?('/sys/class/infiniband/hfi1_0'))
       # Check ibX ip addressed only if interface is enabled
       iface[:check_ip] = iface[:enabled]
