@@ -3,6 +3,8 @@ g5k-checks (0.8.15) unstable; urgency=low
   [ Simon Delamare ]
   * [5f9d7e2] Add support for mlx5 Infiniband interfaces
 
+ -- Simon Delamare <simon.delamare@ens-lyon.fr>  Thu, 17 Oct 2019 15:25:24 +0200
+
 g5k-checks (0.8.14) unstable; urgency=low
 
   [ Patrice RINGOT ]
