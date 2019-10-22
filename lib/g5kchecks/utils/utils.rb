@@ -283,4 +283,21 @@ module Utils
       yield(v_system, v_api, "#{path_api}: '#{(v_system || 'nil').to_s}' doesn't match api:'#{(v_api || 'nil').to_s}'")
     end
   end
+
+  def Utils.api_call(url)
+    json = nil
+    begin
+      json = JSON.parse(RestClient::Resource.new(url, :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get())
+    rescue RestClient::ServiceUnavailable => error
+      retries ||= 0
+      if retries < 3
+        retries += 1
+        sleep 1
+        retry
+      else
+        raise "Fetching #{url} failed too many times..."
+      end
+    end
+    json
+  end
 end
