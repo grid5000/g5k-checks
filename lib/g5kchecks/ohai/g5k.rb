@@ -3,23 +3,6 @@ require 'g5kchecks/utils/utils'
 
 Ohai.plugin(:G5k) do
 
-  def api_call(url)
-    json = nil
-    begin
-      json = JSON.parse(RestClient::Resource.new(url, :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get())
-    rescue RestClient::ServiceUnavailable => error
-      @retries ||= 0
-      if @retries < 3
-        @retries += 1
-        sleep 1
-        retry
-      else
-        raise "Fetching #{url} failed too many times..."
-      end
-    end
-    json
-  end
-
   provides "g5k"
 
   collect_data do
@@ -40,7 +23,7 @@ Ohai.plugin(:G5k) do
     std_env_name = conf["std_env_name"]
 
     # KADEPLOY environments infos
-    json_envs = api_call(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy&name=#{std_env_name}")
+    json_envs = Utils.api_call(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy&name=#{std_env_name}")
     if json_envs.size == 1
       infos["kadeploy"]["stdenv"] = json_envs[0]
     else
@@ -60,12 +43,12 @@ Ohai.plugin(:G5k) do
     # inside a job (in particular, this excludes phoenix), and the job
     # is of type 'deploy'
     json_job = nil
-    json_status = api_call(api_base_url + "/sites/#{site_uid}/status?disks=no&waiting=no&network_address=#{hostname}")
+    json_status = Utils.api_call(api_base_url + "/sites/#{site_uid}/status?disks=no&waiting=no&network_address=#{hostname}")
 
     # If the environment is deployed inside a job
     if (!json_status.nil?) && json_status['nodes'] != {} && json_status['nodes'][hostname]['hard'] == 'alive' && json_status['nodes'][hostname]['soft'] != 'free'
       job_id = json_status['nodes'][hostname]['reservations'].select{ |e| e['state'] == 'running' }.first['uid']
-      json_job = api_call(api_base_url + "/sites/#{site_uid}/jobs/#{job_id}")
+      json_job = Utils.api_call(api_base_url + "/sites/#{site_uid}/jobs/#{job_id}")
     else
       json_job = nil
     end
