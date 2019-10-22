@@ -66,6 +66,15 @@ module G5kChecks
         config.output_dir = conf["output_dir"]
       end
 
+      # Waiting for kadeploy to end its deployment before starting the tests
+      hostname=Socket.gethostname
+      state=get_kadeploy_state(hostname)
+      while (state != 'deployed' && state != 'prod_env')
+        sleep 1
+        puts "Waiting for kadeploy to end its deployment (state=#{state})"
+        state=get_kadeploy_state(hostname)
+      end
+
       res = RSpec::Core::Runner::run(rspec_opts)
 
       if conf["mode"] == "api"
@@ -75,5 +84,14 @@ module G5kChecks
 
       exit res
     end
+
+    private
+
+    def get_kadeploy_state(hostname)
+      node_uid, site_uid, grid_uid, ltd = hostname.split(".")
+      json_node = Utils.api_call(RSpec.configuration.node.conf["retrieve_url"] + "/sites/#{site_uid}/internal/kadeployapi/nodes/#{hostname}")
+      return json_node["state"]
+    end
+
   end
 end
