@@ -1,3 +1,10 @@
+g5k-checks (0.8.16) unstable; urgency=low
+
+  * Move the 'api_call' method in Utils
+  * Wait for kadeploy to finish the deployment (state= 'deployed' or 'prod_env') before starting the tests
+
+ -- Albin PETIT <Albin.Petit@imag.fr>  Tue, 22 Oct 2019 15:53:57 +0200
+
 g5k-checks (0.8.15) unstable; urgency=low
 
   [ Simon Delamare ]
