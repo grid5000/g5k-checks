@@ -15,7 +15,7 @@ describe "Architecture" do
     end
   end
 
-  [:nb_procs, :nb_cores, :nb_threads].each { |key|
+  [:nb_procs, :nb_cores, :nb_threads, :cpu_core_numbering].each { |key|
     it "should have the correct value for #{key}" do
       key_ohai = @system[:cpu][key]
       key_api = nil

@@ -1,5 +1,6 @@
 
 require 'g5kchecks/utils/utils'
+require 'rexml/document'
 
 Ohai.plugin(:Cpu) do
 
@@ -149,5 +150,13 @@ Ohai.plugin(:Cpu) do
 
     # microcode version
     cpu[:microcode] = fileread('/proc/cpuinfo').grep(/microcode\t: /)[0].split(': ')[1] rescue 'unknown'
+
+    # cpu core numbering (see bug 11023)
+    doc = REXML::Document.new(`lstopo --of xml`)
+    packages = REXML::XPath::match(doc, "//object[@type='Package']")
+    pu_ids = packages.first.get_elements("object//object[@type='PU']").map { |pu| pu['os_index'].to_i }.sort
+    cpucount = packages.length
+    # If all PU ids for the first CPU are multiple of the cpucount, then it's round-robin
+    cpu[:cpu_core_numbering] = ((pu_ids.select { |e| e % cpucount != 0 }.empty? and cpucount > 1) ? 'round-robin' : 'contiguous')
   end
 end
