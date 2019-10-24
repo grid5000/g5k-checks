@@ -18,7 +18,8 @@ Ohai.plugin(:NetworkInfiniband) do
   collect_data do
 
     # Process ib interfaces
-    network[:interfaces].select { |d,i| %w{ ib }.include?(i[:type]) }.each do |dev,iface|
+    # note: encapsulation='infiniband' for OPA interfaces as well
+    network[:interfaces].select { |d,i| %w{ infiniband }.include?(i[:encapsulation]) }.each do |dev,iface|
 
       # Infiniband interfaces can't be management interfaces
       iface[:management] = false
