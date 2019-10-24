@@ -1,3 +1,11 @@
+g5k-checks (0.8.18) unstable; urgency=low
+
+  * 561a191 Check that the number of disks match (bug 9825)
+  * 5d48afa Be more robust at including interfaces, and check that the number of interfaces match (bug 9825)
+  * b741b79 Change pipeline: allow deploy even if test fails
+
+ -- Lucas Nussbaum <lucas.nussbaum@loria.fr>  Thu, 24 Oct 2019 15:10:30 +0200
+
 g5k-checks (0.8.17) unstable; urgency=low
 
   * 425f085 Report cpu_core_numbering (Bug 11023)
