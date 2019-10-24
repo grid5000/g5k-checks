@@ -41,6 +41,16 @@ describe 'Disk' do
   # and we use ohai as a reference. Else we use api as a reference.
   reference = api.nil? ? ohai : api
 
+  # Check that we have the correct number of disks if not deployed by user (the user might see less disks because of reservable disks)
+  if g5k_ohai && g5k_ohai['user_deployed'] == false
+    it 'should have the correct number of storage devices' do
+      # 'true' in fourth parameter means that we do not add the result to the API
+      Utils.test(ohai.length, api.length, 'storage_devices/length', true) do |v_ohai, v_api, error_msg|
+        expect(v_ohai).to eql(v_api), error_msg
+      end
+    end
+  end
+
   reference.each do |k, _v|
     # Need to check the API value here, in order to generate the key 'device'
     # in the yaml and json output files

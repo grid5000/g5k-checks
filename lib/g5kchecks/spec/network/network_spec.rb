@@ -16,11 +16,18 @@ describe "Network" do
 
   ohai = RSpec.configuration.node.ohai_description[:network][:interfaces]
   ohai_ifaces = ohai.select { |dev, iface|
-    dev =~ /^en/ || %w{ ib eth myri }.include?(iface[:type])
+    dev =~ /^en/ || %w{eth myri}.include?(iface[:type]) || %w{infiniband}.include?(iface[:encapsulation])
   }
 
   it "should not lack any of the interfaces from the API" do
     expect(net_adapters.reject { |e| (not e['mountable']) or ohai_ifaces.include?(e['name']) or ohai_ifaces.include?(e['device']) }).to be_empty
+  end
+
+  it 'should have the correct number of network interfaces (excluding BMCs)' do
+    # 'true' in fourth parameter means that we do not add the result to the API
+    Utils.test(ohai_ifaces.length, net_adapters.reject { |e| e['management'] }.length, 'network_adapters/length', true) do |v_ohai, v_api, error_msg|
+      expect(v_ohai).to eql(v_api), error_msg
+    end
   end
 
   ohai_ifaces.each do |dev,iface|
