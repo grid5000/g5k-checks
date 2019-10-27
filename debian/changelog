@@ -1,3 +1,10 @@
+g5k-checks (0.8.19) unstable; urgency=low
+
+  * 27ec363 Fix computation of cpu_core_numbering to support Debian 9.
+    See https://intranet.grid5000.fr/bugzilla/show_bug.cgi?id=11023#c1
+
+ -- Lucas Nussbaum <lucas.nussbaum@loria.fr>  Sun, 27 Oct 2019 21:32:45 +0100
+
 g5k-checks (0.8.18) unstable; urgency=low
 
   * 561a191 Check that the number of disks match (bug 9825)
