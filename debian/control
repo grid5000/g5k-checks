@@ -11,7 +11,7 @@ Replaces: g5kchecks
 Breaks: g5kchecks
 Conflicts: g5kchecks
 Provides: g5kchecks
-Architecture: amd64
+Architecture: any
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, rake,
  ntp, ntpdate, nfs-common, ethtool, bridge-utils, fio, parted,
