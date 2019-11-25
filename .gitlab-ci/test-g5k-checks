@@ -29,7 +29,7 @@ logger.info("Running sudo-g5k")
 ssh = Net::SSH::start(node, g5k.g5k_user, {:keys => ['/home/gitlab-runner/.ssh/id_rsa']})
 ssh.exec3!("sudo-g5k")
 scp = Net::SCP.start(node, g5k.g5k_user)
-gl = Dir::glob("#{ARGV[0]}/g5k-checks_*deb")
+gl = Dir::glob("#{ARGV[0]}/g5k-checks_*_amd64.deb")
 if gl.length != 1
   raise "no file to upload"
 end
