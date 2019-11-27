@@ -1,3 +1,9 @@
+g5k-checks (0.8.20) unstable; urgency=low
+
+  * 00bd404 Fix infiniband interfaces / ports detection by using their MAC address and add better detection of mlx driver
+
+ -- Samir Noir <samir.noir@inria.fr>  Wed, 27 Nov 2019 12:03:08 +0000
+
 g5k-checks (0.8.19) unstable; urgency=low
 
   * 27ec363 Fix computation of cpu_core_numbering to support Debian 9.
