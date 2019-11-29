@@ -8,8 +8,10 @@ stages:
  - deploy_and_test
  - deploy
 
-build-stretch:
+build-stretch: &build-stretch
   stage: build
+  variables:
+    TARGETDIR: "stretch"
   tags:
    - grid5000-docker
   image: debian:stretch
@@ -17,8 +19,8 @@ build-stretch:
    - apt-get update && apt-get -y --no-install-recommends install devscripts build-essential equivs
    - mk-build-deps -ir -t 'apt-get -y --no-install-recommends'
    - dpkg-buildpackage
-   - mkdir stretch
-   - cp ../*deb stretch/ # needed to upload it as artifact
+   - mkdir $TARGETDIR
+   - cp ../*deb $TARGETDIR/ # needed to upload it as artifact
   except:
      - tags
   artifacts: # generate artifacts for files we want to publish
@@ -26,19 +28,24 @@ build-stretch:
       - stretch
      expire_in: '1 day'
 
+
 build-buster:
-  stage: build
-  tags:
-   - grid5000-docker
+  <<: *build-stretch
   image: debian:buster
-  script:
-   - apt-get update && apt-get -y --no-install-recommends install devscripts build-essential equivs
-   - mk-build-deps -ir -t 'apt-get -y --no-install-recommends'
-   - dpkg-buildpackage
-   - mkdir buster
-   - cp ../*deb buster/ # needed to upload it as artifact
-  except:
-     - tags
+  variables:
+    TARGETDIR: "buster"
+  artifacts: # generate artifacts for files we want to publish
+     paths:
+      - buster
+     expire_in: '1 day'
+
+build-buster-arm64:
+  <<: *build-stretch
+  image: arm64v8/debian:buster
+  variables:
+    TARGETDIR: "buster"
+  tags:
+    - grid5000-docker-arm64
   artifacts: # generate artifacts for files we want to publish
      paths:
       - buster
@@ -46,10 +53,12 @@ build-buster:
 
 test-buster:
   stage: deploy_and_test
+  variables:
+    TARGETDIR: "buster"
   tags:
     - grid5000-shell
   script:
-    - .gitlab-ci/test-g5k-checks buster
+    - .gitlab-ci/test-g5k-checks $TARGETDIR
   except:
     - tags
 
