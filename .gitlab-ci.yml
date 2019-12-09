@@ -26,7 +26,7 @@ build-stretch: &build-stretch
   artifacts: # generate artifacts for files we want to publish
      paths:
       - stretch
-     expire_in: '1 day'
+     expire_in: '1 month'
 
 
 build-buster:
@@ -49,7 +49,7 @@ build-buster-arm64:
   artifacts: # generate artifacts for files we want to publish
      paths:
       - buster
-     expire_in: '1 day'
+     expire_in: '1 month'
 
 test-buster:
   stage: deploy_and_test
