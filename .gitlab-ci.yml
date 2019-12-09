@@ -37,7 +37,7 @@ build-buster:
   artifacts: # generate artifacts for files we want to publish
      paths:
       - buster
-     expire_in: '1 day'
+     expire_in: '1 month'
 
 build-buster-arm64:
   <<: *build-stretch
