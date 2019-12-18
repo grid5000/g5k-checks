@@ -51,6 +51,18 @@ build-buster-arm64:
       - buster
      expire_in: '1 day'
 
+build-buster-ppc64:
+  <<: *build-stretch
+  image: debian:buster
+  variables:
+    TARGETDIR: "buster"
+  tags:
+    - grid5000-docker-ppc64
+  artifacts: # generate artifacts for files we want to publish
+     paths:
+      - buster
+     expire_in: '1 day'
+
 test-buster:
   stage: deploy_and_test
   variables:
