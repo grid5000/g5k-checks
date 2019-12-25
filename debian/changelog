@@ -1,3 +1,9 @@
+g5k-checks (0.8.21) unstable; urgency=low
+
+  * d6aa629 Allow more cases in the fix for bug #10731
+
+ -- Lucas Nussbaum <lucas.nussbaum@loria.fr>  Wed, 25 Dec 2019 21:49:09 +0100
+
 g5k-checks (0.8.20) unstable; urgency=low
 
   * 00bd404 Fix infiniband interfaces / ports detection by using their MAC address and add better detection of mlx driver
