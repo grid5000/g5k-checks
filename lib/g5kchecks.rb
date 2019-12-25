@@ -69,7 +69,7 @@ module G5kChecks
       # Waiting for kadeploy to end its deployment before starting the tests
       hostname=Socket.gethostname
       state=get_kadeploy_state(hostname)
-      while (state != 'deployed' && state != 'prod_env')
+      while not ['deployed', 'prod_env', 'rebooted', 'powered'].include?(state)
         sleep 1
         puts "Waiting for kadeploy to end its deployment (state=#{state})"
         state=get_kadeploy_state(hostname)
