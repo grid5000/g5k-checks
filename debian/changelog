@@ -1,3 +1,9 @@
+g5k-checks (0.8.22) unstable; urgency=low
+
+  * 0a3ce42 retry mechanism: also handle RestClient::BadGateway
+
+ -- Lucas Nussbaum <lucas.nussbaum@loria.fr>  Fri, 27 Dec 2019 11:04:35 +0100
+
 g5k-checks (0.8.21) unstable; urgency=low
 
   * d6aa629 Allow more cases in the fix for bug #10731
