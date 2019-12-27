@@ -288,9 +288,9 @@ module Utils
     json = nil
     begin
       json = JSON.parse(RestClient::Resource.new(url, :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get())
-    rescue RestClient::ServiceUnavailable => error
+    rescue RestClient::ServiceUnavailable, RestClient::BadGateway => error
       retries ||= 0
-      if retries < 3
+      if retries < 5
         retries += 1
         sleep 1
         retry
