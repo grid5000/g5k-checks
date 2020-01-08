@@ -1,3 +1,9 @@
+g5k-checks (0.8.23) unstable; urgency=low
+
+  * 5972e14 package x86info is only available on x86
+
+ -- Samir Noir <samir.noir@inria.fr>  Wed, 08 Jan 2020 15:35:58 +0100
+
 g5k-checks (0.8.22) unstable; urgency=low
 
   * 0a3ce42 retry mechanism: also handle RestClient::BadGateway
