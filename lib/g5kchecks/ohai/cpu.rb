@@ -26,33 +26,51 @@ Ohai.plugin(:Cpu) do
   end
 
   collect_data do
-    
+    arch = execute('uname -m').chomp
+    lscpu = execute('lscpu')
+
     # We assume that every cores have the same values
-    # Intel ou AMD ?
-    if cpu[:'0'][:model_name] =~ /AMD/
-      cpu[:vendor] = "AMD"
-      if cpu[:'0'][:model_name] =~ /Opteron/
-        cpu[:model] = "AMD Opteron"
-        if cpu[:'0'][:model_name] =~ /Processor[^\w]*(.*)/
-          cpu[:version] = $1
+    # x86: Intel or AMD
+    if arch == 'x86_64'
+      if cpu[:'0'][:model_name] =~ /AMD/
+        cpu[:vendor] = "AMD"
+        if cpu[:'0'][:model_name] =~ /Opteron/
+          cpu[:model] = "AMD Opteron"
+          if cpu[:'0'][:model_name] =~ /Processor[^\w]*(.*)/
+            cpu[:version] = $1
+          end
+        elsif cpu[:'0'][:model_name] =~ /EPYC/
+          cpu[:model] = "AMD EPYC"
+          if cpu[:'0'][:model_name] =~ /AMD EPYC\s+(\d+)\s+(.*)/
+            cpu[:version] = $1
+          end
         end
-      elsif cpu[:'0'][:model_name] =~ /EPYC/
-        cpu[:model] = "AMD EPYC"
-        if cpu[:'0'][:model_name] =~ /AMD EPYC\s+(\d+)\s+(.*)/
-          cpu[:version] = $1
+      else
+        cpu[:vendor] = "Intel"
+        if cpu[:'0'][:model_name] =~ /(Xeon|Atom)/
+          cpu[:model] = "Intel #{$1}"
+          # All Xeon CPUs before Skylake (e.g. "Intel(R) Xeon(R) CPU X vY @ Z" or "Intel(R) Xeon(R) CPU X 0 @ Z" )
+          if cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\) CPU\s+(.+?)(?:\s0)?\s+@/
+            cpu[:version] = $1
+            # Xeon Skylake and after (e.g. "Intel(R) Xeon(R) Gold X CPU @ Z")
+          elsif cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\)\s+(.+)\s+CPU?\s+@/
+            cpu[:version] = $1
+            # TODO: Add Atom regex here...
+          end
         end
       end
-    else
-      cpu[:vendor] = "Intel"
-      if cpu[:'0'][:model_name] =~ /(Xeon|Atom)/
-        cpu[:model] = "Intel #{$1}"
-        # All Xeon CPUs before Skylake (e.g. "Intel(R) Xeon(R) CPU X vY @ Z" or "Intel(R) Xeon(R) CPU X 0 @ Z" )
-        if cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\) CPU\s+(.+?)(?:\s0)?\s+@/
-          cpu[:version] = $1
-        # Xeon Skylake and after (e.g. "Intel(R) Xeon(R) Gold X CPU @ Z")
-        elsif cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\)\s+(.+)\s+CPU?\s+@/
-          cpu[:version] = $1
-        # TODO: Add Atom regex here...
+    elsif arch == 'aarch64'
+      lscpu.each do |line|
+        if line =~ /^Vendor ID:\s+ (.+)$/
+          cpu[:vendor] = $1
+        elsif line =~ /^Model name:\s+ (.+)$/
+          if $1 =~ /^ThunderX2 (.+)$/
+            cpu[:model] = 'ThunderX2'
+            cpu[:version] = $1
+          elsif $1 =~ /^Cortex-(.+)$/
+            cpu[:model] = 'Cortex'
+            cpu[:version] = $1
+          end
         end
       end
     end
@@ -75,8 +93,7 @@ Ohai.plugin(:Cpu) do
     end
     cpu[:mhz] = (cpu[:mhz]*1000000000).to_i
 
-    stdout = Utils.shell_out("lscpu").stdout
-    stdout.each_line do |line|
+    lscpu.each do |line|
       if line =~ /^L1d/
         cpu[:L1d] = line.chomp.split(": ").last.lstrip.sub("K","")
       end
@@ -91,7 +108,7 @@ Ohai.plugin(:Cpu) do
       end
     end
 
-    # 
+    #
     cpu[:clock_speed] = (execute('x86info').last.split(" ").last.to_f * 1000 * 1000).to_i rescue 'unknown'
 
     # Parsing 'lscpu -p' output to retrieve :nb_procs, :nb_cores and :nb_threads
@@ -112,7 +129,7 @@ Ohai.plugin(:Cpu) do
     cpu[:nb_threads] = lscpu_p_count[0]
 
     # :ht_capable
-    cpu_flags = fileread('/proc/cpuinfo').grep(/flags\t\t: /)[0] rescue 'unknown'
+    cpu_flags = lscpu.grep(/Flags:\t*/)[0] rescue 'unknown'
     cpu[:ht_capable] = ! / ht /.match(cpu_flags).nil?
 
     # HACK - see #7309
