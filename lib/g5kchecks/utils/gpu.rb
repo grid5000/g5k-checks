@@ -34,6 +34,19 @@ module Grid5000
       return device_file_path
     end
 
+    def get_cpu_from_numa_node(numa_node)
+      cmd = "lscpu -e=node,socket|grep ^#{numa_node}|sort -u"
+      cpu = nil
+      Open3.popen2(cmd) do |stdin, stdout, wait_thr|
+        stdout.each do | line |
+          if line =~ /#{numa_node}\s+\d+/
+            cpu = (line.match(/^.*\s+(\d+)$/).captures)[0]
+          end
+        end
+      end
+      return cpu
+    end
+
     def fetch_nvidia_cards_info()
       begin
         cmd = 'nvidia-smi -q -x'
@@ -63,7 +76,7 @@ module Grid5000
             end
             bus_id = bus[1]
             complete_pci_bus_id = prefix_bus + ':' + bus_id
-            card[:cpu_affinity] = detect_numa_node(complete_pci_bus_id)
+            card[:cpu_affinity] = get_cpu_from_numa_node(detect_numa_node(complete_pci_bus_id))
             cards << card
           }
           return Hash[names.zip(cards)]
