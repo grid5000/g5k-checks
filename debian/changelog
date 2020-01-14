@@ -1,3 +1,9 @@
+g5k-checks (0.8.24) unstable; urgency=medium
+
+  * [8f0fc7a] [gpu] make sure to set a cpu (socket) number instead of a numa zone for cpu_affinity
+
+ -- Patrice RINGOT <patrice.ringot@loria.fr>  Tue, 14 Jan 2020 22:01:37 +0100
+
 g5k-checks (0.8.23) unstable; urgency=low
 
   * 5972e14 package x86info is only available on x86
