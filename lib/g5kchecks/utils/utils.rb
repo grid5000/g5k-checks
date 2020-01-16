@@ -225,8 +225,8 @@ module Utils
   end
 
   #Wrap dmidecode methods into Utils
-  def Utils.dmidecode_total_memory
-    DmiDecode.get_total_memory
+  def Utils.dmidecode_total_memory(type)
+    DmiDecode.get_total_memory(type)
   end
 
   def Utils.write_api_files()
