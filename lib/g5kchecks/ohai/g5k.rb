@@ -34,7 +34,6 @@ Ohai.plugin(:G5k) do
       File.open("/etc/grid5000/release", "r") do |infile|
         infos["env"] = {}
         infos["env"]["name"] = infile.gets.strip
-        infos["env"]["postinstalls"] = infile.gets.strip
       end
     end
     # end KADEPLOY environments infos
