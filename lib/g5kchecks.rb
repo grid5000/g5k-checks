@@ -66,13 +66,15 @@ module G5kChecks
         config.output_dir = conf["output_dir"]
       end
 
-      # Waiting for kadeploy to end its deployment before starting the tests
-      hostname=Socket.gethostname
-      state=get_kadeploy_state(hostname)
-      while not ['deployed', 'prod_env', 'rebooted', 'powered'].include?(state)
-        sleep 1
-        puts "Waiting for kadeploy to end its deployment (state=#{state})"
+      if conf["mode"] != "api"
+        # Waiting for kadeploy to end its deployment before starting the tests
+        hostname=Socket.gethostname
         state=get_kadeploy_state(hostname)
+        while not ['deployed', 'prod_env', 'rebooted', 'powered'].include?(state)
+          sleep 1
+          puts "Waiting for kadeploy to end its deployment (state=#{state})"
+          state=get_kadeploy_state(hostname)
+        end
       end
 
       res = RSpec::Core::Runner::run(rspec_opts)
