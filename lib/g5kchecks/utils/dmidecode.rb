@@ -10,7 +10,7 @@ module DmiDecode
       puts "dmidecode failed: #{output}"
       return nil
     end
-    
+
     look_for_section_name = false
     dmi_section = nil
     dmi_section_data = {}
@@ -47,14 +47,27 @@ module DmiDecode
   end
 
   #Get dmidecode data and return total physical memory installed (in bytes)
-  def DmiDecode.get_total_memory
-
+  def DmiDecode.get_total_memory(type)
     physical_memory = 0
     dmi_data = get_dmi_data
 
     return if dmi_data.nil? or dmi_data['Memory Device'].nil?
 
+    memory_technology =
+      case type
+      when :dram
+        'DRAM'
+      when :pmem
+        'Intel persistent memory'
+      end
+
+    # On the oldest clusters dmidecode does not print the Memory Technology for
+    # the DIMMs. When it's the case, we assume that DIMMs are always DRAM
     dmi_data['Memory Device'].each do |mem_dev|
+      unless mem_dev['Memory Technology'] == memory_technology ||
+          (type == :dram && mem_dev['Memory Technology'].nil?)
+        next
+      end
 
       size = mem_dev['Size']
       form_factor = mem_dev['Form Factor']
@@ -71,7 +84,12 @@ module DmiDecode
         end
       end
     end
-    return physical_memory * (1024 ** 2)
+
+    if physical_memory > 0
+      physical_memory * (1024 ** 2)
+    else
+      nil
+    end
   end
 
 end #Module DmiDecode
