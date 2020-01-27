@@ -133,6 +133,9 @@ Ohai.plugin(:Cpu) do
     cpu_flags = lscpu.grep(/Flags:\t*/)[0] rescue 'unknown'
     cpu[:ht_capable] = ! / ht /.match(cpu_flags).nil?
 
+    # cpu flags
+    cpu[:'0'][:flags] = cpu_flags.split[1..-1]
+
     # HACK - see #7309
     # There is a bug in /proc/cpuinfo concerning the ht flag for grimani (E5-2603 v3)
     # https://en.wikipedia.org/wiki/List_of_Intel_Xeon_microprocessors#.22Haswell-EP.22_.2822_nm.29_Efficient_Performance
