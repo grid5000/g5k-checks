@@ -64,10 +64,11 @@ Ohai.plugin(:Cpu) do
         if line =~ /^Vendor ID:\s+ (.+)$/
           cpu[:vendor] = $1
         elsif line =~ /^Model name:\s+ (.+)$/
-          if $1 =~ /^ThunderX2 (.+)$/
+          cpu[:'0'][:model_name] = $1
+          if cpu[:'0'][:model_name] =~ /^ThunderX2 (.+)$/
             cpu[:model] = 'ThunderX2'
             cpu[:version] = $1
-          elsif $1 =~ /^Cortex-(.+)$/
+          elsif cpu[:'0'][:model_name] =~ /^Cortex-(.+)$/
             cpu[:model] = 'Cortex'
             cpu[:version] = $1
           end
