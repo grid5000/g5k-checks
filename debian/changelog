@@ -1,3 +1,10 @@
+g5k-checks (0.8.25) unstable; urgency=low
+
+  * bc86add add pmem support
+  * ea22816 remove the postinstall path check (bug 11314)
+
+ -- Samir Noir <samir.noir@inria.fr>  Mon, 27 Jan 2020 10:21:44 +0000
+
 g5k-checks (0.8.24) unstable; urgency=medium
 
   * [8f0fc7a] [gpu] make sure to set a cpu (socket) number instead of a numa zone for cpu_affinity
