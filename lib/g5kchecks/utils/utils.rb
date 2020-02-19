@@ -252,7 +252,13 @@ module Utils
         hash[p] ||= {}
         hash = hash[p]
       else
-        hash[p] = string_to_object(value.to_s.encode(Encoding.default_external))
+        # Because versions returned from ipmitool are x.yz we need to do this
+        # to avoid the convertion to a Float by the string_to_object method
+        if path == 'bmc_version'
+          hash[p] = value.to_s.encode(Encoding.default_external)
+        else
+          hash[p] = string_to_object(value.to_s.encode(Encoding.default_external))
+        end
       end
     end
   end
