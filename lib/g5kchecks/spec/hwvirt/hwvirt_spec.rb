@@ -6,20 +6,31 @@ describe "Virtual Hardware" do
   end
 
   it "should have the good driver" do
-    vhw_type = @system[:cpu][:'0'][:flags].select{|i|
-      i == "svm" || i == "vmx"
-    }
-    kmod = ""
-    @mod_name = ""
-    if vhw_type[0] == 'svm'
-      kmod = "amd-v"
-      @mod_name = "kvm_amd"
-    elsif vhw_type[0] == 'vmx'
-      kmod = "ivt"
-      @mod_name = "kvm_intel"
-    else
-      kmod = false
+    case @system[:kernel][:machine]
+    when 'x86_64'
+      vhw_type = @system[:cpu][:'0'][:flags].select{|i|
+        i == "svm" || i == "vmx"
+      }
+      kmod = ""
+      @mod_name = ""
+      if vhw_type[0] == 'svm'
+        kmod = "amd-v"
+        @mod_name = "kvm_amd"
+      elsif vhw_type[0] == 'vmx'
+        kmod = "ivt"
+        @mod_name = "kvm_intel"
+      else
+        kmod = false
+      end
+    when 'aarch64'
+      if @system[:cpu][:model] == 'ThunderX2'
+        # Apparently, all aarch64 CPU's supports virtualization, and there is
+        # not a kernel module for that, so we put arm64
+        kmod = 'arm64'
+      end
     end
+
+
     kmod_api = ""
     kmod_api = @api['virtual'] if @api
     Utils.test(kmod, kmod_api, "supported_job_types/virtual") do |v_ohai, v_api, error_msg|

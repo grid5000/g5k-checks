@@ -20,20 +20,23 @@ Ohai.plugin(:G5k) do
 
     api_base_url = conf["retrieve_url"]
 
-    std_env_name = conf["std_env_name"]
-
     # KADEPLOY environments infos
-    json_envs = Utils.api_call(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy&name=#{std_env_name}")
-    if json_envs.size == 1
-      infos["kadeploy"]["stdenv"] = json_envs[0]
-    else
-      raise "More than one environment returned by Kadeploy API"
-    end
+    if conf["mode"] != "api"
+      ref_api = RSpec.configuration.node.api_description["software"]
+      std_env_name = ref_api["standard-environment"]
+      json_envs = Utils.api_call(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy&name=#{std_env_name}")
 
-    if File.exists?("/etc/grid5000/release")
-      File.open("/etc/grid5000/release", "r") do |infile|
-        infos["env"] = {}
-        infos["env"]["name"] = infile.gets.strip
+      if json_envs.size == 1
+        infos["kadeploy"]["stdenv"] = json_envs[0]
+      else
+        raise "More than one environment returned by Kadeploy API"
+      end
+
+      if File.exists?("/etc/grid5000/release")
+        File.open("/etc/grid5000/release", "r") do |infile|
+          infos["env"] = {}
+          infos["env"]["name"] = infile.gets.strip
+        end
       end
     end
     # end KADEPLOY environments infos

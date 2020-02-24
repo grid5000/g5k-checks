@@ -84,7 +84,7 @@ module Grid5000
 	  return {}
         end
       rescue Errno::ENOENT
-        raise 'nvidia-smi not found'
+        return {}
       end
     end
 

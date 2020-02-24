@@ -5,21 +5,6 @@ describe "Processor" do
     @system = RSpec.configuration.node.ohai_description
   end
 
-  it "should have the correct frequency" do
-    freq_api = ""
-    if @api
-      freq_api = @api["clock_speed"]
-    else
-      freq_api = 0
-    end
-    freq_ohai = @system[:cpu]['clock_speed'].to_i * 1000 # from x86info
-
-    err = (freq_ohai-freq_api).abs
-    Utils.test(freq_ohai, freq_api, "processor/clock_speed") do |v_ohai, v_api, error_msg|
-      expect(err).to be < 100000000, error_msg
-    end
-  end
-
   it "should be of the correct instruction set" do
     instr_api = ""
     instr_api = @api["instruction_set"] if @api
