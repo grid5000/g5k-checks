@@ -1,3 +1,18 @@
+g5k-checks (0.9.0) unstable; urgency=low
+
+  * b458538 Force new config file in g5k-checks test installation
+  * ff431f6 get the environment name for a node from the reference-api
+  * 409a65c stop collecting and checking the clock_speed
+  * fb8d7e2 fix virtual supported_job_types on arm64
+  * 034fdbb set cpu flags in cpu[:'0'] using lscpu
+  * e8756c7 Define "model_name" for arm cpu to avoid "nil" value for "other_description"
+  * 912f47d nvidia smi is not available on arm64, so we return empty {} if not found
+  * 653f83c handle ARM cpu
+  * 2132c15 add a workaround to not convert bmc_version to Float
+  * 7d41e2c try to get bmc version using ipmitool if it's not possible with racadm
+
+ -- Samir Noir <samir.noir@inria.fr>  Mon, 24 Feb 2020 14:25:55 +0100
+
 g5k-checks (0.8.26) unstable; urgency=low
 
   * e296882 Prevent g5kcheck to check kadeploy status when '-m api' is used (bug 11289)
