@@ -6,7 +6,7 @@ Ohai.plugin(:Bmc) do
   provides "bmc"
 
   collect_data do
-    bmc_info = Grid5000::DellBMC.new().fetch_info()
+    bmc_info = Grid5000::BMC.new().fetch_info()
     bmc Mash.new(bmc_info)
     bmc
   end
