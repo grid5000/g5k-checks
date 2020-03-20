@@ -174,7 +174,16 @@ Ohai.plugin(:Cpu) do
     packages = REXML::XPath::match(doc, "//object[@type='Package']")
     pu_ids = packages.first.get_elements("object//object[@type='PU']").map { |pu| pu.attribute('os_index').value.to_i }.sort
     cpucount = packages.length
-    # If all PU ids for the first CPU are multiple of the cpucount, then it's round-robin
-    cpu[:cpu_core_numbering] = ((pu_ids.select { |e| e % cpucount != 0 }.empty? and cpucount > 1) ? 'round-robin' : 'contiguous')
+    # Default cpu_core_numbering is contiguous (for mono CPU machines it is by choice)
+    cpu[:cpu_core_numbering] = 'contiguous'
+    if cpucount > 1
+      if pu_ids.select { |e| e % cpucount != 0 }.empty?
+        # If all PU ids for the first CPU are multiple of the cpucount, then it ought to be round-robin
+        cpu[:cpu_core_numbering] = 'round-robin'
+      elsif pu_ids.max < pu_ids.length
+        # If all PU ids for the first CPU are inferior than the PU ids count of 1 CPU, then it ought to be contiguous-including-threads
+        cpu[:cpu_core_numbering] = 'contiguous-including-threads'
+      end
+    end
   end
 end
