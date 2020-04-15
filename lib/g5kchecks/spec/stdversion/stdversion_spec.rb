@@ -22,4 +22,20 @@ describe "Standard Environment Version" do
       end
     end
   end
+
+  it "should have postinstall version equals to version in reference api" do
+    curPost = @g5k["postinstall"]["version"]
+    refPost = RSpec.configuration.node.api_description["software"]["postinstall-version"]
+    Utils.test(curPost, refPost, "Postinstall version", true) do |v_system, v_api, error_msg|
+      expect(v_system).to eql(v_api), error_msg
+    end
+  end
+
+  it "should have the forced deployment timestamp equals to the one in reference api" do
+    curTs = @g5k["forced-deployment-timestamp"]
+    refTs = RSpec.configuration.node.api_description["software"]["forced-deployment-timestamp"]
+    Utils.test(curTs, refTs, "Forced deployment timestamp equality", true) do |v_system, v_api, error_msg|
+      expect(v_system).to eql(v_api), error_msg
+    end
+  end
 end
