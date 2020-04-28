@@ -44,12 +44,8 @@ Ohai.plugin(:NetworkAdapters) do
       ifaceStatus = Utils.interface_operstate(dev)
       ethtool = Utils.interface_ethtool(dev)
       if (ifaceStatus != "up")
-        #don't check IPs for initialy down interfaces
-        iface[:check_ip] = false
         #Bring interface up to allow correct rate/enabled report
         Utils.shell_out("/sbin/ip link set dev #{dev} up")
-      else
-        iface[:check_ip] = true
       end
       now = Time.now.to_i
       if ifaceStatus == "down"

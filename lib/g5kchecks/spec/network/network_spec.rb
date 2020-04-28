@@ -53,7 +53,7 @@ describe "Network" do
     end
 
     #Only check IP address if initially mounted by system
-    if iface[:check_ip] == true
+    if iface[:mounted]
       it "should have the correct IPv4" do
         ip_api = api['ip']
         ip_ohai = iface[:ip]
