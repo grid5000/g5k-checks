@@ -1,3 +1,10 @@
+g5k-checks (0.9.2) unstable; urgency=low
+
+  * a4ea428 Only check IPv4 of mounted interfaces (required for Bug #11659)
+  * fb58a40 check if the postinstall version and the forced-deployment-timestamp match the ones from reference-api
+
+ -- Samir Noir <samir.noir@inria.fr>  Tue, 28 Apr 2020 15:16:54 +0200
+
 g5k-checks (0.9.1) unstable; urgency=medium
 
   * [pyxis] add support for the contiguous_including_threads cpu_core_numbering
