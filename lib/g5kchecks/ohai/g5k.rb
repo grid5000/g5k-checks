@@ -38,6 +38,18 @@ Ohai.plugin(:G5k) do
           infos["env"]["name"] = infile.gets.strip
         end
       end
+
+      if File.exists?("/etc/grid5000/postinstall")
+        json_postinstall = JSON.load(File.open("/etc/grid5000/postinstall", "r"))
+        infos["postinstall"] = {}
+        infos["postinstall"]["version"] = json_postinstall["version"]
+      end
+
+      if File.exists?("/etc/grid5000/forced-deployment-timestamp")
+        File.open("/etc/grid5000/forced-deployment-timestamp", "r") do |infile|
+          infos["forced-deployment-timestamp"] = infile.gets.strip.to_i
+        end
+      end
     end
     # end KADEPLOY environments infos
 
