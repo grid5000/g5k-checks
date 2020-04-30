@@ -293,7 +293,7 @@ module Utils
   def Utils.api_call(url)
     json = nil
     begin
-      json = JSON.parse(RestClient::Resource.new(url, :user => RSpec.configuration.node.conf["apiuser"], :password => RSpec.configuration.node.conf["apipasswd"]).get())
+      json = JSON.parse(RestClient::Resource.new(url, user: RSpec.configuration.node.conf['apiuser'], password: RSpec.configuration.node.conf['apipasswd']).get(user_agent: 'g5k-check'))
     rescue RestClient::ServiceUnavailable, RestClient::BadGateway => error
       retries ||= 0
       if retries < 5
