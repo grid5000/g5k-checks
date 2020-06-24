@@ -8,6 +8,11 @@ stages:
  - deploy_and_test
  - deploy
 
+include:
+  - project: 'grid5000/grid5000-gitlab-templates'
+    ref: master
+    file: '/sonarqube.yml'
+
 build-stretch: &build-stretch
   stage: build
   variables:
