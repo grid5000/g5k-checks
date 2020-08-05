@@ -203,7 +203,6 @@ Restfully::Session.new(:base_uri => config['base_uri'], :username => config['use
       if deployment.nil?
         logger.error "[#{siteg5k}] can not submit deployment "
         return false
-        nil
       else
 
         deployment.reload
