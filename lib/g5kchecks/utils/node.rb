@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # retrieve node configuration (with Ohai) and the corresponding API
 # characteristics.
 require 'socket'
@@ -15,13 +17,11 @@ module Ohai
     class Plugin
       old_run = instance_method(:run)
       define_method(:run) do
-        begin
-          old_run.bind(self).call
-        rescue Exception => e
-          STDERR.puts "ERROR: plugin #{self.name} returned an exception. Exiting."
-          STDERR.puts "#{e.inspect} #{e.backtrace.join("\n")}"
-          exit!(1)
-        end
+        old_run.bind(self).call
+      rescue Exception => e
+        warn "ERROR: plugin #{name} returned an exception. Exiting."
+        warn "#{e.inspect} #{e.backtrace.join("\n")}"
+        exit!(1)
       end
     end
   end
@@ -36,82 +36,84 @@ module Grid5000
     def initialize(conf)
       @conf = conf
       @hostname = Socket.gethostname
-      @node_uid, @site_uid, @grid_uid, @ltd = hostname.split(".")
-      @cluster_uid = @node_uid.split("-")[0]
+      @node_uid, @site_uid, @grid_uid, @ltd = hostname.split('.')
+      @cluster_uid = @node_uid.split('-')[0]
       @ohai_description = nil
       @api_description = nil
       @max_retries = 2
     end
 
     def api_description
-      return @api_description if @api_description != nil
-      if @conf["mode"] == "api"
-        @api_description = JSON.parse "{}"
-      elsif @conf["retrieve_from"] == "rest"
-        if conf["branch"] == nil
-          @branch=""
-        else
-          @branch="?branch="+conf["branch"]
-        end
+      return @api_description unless @api_description.nil?
+
+      if @conf['mode'] == 'api'
+        @api_description = JSON.parse '{}'
+      elsif @conf['retrieve_from'] == 'rest'
+        @branch = if conf['branch'].nil?
+                    ''
+                  else
+                    '?branch=' + conf['branch']
+                  end
         @node_path = [
-          conf["retrieve_url"],
-          "sites", site_uid,
-          "clusters", cluster_uid,
-          "nodes", node_uid
-        ].join("/")
+          conf['retrieve_url'],
+          'sites', site_uid,
+          'clusters', cluster_uid,
+          'nodes', node_uid
+        ].join('/')
         begin
-          @api_description = JSON.parse RestClient::Resource.new(@node_path+@branch, :user => @conf["apiuser"], :password => @conf["apipasswd"], :headers => {
-                                                                   :accept => :json
-                                                                 }).get()
+          @api_description = JSON.parse RestClient::Resource.new(@node_path + @branch, user: @conf['apiuser'], password: @conf['apipasswd'], headers: {
+                                                                   accept: :json
+                                                                 }).get
         rescue RestClient::ResourceNotFound
-          if @conf["fallback_branch"] != nil
+          if !@conf['fallback_branch'].nil?
             begin
-              @api_description = JSON.parse RestClient::Resource.new(@node_path+"?branch="+@conf["fallback_branch"], :user => @conf["apiuser"], :password => @conf["apipasswd"], :headers => {
-                                                                       :accept => :json
-                                                                     }).get()
+              @api_description = JSON.parse RestClient::Resource.new(@node_path + '?branch=' + @conf['fallback_branch'], user: @conf['apiuser'], password: @conf['apipasswd'], headers: {
+                                                                       accept: :json
+                                                                     }).get
             rescue RestClient::ResourceNotFound
-              raise "Node not found with url #{@node_path+@branch} and #{@node_path+"?branch="+@conf["fallback_branch"]}"
-            rescue RestClient::ServiceUnavailable => error
+              raise "Node not found with url #{@node_path + @branch} and #{@node_path + '?branch=' + @conf['fallback_branch']}"
+            rescue RestClient::ServiceUnavailable => e
               @retries ||= 0
               if @retries < @max_retries
                 @retries += 1
                 sleep 10
                 retry
               else
-                raise error
+                raise e
               end
             end
           else
-            raise "Node not find with url #{@node_path+@branch}"
+            raise "Node not find with url #{@node_path + @branch}"
           end
-        rescue => error
+        rescue StandardError => e
           @retries ||= 0
           if @retries < @max_retries
             @retries += 1
             sleep 10
             retry
           else
-            raise error
+            raise e
           end
         end
-      elsif @conf["retrieve_from"] == "file"
-	@node_path = File.join(@conf["retrieve_dir"], @hostname+".json") 
-	@api_description = JSON.parse(File.read(@node_path))	
+      elsif @conf['retrieve_from'] == 'file'
+        @node_path = File.join(@conf['retrieve_dir'], @hostname + '.json')
+        @api_description = JSON.parse(File.read(@node_path))
       end
-      return @api_description
+      @api_description
     end
 
     def get_wanted_mountpoint
-	return @conf["mountpoint"] if @conf["mountpoint"] != nil
-	return [] 
-    end 
+      return @conf['mountpoint'] unless @conf['mountpoint'].nil?
+
+      []
+    end
 
     def ohai_description
-      if !@ohai_description
+      unless @ohai_description
         @ohai_description = Ohai::System.new
         # Disable plugins that always fail to run and are not needed by G5K-checks
-        Ohai.config.disabled_plugins = [:Eucalyptus, :Virtualbox, :Chef, :SSHHostKey]
-        if @conf["debug"] == true
+        Ohai.config.disabled_plugins = %i[Eucalyptus Virtualbox Chef SSHHostKey]
+        if @conf['debug'] == true
           Ohai::Log.init(STDOUT)
           Ohai::Log.level = :debug
         end
@@ -119,6 +121,5 @@ module Grid5000
       end
       @ohai_description
     end
-
   end
 end

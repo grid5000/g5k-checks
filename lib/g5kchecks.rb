@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# frozen_string_literal: true
 
 require 'rspec'
 
@@ -6,81 +7,79 @@ require 'g5kchecks/utils/node'
 require 'g5kchecks/utils/utils'
 
 module G5kChecks
-
   class G5kChecks::G5kChecks
-
     def initialize
       super
-      trap("TERM") do
-        RefAPIHelper::G5kRefAPIHelperNode.fatal!("SIGTERM received, stopping", 1)
+      trap('TERM') do
+        RefAPIHelper::G5kRefAPIHelperNode.fatal!('SIGTERM received, stopping', 1)
       end
-      trap("INT") do
-        RefAPIHelper::G5kRefAPIHelperNode.fatal!("SIGINT received, stopping", 2)
+      trap('INT') do
+        RefAPIHelper::G5kRefAPIHelperNode.fatal!('SIGINT received, stopping', 2)
       end
     end
 
     def run(conf)
       rspec_opts = []
 
-      rspec_opts << Dir.glob(File.dirname(__FILE__) + "/g5kchecks/spec/**/*_spec.rb")
+      rspec_opts << Dir.glob(File.dirname(__FILE__) + '/g5kchecks/spec/**/*_spec.rb')
 
-      if conf["verbose"] 
+      if conf['verbose']
         require 'g5kchecks/rspec/core/formatters/verbose_formatter'
         RSpec.configure do |c|
           c.add_formatter(RSpec::Core::Formatters::VerboseFormatter)
         end
       end
 
-      if conf["mode"] == "oar_checks"
+      if conf['mode'] == 'oar_checks'
         require 'g5kchecks/rspec/core/formatters/syslog_formatter'
         require 'g5kchecks/rspec/core/formatters/oar_formatter'
         RSpec.configure do |c|
           c.add_formatter(RSpec::Core::Formatters::OarFormatter)
           c.add_formatter(RSpec::Core::Formatters::SyslogFormatter)
         end
-      elsif conf["mode"] == "jenkins"
+      elsif conf['mode'] == 'jenkins'
         require 'g5kchecks/rspec/core/formatters/jenkins_formatter'
         RSpec.configure do |c|
           c.add_formatter(RSpec::Core::Formatters::JenkinsFormatter)
         end
       end
 
-      if !File.directory?(conf["output_dir"])
-        Dir.mkdir(conf["output_dir"], 0755)
+      if !File.directory?(conf['output_dir'])
+        Dir.mkdir(conf['output_dir'], 0o755)
       else
-        Dir.foreach(conf["output_dir"]) {|f|
-          fn = File.join(conf["output_dir"], f);
+        Dir.foreach(conf['output_dir']) do |f|
+          fn = File.join(conf['output_dir'], f)
           File.delete(fn) if f != '.' && f != '..'
-        }
+        end
       end
 
       RSpec.configure do |config|
-        config.deprecation_stream = "/dev/null"
+        config.deprecation_stream = '/dev/null'
         config.add_setting :node
         config.node = Grid5000::Node.new(conf)
-        if conf["mode"] == "api"
+        if conf['mode'] == 'api'
           config.add_setting :api_yaml
-          config.api_yaml = Hash.new
+          config.api_yaml = ({})
         end
         config.add_setting :output_dir
-        config.output_dir = conf["output_dir"]
+        config.output_dir = conf['output_dir']
       end
 
-      if conf["mode"] != "api"
+      if conf['mode'] != 'api'
         # Waiting for kadeploy to end its deployment before starting the tests
-        hostname=Socket.gethostname
-        state=get_kadeploy_state(hostname)
-        while not ['deployed', 'prod_env', 'rebooted', 'powered'].include?(state)
+        hostname = Socket.gethostname
+        state = get_kadeploy_state(hostname)
+        until %w[deployed prod_env rebooted powered].include?(state)
           sleep 1
           puts "Waiting for kadeploy to end its deployment (state=#{state})"
-          state=get_kadeploy_state(hostname)
+          state = get_kadeploy_state(hostname)
         end
       end
 
-      res = RSpec::Core::Runner::run(rspec_opts)
+      res = RSpec::Core::Runner.run(rspec_opts)
 
-      if conf["mode"] == "api"
-        #Finally writes /tmp/hostnmame.{yaml,json} if in API mode
+      if conf['mode'] == 'api'
+        # Finally writes /tmp/hostnmame.{yaml,json} if in API mode
         Utils.write_api_files
       end
 
@@ -90,10 +89,9 @@ module G5kChecks
     private
 
     def get_kadeploy_state(hostname)
-      node_uid, site_uid, grid_uid, ltd = hostname.split(".")
-      json_node = Utils.api_call(RSpec.configuration.node.conf["retrieve_url"] + "/sites/#{site_uid}/internal/kadeployapi/nodes/#{hostname}")
-      return json_node["state"]
+      _node_uid, site_uid, _grid_uid, _ltd = hostname.split('.')
+      json_node = Utils.api_call(RSpec.configuration.node.conf['retrieve_url'] + "/sites/#{site_uid}/internal/kadeployapi/nodes/#{hostname}")
+      json_node['state']
     end
-
   end
 end

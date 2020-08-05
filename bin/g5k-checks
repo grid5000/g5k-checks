@@ -1,14 +1,15 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 begin
-  #Hard-coded path for deployed bundle...
+  # Hard-coded path for deployed bundle...
   require '/usr/lib/ruby/bundles/g5k-checks/bundler/setup'
 rescue LoadError
-  #puts "Running in development mode, dependencies load path managed by bundler"
+  # puts "Running in development mode, dependencies load path managed by bundler"
 end
 
 # Load libraries from source tree if possible
-$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'optparse'
 require 'optparse/time'
@@ -22,75 +23,75 @@ require 'syslog'
 
 $hashconf = {}
 
-USAGE = "Usage: #{$0} [options]"
+USAGE = "Usage: #{$PROGRAM_NAME} [options]"
 
 optparse = OptionParser.new(USAGE) do |opts|
+  opts.banner = ' argv...'
 
-  opts.banner << " argv..."
+  opts.on_tail('--help', 'Show this message') { puts opts; exit }
 
-  opts.on_tail("--help", "Show this message") {puts opts; exit}
-
-  $hashconf["conffile"] = "/etc/g5k-checks.conf"
-  opts.on( '-c', '--config-file <PATH>', "Specify the path to the g5k-checks configuration files [default: '#{$hashconf["conffile"]}']") do |conf|
-    $hashconf["conffile"] = conf
+  $hashconf['conffile'] = '/etc/g5k-checks.conf'
+  opts.on('-c', '--config-file <PATH>', "Specify the path to the g5k-checks configuration files [default: '#{$hashconf['conffile']}']") do |conf|
+    $hashconf['conffile'] = conf
   end
 
-  $hashconf["output_dir"] = "/var/lib/g5kchecks/"
-  opts.on( '-o', '--output-dir <PATH>', "Specify the path where g5k-checks puts output files [default: #{$hashconf["output_dir"]}]") do |outputdir|
-    $hashconf["output_dir"] = outputdir
+  $hashconf['output_dir'] = '/var/lib/g5kchecks/'
+  opts.on('-o', '--output-dir <PATH>', "Specify the path where g5k-checks puts output files [default: #{$hashconf['output_dir']}]") do |outputdir|
+    $hashconf['output_dir'] = outputdir
   end
 
-  $hashconf["mode"] = "oar_checks"
-  opts.on( '-m', '--mode MODE', "Specify the functional mode (oar_checks, api, jenkins) [default: 'oar_checks']") do |mode|
-    $hashconf["mode"] = mode
+  $hashconf['mode'] = 'oar_checks'
+  opts.on('-m', '--mode MODE', "Specify the functional mode (oar_checks, api, jenkins) [default: 'oar_checks']") do |mode|
+    $hashconf['mode'] = mode
   end
 
   # array
-  opts.on("-e", "--enable-tests[=TEST1,TEST2]", Array, "Enable specific tests") {|testlist|$hashconf["enabletestlist"]=testlist}
+  opts.on('-e', '--enable-tests[=TEST1,TEST2]', Array, 'Enable specific tests') { |testlist| $hashconf['enabletestlist'] = testlist }
 
   # array
-  opts.on("-r", "--remove-tests[=TEST1,TEST2] (default=all)", Array, "Remove specific tests") do |rm|
-    $hashconf["removetestlist"] = rm
+  opts.on('-r', '--remove-tests[=TEST1,TEST2] (default=all)', Array, 'Remove specific tests') do |rm|
+    $hashconf['removetestlist'] = rm
   end
 
-  opts.on('-u', '--url-api <URL>', "Specify the URL where g5k-checks retrieves API information") do |u|
-    $hashconf["urlapi"] = u
+  opts.on('-u', '--url-api <URL>', 'Specify the URL where g5k-checks retrieves API information') do |u|
+    $hashconf['urlapi'] = u
   end
 
-  opts.on('-l', '--api-login user', "Specify the user to login with on the API") do |user|
-    $hashconf["apiuser"] = user
+  opts.on('-l', '--api-login user', 'Specify the user to login with on the API') do |user|
+    $hashconf['apiuser'] = user
   end
 
-  opts.on('-p', '--api-passwd passwd', "Specify the password to login with on the API") do |passwd|
-    $hashconf["apipasswd"] = passwd
+  opts.on('-p', '--api-passwd passwd', 'Specify the password to login with on the API') do |passwd|
+    $hashconf['apipasswd'] = passwd
   end
 
-  $hashconf["verbose"] = false
-  opts.on_tail( '-v', '--verbose', "Enable verbose mode [default: #{$hashconf["verbose"]}]") do 
-    $hashconf["verbose"] = true
+  $hashconf['verbose'] = false
+  opts.on_tail('-v', '--verbose', "Enable verbose mode [default: #{$hashconf['verbose']}]") do
+    $hashconf['verbose'] = true
   end
 
-  $hashconf["debug"] = false
-  opts.on_tail( '-d', '--debug', "Enable debug mode (shows all ohai plugins outputs) [default: #{$hashconf["debug"]}]") do 
-    $hashconf["debug"] = true
+  $hashconf['debug'] = false
+  opts.on_tail('-d', '--debug', "Enable debug mode (shows all ohai plugins outputs) [default: #{$hashconf['debug']}]") do
+    $hashconf['debug'] = true
   end
 end
 
 begin
   optparse.parse!
 rescue OptionParser::InvalidOption => e
-  $stderr.puts e.to_s
+  warn e.to_s
   exit 1
 end
 
-$hashconf = G5kChecks::ConfigParser.new($hashconf["conffile"]).parse.merge!($hashconf)
+$hashconf = G5kChecks::ConfigParser.new($hashconf['conffile']).parse.merge!($hashconf)
 
 G5kChecks::G5kChecks.new.run($hashconf)
 
-#Send fails to Syslog
-Syslog.open("g5k-checks", Syslog::LOG_ODELAY, Syslog::LOG_DAEMON)
-Dir.foreach($hashconf["output_dir"]) {|f|
-  next if f=='.' or f=='..'
-  Syslog.log(Syslog::LOG_INFO, File.read($hashconf["output_dir"]+"/"+f))
-}
+# Send fails to Syslog
+Syslog.open('g5k-checks', Syslog::LOG_ODELAY, Syslog::LOG_DAEMON)
+Dir.foreach($hashconf['output_dir']) do |f|
+  next if (f == '.') || (f == '..')
+
+  Syslog.log(Syslog::LOG_INFO, File.read($hashconf['output_dir'] + '/' + f))
+end
 Syslog.close
