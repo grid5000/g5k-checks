@@ -1,13 +1,12 @@
-# coding: utf-8
+# frozen_string_literal: true
 
 module RSpec
   module Core
     module Formatters
       class VerboseFormatter
-
         RSpec::Core::Formatters.register self, :example_group_started, :example_group_finished, :example_passed, :example_failed
 
-        def initialize(output)
+        def initialize(_output)
           @group_level = 0
         end
 
@@ -18,7 +17,7 @@ module RSpec
           @group_level += 1
         end
 
-        def example_group_finished(groupNotification)
+        def example_group_finished(_groupNotification)
           @group_level -= 1
         end
 
@@ -27,14 +26,14 @@ module RSpec
         end
 
         def example_failed(failedExampleNotification)
-          print_error("#{failedExampleNotification.example.full_description.strip}. #{failedExampleNotification.example.execution_result.exception.to_s} (FAILED - #{next_failure_index})")
+          print_error("#{failedExampleNotification.example.full_description.strip}. #{failedExampleNotification.example.execution_result.exception} (FAILED - #{next_failure_index})")
         end
 
         def print_success(msg)
           if $stdout.isatty
             puts "\e[32m  OK " + msg + "\e[0m"
           else
-            puts " OK " + msg
+            puts ' OK ' + msg
           end
         end
 
@@ -42,7 +41,7 @@ module RSpec
           if $stdout.isatty
             puts "\e[31m  KO " + msg + "\e[0m"
           else
-            puts " KO " + msg
+            puts ' KO ' + msg
           end
         end
 

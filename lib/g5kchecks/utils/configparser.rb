@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 # A very tiny configuration parser
 require 'yaml'
 
 module G5kChecks
   class ConfigParser
-
     def initialize(configpath)
       # The config path
       @path = configpath
@@ -15,11 +16,11 @@ module G5kChecks
       begin
         @hash = YAML.load_file(@path)
       rescue ArgumentError
-        raise ArgumentError.new("Invalid YAML file '#{@path}'")
+        raise ArgumentError, "Invalid YAML file '#{@path}'"
       rescue Errno::ENOENT
-        raise ArgumentError.new("File not found '#{@path}'")
+        raise ArgumentError, "File not found '#{@path}'"
       end
-      return @hash
+      @hash
     end
   end
 end

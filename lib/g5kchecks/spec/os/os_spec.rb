@@ -1,13 +1,13 @@
-describe "OS" do
+# frozen_string_literal: true
 
+describe 'OS' do
   before(:all) do
-    @api = RSpec.configuration.node.api_description["operating_system"]
+    @api = RSpec.configuration.node.api_description['operating_system']
     @system = RSpec.configuration.node.ohai_description
   end
 
-  [ :ht_enabled, :pstate_driver, :pstate_governor, :turboboost_enabled, 
-    :cstate_driver, :cstate_governor].each { |key|
-
+  %i[ht_enabled pstate_driver pstate_governor turboboost_enabled
+     cstate_driver cstate_governor].each do |key|
     it "should have the correct value for #{key}" do
       key_ohai = @system[:cpu][key]
       key_api = nil
@@ -17,5 +17,5 @@ describe "OS" do
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
-  }
+  end
 end
