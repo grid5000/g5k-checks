@@ -26,13 +26,10 @@ rubocop:
   except:
     - tags
 
-build-stretch: &build-stretch
+.build: &build
   stage: build
-  variables:
-    TARGETDIR: "stretch"
   tags:
    - grid5000-docker
-  image: debian:stretch
   script:
    - apt-get update && apt-get -y --no-install-recommends install devscripts build-essential equivs
    - mk-build-deps -ir -t 'apt-get -y --no-install-recommends'
@@ -41,15 +38,19 @@ build-stretch: &build-stretch
    - cp ../*deb $TARGETDIR/ # needed to upload it as artifact
   except:
      - tags
+
+build-stretch: &build-stretch
+  <<: *build
+  variables:
+    TARGETDIR: "stretch"
+  image: debian:stretch
   artifacts: # generate artifacts for files we want to publish
      paths:
       - stretch
      expire_in: '1 month'
 
-
-build-buster:
-  <<: *build-stretch
-  image: debian:buster
+.build-buster: &build-buster
+  <<: *build
   variables:
     TARGETDIR: "buster"
   artifacts: # generate artifacts for files we want to publish
@@ -57,17 +58,21 @@ build-buster:
       - buster
      expire_in: '1 month'
 
-build-buster-arm64:
-  <<: *build-stretch
+build-buster:amd64:
+  <<: *build-buster
+  image: debian:buster
+
+build-buster:arm64:
+  <<: *build-buster
   image: arm64v8/debian:buster
-  variables:
-    TARGETDIR: "buster"
   tags:
     - grid5000-docker-arm64
-  artifacts: # generate artifacts for files we want to publish
-     paths:
-      - buster
-     expire_in: '1 month'
+
+build-buster:ppc64:
+  <<: *build-buster
+  image: ppc64le/debian:buster
+  tags:
+    - grid5000-docker-ppc64
 
 test-buster:
   stage: deploy_and_test
