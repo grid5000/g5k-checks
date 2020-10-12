@@ -26,8 +26,8 @@ Ohai.plugin(:Cpu) do
   end
 
   collect_data do
-    arch = execute('uname -m').chomp
     lscpu = execute('lscpu')
+    arch = Utils.arch
 
     # We assume that every cores have the same values
     # x86: Intel or AMD
@@ -67,8 +67,21 @@ Ohai.plugin(:Cpu) do
           elsif cpu[:'0'][:model_name] =~ /^Cortex-(.+)$/
             cpu[:model] = 'Cortex'
             cpu[:version] = Regexp.last_match(1)
+          else
+            cpu[:model] = 'unknown'
+            cpu[:version] = 'unkown'
           end
         end
+      end
+    elsif arch == 'ppc64le'
+      cpu[:vendor] = File.read('/proc/device-tree/vendor').chomp
+      cpu[:'0'][:model_name] = lscpu.grep(/Model name/).first.split(':')[1].strip
+      if cpu[:'0'][:model_name] =~ /^POWER8NVL/
+        cpu[:model] = 'POWER8NVL'
+        cpu[:version] = lscpu.grep(/Model:/).first.split(':')[1].strip
+      else
+        cpu[:model] = 'unknown'
+        cpu[:other_description] = 'unknown'
       end
     end
 
@@ -115,15 +128,24 @@ Ohai.plugin(:Cpu) do
     cpu[:nb_threads] = lscpu_p_count[0]
 
     # :ht_capable
-    cpu_flags = begin
-                  lscpu.grep(/Flags:\t*/)[0]
-                rescue StandardError
-                  'unknown'
-                end
-    cpu[:ht_capable] = !/ ht /.match(cpu_flags).nil?
+    if arch == 'ppc64le'
+      cpu[:ht_capable] = true
+      cpu[:ht_enabled] = !execute('ppc64_cpu --smt').match(/SMT is off/)
 
-    # cpu flags
-    cpu[:'0'][:flags] = cpu_flags.split[1..-1]
+      # There is no feature flags on ppc64
+      cpu[:'0'][:flags] = 'none'
+    else
+      cpu_flags = begin
+                    lscpu.grep(/Flags:\t*/)[0]
+                  rescue StandardError
+                    'unknown'
+                  end
+      cpu[:ht_capable] = !/ ht /.match(cpu_flags).nil?
+      cpu[:ht_enabled] = cpu[:nb_threads] != cpu[:nb_cores]
+
+      # cpu flags
+      cpu[:'0'][:flags] = cpu_flags.split[1..-1]
+    end
 
     # HACK: - see #7309
     # There is a bug in /proc/cpuinfo concerning the ht flag for grimani (E5-2603 v3)
@@ -133,8 +155,6 @@ Ohai.plugin(:Cpu) do
     #  E5-4627 v3)
     cpu[:ht_capable] = false if /E5-2603 v3/.match(cpu[:'0'][:model_name])
 
-    # :ht_enabled
-    cpu[:ht_enabled] = cpu[:nb_threads] != cpu[:nb_cores]
 
     # pstate
     cpu[:pstate_driver] = begin

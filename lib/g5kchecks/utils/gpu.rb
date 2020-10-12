@@ -65,8 +65,7 @@ module Grid5000
           card[:memory] = mem
           card[:device] = device_file_path
           bus = gpu.attributes['id'].split(':')
-          prefix_bus = bus[0]
-          prefix_bus = '0000' if prefix_bus.to_i == 0
+          prefix_bus = bus[0].gsub(/^.*([0-9A-z]{4})$/, '\1')
           bus_id = bus[1]
           complete_pci_bus_id = prefix_bus + ':' + bus_id
           card[:cpu_affinity] = get_cpu_from_numa_node(detect_numa_node(complete_pci_bus_id))

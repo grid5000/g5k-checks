@@ -7,6 +7,7 @@ require 'rest-client'
 require 'json'
 require 'yaml'
 require 'ohai'
+require 'g5kchecks/utils/utils'
 
 Ohai.config[:plugin_path] << File.expand_path(File.join(File.dirname(__FILE__), '/../ohai'))
 
@@ -62,14 +63,14 @@ module Grid5000
         ].join('/')
         begin
           @api_description = JSON.parse RestClient::Resource.new(@node_path + @branch, user: @conf['apiuser'], password: @conf['apipasswd'], headers: {
-                                                                   accept: :json
-                                                                 }).get
+            accept: :json
+          }).get
         rescue RestClient::ResourceNotFound
           if !@conf['fallback_branch'].nil?
             begin
               @api_description = JSON.parse RestClient::Resource.new(@node_path + '?branch=' + @conf['fallback_branch'], user: @conf['apiuser'], password: @conf['apipasswd'], headers: {
-                                                                       accept: :json
-                                                                     }).get
+                accept: :json
+              }).get
             rescue RestClient::ResourceNotFound
               raise "Node not found with url #{@node_path + @branch} and #{@node_path + '?branch=' + @conf['fallback_branch']}"
             rescue RestClient::ServiceUnavailable => e
@@ -113,6 +114,12 @@ module Grid5000
         @ohai_description = Ohai::System.new
         # Disable plugins that always fail to run and are not needed by G5K-checks
         Ohai.config.disabled_plugins = %i[Eucalyptus Virtualbox Chef SSHHostKey]
+        if Utils.dmi_supported?
+          Ohai.config.disabled_plugins.push(:DeviceTree)
+        else
+          Ohai.config.disabled_plugins.push(:DMI, :DMIExtend, :ShardSeed)
+        end
+
         if @conf['debug'] == true
           Ohai::Log.init(STDOUT)
           Ohai::Log.level = :debug
