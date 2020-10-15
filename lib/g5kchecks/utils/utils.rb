@@ -28,6 +28,14 @@ module Utils
     Hash.new { |ht, k| ht[k] = autovivifying_hash }
   end
 
+  def self.arch
+    `uname -m`.chomp
+  end
+
+  def self.dmi_supported?
+    !['ppc64le'].include?(self.arch)
+  end
+
   def self.interface_type(iface)
     # Ref API: interface
     case iface[:type]
@@ -225,6 +233,17 @@ module Utils
   # Wrap dmidecode methods into Utils
   def self.dmidecode_total_memory(type)
     DmiDecode.get_total_memory(type)
+  end
+
+  def self.meminfo_total_memory(type)
+    case type
+    when :dram
+      File.read('/proc/meminfo').split("\n").
+        grep(/MemTotal:/)[0].gsub(/^MemTotal:\s*([0-9]*) kB/, '\1').to_i * KIBI
+    when :pmem
+      # Not yet supported
+      nil
+    end
   end
 
   def self.write_api_files
