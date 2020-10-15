@@ -1,3 +1,11 @@
+g5k-checks (0.10.0) unstable; urgency=low
+
+  * e7a7b66 Add support for ppc64le architecture
+  * d055f94 [ci] add build for ppc64le
+  * c93e2d4 define user agent for api calls
+
+ -- Samir Noir <samir.noir@inria.fr>  Thu, 15 Oct 2020 14:57:52 +0200
+
 g5k-checks (0.9.2) unstable; urgency=low
 
   * a4ea428 Only check IPv4 of mounted interfaces (required for Bug #11659)
