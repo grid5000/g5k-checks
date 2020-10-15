@@ -129,8 +129,10 @@ Ohai.plugin(:Cpu) do
 
     # :ht_capable
     if arch == 'ppc64le'
+      # We assume that we always have SMT on ppc64 (maybe it will not always be
+      # true)
       cpu[:ht_capable] = true
-      cpu[:ht_enabled] = !execute('ppc64_cpu --smt').match(/SMT is off/)
+      cpu[:ht_enabled] = !execute('ppc64_cpu --smt').match?(/SMT is off/)
 
       # There is no feature flags on ppc64
       cpu[:'0'][:flags] = 'none'
