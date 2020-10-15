@@ -33,6 +33,7 @@ rubocop:
   script:
    - apt-get update && apt-get -y --no-install-recommends install devscripts build-essential equivs
    - mk-build-deps -ir -t 'apt-get -y --no-install-recommends'
+   - rm -f ../*deb
    - dpkg-buildpackage
    - mkdir $TARGETDIR
    - cp ../*deb $TARGETDIR/ # needed to upload it as artifact
