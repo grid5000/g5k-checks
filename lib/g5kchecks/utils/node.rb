@@ -115,7 +115,7 @@ module Grid5000
         # Disable plugins that always fail to run and are not needed by G5K-checks
         Ohai.config.disabled_plugins = %i[Eucalyptus Virtualbox Chef SSHHostKey]
         if Utils.dmi_supported?
-          Ohai.config.disabled_plugins.push(:DeviceTree)
+          Ohai.config.disabled_plugins.push(:DeviceTree, :Bios)
         else
           Ohai.config.disabled_plugins.push(:DMI, :DMIExtend, :ShardSeed)
         end
