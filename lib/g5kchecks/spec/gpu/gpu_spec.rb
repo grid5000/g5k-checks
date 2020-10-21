@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# List of GPU models for which nvidia-smi is broken on Grid5000
+UNDETECTED_MODELS = [
+  'Tesla M2075' # lyon-orion
+].freeze
+
 describe 'Gpu' do
   api_gpu_devices = RSpec.configuration.node.api_description['gpu_devices'] || {}
   api_gpu_devices_by_dev = {}
@@ -9,11 +14,6 @@ describe 'Gpu' do
     end
   end
   ohai_gpu_devices = RSpec.configuration.node.ohai_description[:gpu_devices]
-
-  # List of GPU models for which nvidia-smi is broken on Grid5000
-  UNDETECTED_MODELS = [
-    'Tesla M2075' # lyon-orion
-  ].freeze
 
   it 'should have the correct number of GPU' do
     nb_gpu_ohai = ohai_gpu_devices.length

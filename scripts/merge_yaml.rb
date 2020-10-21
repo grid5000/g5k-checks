@@ -41,11 +41,7 @@ class Merge
   end
 
   def merge_with_another_node(checks_yaml, miss)
-    tmp = nil
-    checks_yaml.each do |_k, v|
-      tmp = Marshal.dump(v)
-      break
-    end
+    tmp = Marshal.dump(checks_yaml.first[1])
     checks_yaml[miss] = Marshal.load(tmp)
   end
 
