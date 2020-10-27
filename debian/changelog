@@ -1,3 +1,10 @@
+g5k-checks (0.10.1) unstable; urgency=low
+
+  * 7beb026 Get bios informations via ipmitool for nodes without dmi
+  * 9a671ad Explicitly put ht_enabled to false if SMT if disabled on ppc64
+
+ -- Samir Noir <samir.noir@inria.fr>  Tue, 27 Oct 2020 18:45:19 +0100
+
 g5k-checks (0.10.0) unstable; urgency=low
 
   * e7a7b66 Add support for ppc64le architecture
