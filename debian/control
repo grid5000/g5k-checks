@@ -15,7 +15,7 @@ Architecture: any
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, rake,
  ntp, ntpdate, nfs-common, ethtool, bridge-utils, fio, parted,
- hdparm, x86info [amd64], ipmitool, infiniband-diags, hwloc
+ hdparm, x86info [amd64], ipmitool, infiniband-diags, hwloc, lshw
 Description: expected to be integrated into the production environment of the
  Grid'5000 computational nodes. It gathers a collection of tests which check
  that a node meets several basic requirements before it declares itself as

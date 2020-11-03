@@ -1,54 +1,33 @@
 # frozen_string_literal: true
 # fetch bios infos via ipmi for nodes without dmi
 
+require 'g5kchecks/utils/utils'
+require 'rexml/document'
+
 Ohai.plugin(:Bios) do
   provides 'bios'
   depends 'devicetree'
 
   collect_data do
     bios Mash.new
-    bios[:bios] = bios_ipmitool
+    bios[:bios] = bios_lshw
   end
 
-  def bios_ipmitool
+  def bios_lshw
     bios Mash.new
-    fru = case devicetree[:chassis][:product_name]
+    firmware_id = case devicetree[:chassis][:product_name]
           when '8335-GTB'
-            47
+            5
           else
             return nil
           end
 
-    ipmitool_cmd = "ipmitool fru print #{fru}"
-    ipmitool_lines = ''
-    ipmitool_status = 1
+    xml_node = "firmware:#{firmware_id}"
+    lshw_xml_output = Utils.shell_out('lshw -xml -C generic').stdout
+    xml_doc = REXML::Document.new(lshw_xml_output)
 
-    begin
-      Open3.popen3(ipmitool_cmd) do |_stdin, stdout, _stderr, wait_thr|
-        ipmitool_status = wait_thr.value
-        ipmitool_lines = stdout.readlines
-      end
-
-      if ipmitool_status != 0
-        raise "Error running #{ipmitool_cmd}"
-      end
-    rescue Errno::ENOENT
-      nil
-    end
-
-    case devicetree[:chassis][:product_name]
-    when '8335-GTB'
-      ipmitool_lines.each do |line|
-        if line =~ /^\s+Product Version\s+\:\s+(.+)$/
-          bios[:version] = Regexp.last_match(1)
-          break
-        end
-      end
-
-      bios[:vendor] = 'IBM'
-    else
-      return nil
-    end
+    bios[:version] = REXML::XPath.match(xml_doc, "//node[@id='#{xml_node}']/version")[0][0].to_s
+    bios[:vendor] = REXML::XPath.match(xml_doc, "//node[@id='#{xml_node}']/description")[0][0].to_s
 
     bios
   end

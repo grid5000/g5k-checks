@@ -11,7 +11,7 @@ describe 'Memory' do
     size_sys = if Utils.dmi_supported?
                  Utils.dmidecode_total_memory(:dram)
                else
-                 Utils.meminfo_total_memory(:dram)
+                 Utils.lshw_total_memory(:dram)
                end
 
     err = ((size_sys - size_api) / size_api.to_f).abs
@@ -26,7 +26,7 @@ describe 'Memory' do
     size_sys = if Utils.dmi_supported?
                  Utils.dmidecode_total_memory(:pmem)
                else
-                 Utils.meminfo_total_memory(:pmem)
+                 Utils.lshw_total_memory(:pmem)
                end
 
     unless size_sys.nil? && (size_api == 0)

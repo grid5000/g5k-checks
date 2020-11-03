@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'g5kchecks/utils/dmidecode'
+require 'g5kchecks/utils/lshw'
 
 class String
   def force_encoding(_enc)
@@ -235,6 +236,17 @@ module Utils
     DmiDecode.get_total_memory(type)
   end
 
+  def self.lshw_total_memory(type)
+    case type
+    when :dram
+      LsHw.get_total_ram_memory
+    when :pmem
+      # Not yet supported
+      nil
+    end
+  end
+
+  # Memory reported by the OS, dmidecode or lshw are the prefered ways
   def self.meminfo_total_memory(type)
     case type
     when :dram
