@@ -220,6 +220,7 @@ Ohai.plugin(:Cpu) do
                       end
 
     # cpu core numbering (see bug 11023)
+    # See also https://www.grid5000.fr/w/TechTeam:CPU_core_numbering
     doc = REXML::Document.new(`lstopo --of xml`)
     packages = REXML::XPath.match(doc, "//object[@type='Package']")
     pu_ids = packages.first.get_elements("object//object[@type='PU']").map { |pu| pu.attribute('os_index').value.to_i }.sort
@@ -231,8 +232,18 @@ Ohai.plugin(:Cpu) do
         # If all PU ids for the first CPU are multiple of the cpucount, then it ought to be round-robin
         cpu[:cpu_core_numbering] = 'round-robin'
       elsif pu_ids.max < pu_ids.length
-        # If all PU ids for the first CPU are inferior than the PU ids count of 1 CPU, then it ought to be contiguous-including-threads
-        cpu[:cpu_core_numbering] = 'contiguous-including-threads'
+        # If all PU ids for the first CPU are inferior than the PU ids count of 1 CPU, then all threads
+        # are numbered before moving to the next CPU.
+        cores = REXML::XPath.match(doc, "//object[@type='Core']")
+        pu_ids_first_core = cores.first.get_elements("object[@type='PU']").map { |pu| pu.attribute('os_index').value.to_i }.sort
+        if pu_ids_first_core.select{|pu| [0, 1].include?(pu) } == [0, 1]
+          # On POWER CPUs, all threads of a given core are numbered in a contiguous way.
+          cpu[:cpu_core_numbering] = 'contiguous-grouped-by-threads'
+        else
+          # On ARM CPUs, all cores tend to be numbered first, then threads are numbered.  The PU ids of the
+          # threads of the first core will be discontinuous.
+          cpu[:cpu_core_numbering] = 'contiguous-including-threads'
+        end
       end
     end
   end
