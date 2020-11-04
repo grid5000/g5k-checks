@@ -1,3 +1,11 @@
+g5k-checks (0.10.2) unstable; urgency=low
+
+  * a4fed65 [cpu] Add support for the core numbering scheme of POWER CPUs
+  * 079528d Use lshw instead of ipmitool for bios data when dmi is not available
+  * 0ad5ae7 Use lshw to get physical memory when dmi is not supported
+
+ -- Baptiste Jonglez <baptiste.jonglez@imag.fr>  Wed, 04 Nov 2020 10:14:35 +0100
+
 g5k-checks (0.10.1) unstable; urgency=low
 
   * 7beb026 Get bios informations via ipmitool for nodes without dmi
