@@ -17,13 +17,13 @@ Ohai.plugin(:Bios) do
     bios Mash.new
     firmware_id = case devicetree[:chassis][:product_name]
           when '8335-GTB'
-            5
+            0
           else
             return nil
           end
 
     xml_node = "firmware:#{firmware_id}"
-    lshw_xml_output = Utils.shell_out('lshw -xml -C generic').stdout
+    lshw_xml_output = Utils.shell_out('lshw -xml -C generic', environment: { 'LC_ALL' => 'C' }).stdout
     xml_doc = REXML::Document.new(lshw_xml_output)
 
     bios[:version] = REXML::XPath.match(xml_doc, "//node[@id='#{xml_node}']/version")[0][0].to_s
