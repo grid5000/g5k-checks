@@ -1,3 +1,10 @@
+g5k-checks (0.10.3) unstable; urgency=low
+
+  * e91235a Fix vendor detection using device_tree (ppc64le)
+  * 17e7c27 Fix bios detection with lshw by settings envronment var LC_ALL to C
+
+ -- Samir Noir <samir.noir@inria.fr>  Thu, 05 Nov 2020 12:35:36 +0100
+
 g5k-checks (0.10.2) unstable; urgency=low
 
   * a4fed65 [cpu] Add support for the core numbering scheme of POWER CPUs
