@@ -74,7 +74,7 @@ Ohai.plugin(:Cpu) do
         end
       end
     elsif arch == 'ppc64le'
-      cpu[:vendor] = File.read('/proc/device-tree/vendor').chomp
+      cpu[:vendor] = File.read('/proc/device-tree/vendor').strip
       cpu[:'0'][:model_name] = lscpu.grep(/Model name/).first.split(':')[1].strip
       if cpu[:'0'][:model_name] =~ /^POWER8NVL/
         cpu[:model] = 'POWER8NVL'
