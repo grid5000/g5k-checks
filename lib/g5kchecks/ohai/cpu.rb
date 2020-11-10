@@ -78,7 +78,7 @@ Ohai.plugin(:Cpu) do
       cpu[:'0'][:model_name] = lscpu.grep(/Model name/).first.split(':')[1].strip
       if cpu[:'0'][:model_name] =~ /^POWER8NVL/
         cpu[:model] = 'POWER8NVL'
-        cpu[:version] = lscpu.grep(/Model:/).first.split(':')[1].strip
+        cpu[:version] = lscpu.grep(/Model:/).first.split(':')[1].strip.split(' ')[0]
       else
         cpu[:model] = 'unknown'
         cpu[:other_description] = 'unknown'
