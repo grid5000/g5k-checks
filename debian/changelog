@@ -1,3 +1,9 @@
+g5k-checks (0.10.4) unstable; urgency=low
+
+  * cf651c0 [cpu] Simplify POWER8 version: '1.0' vs '1.0 (pvr 004c 0100)'
+
+ -- Samir Noir <samir.noir@inria.fr>  Tue, 10 Nov 2020 11:03:31 +0100
+
 g5k-checks (0.10.3) unstable; urgency=low
 
   * e91235a Fix vendor detection using device_tree (ppc64le)
