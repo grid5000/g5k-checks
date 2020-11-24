@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'open3'
 require 'json'
 require 'yaml'
 require 'rexml/document'
@@ -13,10 +12,9 @@ module Grid5000
     def detect_numa_node(complete_pci_bus_id)
       cmd = 'cat /sys/class/pci_bus/' + complete_pci_bus_id.downcase + '/device/numa_node '
       numa_node = nil
-      Open3.popen2(cmd) do |_stdin, stdout, _wait_thr|
-        stdout.each do |line|
-          numa_node = line.strip
-        end
+      shell_out = Utils.shell_out(cmd)
+      shell_out.stdout.each_line do |line|
+        numa_node = line.strip
       end
       numa_node
     end
@@ -24,10 +22,9 @@ module Grid5000
     def detect_gpu_file_device(minor_number)
       cmd = 'ls -lha /dev/nvidia[0-9]*'
       device_file_path = nil
-      Open3.popen2(cmd) do |_stdin, stdout, _wait_thr|
-        stdout.each do |line|
-          device_file_path = %r{/dev.*}.match(line).to_s if line =~ /#{NVIDIA_DRIVER_MAJOR_MODE},\s+#{minor_number}/
-        end
+      shell_out = Utils.shell_out(cmd)
+      shell_out.stdout.each_line do |line|
+        device_file_path = %r{/dev.*}.match(line).to_s if line =~ /#{NVIDIA_DRIVER_MAJOR_MODE},\s+#{minor_number}/
       end
       device_file_path
     end
@@ -35,10 +32,9 @@ module Grid5000
     def get_cpu_from_numa_node(numa_node)
       cmd = "lscpu -e=node,socket|grep ^#{numa_node}|sort -u"
       cpu = nil
-      Open3.popen2(cmd) do |_stdin, stdout, _wait_thr|
-        stdout.each do |line|
-          cpu = line.match(/^.*\s+(\d+)$/).captures[0] if line =~ /#{numa_node}\s+\d+/
-        end
+      shell_out = Utils.shell_out(cmd)
+      shell_out.stdout.each_line do |line|
+        cpu = line.match(/^.*\s+(\d+)$/).captures[0] if line =~ /#{numa_node}\s+\d+/
       end
       cpu
     end
@@ -47,11 +43,10 @@ module Grid5000
       cmd = 'nvidia-smi -q -x'
       cards = []
       names = []
-      _, stdout, _stderr, wait_thr = Open3.popen3(cmd)
-      lines = stdout.readlines
-      exit_status = wait_thr.value
-      if exit_status == 0
-        xml = REXML::Document.new(lines.join)
+      shell_out = Utils.shell_out(cmd)
+      stdout = shell_out.stdout
+      if shell_out.exitstatus == 0
+        xml = REXML::Document.new(stdout)
         xml.elements.each('*/gpu') do |gpu|
           device_file_path = detect_gpu_file_device(gpu.elements['minor_number'].text)
           device_name = device_file_path.split('/')[-1]
@@ -75,7 +70,7 @@ module Grid5000
       else
         {}
       end
-    rescue Errno::ENOENT
+    rescue StandardError
       {}
     end
 
