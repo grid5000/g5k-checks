@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'open3'
 require 'json'
 require 'yaml'
 
@@ -15,40 +14,25 @@ module Grid5000
     end
 
     def fetch_racadm
-      racadm_cmd = 'racadm get iDRAC.Info.version'
-      racadm_lines = ''
-      racadm_status = 1
-
       begin
-        Open3.popen3(racadm_cmd) do |_stdin, stdout, _stderr, wait_thr|
-          # pid = wait_thr.pid # pid of the started process.
-          racadm_status = wait_thr.value # Process::Status object returned.
-          racadm_lines = stdout.readlines
-        end
-        racadm_lines[1].chomp.split('=')[1] if racadm_status == 0
-      rescue Errno::ENOENT
+        shell_out = Utils.shell_out('racadm get iDRAC.Info.version')
+        racadm_lines = shell_out.stdout.split
+        racadm_lines[1].chomp.split('=')[1] if shell_out.exitstatus == 0
+      rescue StandardError
         nil
       end
     end
 
     def fetch_ipmitool
-      ipmitool_cmd = 'ipmitool -I open bmc info'
-      ipmitool_lines = ''
-      ipmitool_status = 1
-
       begin
-        Open3.popen3(ipmitool_cmd) do |_stdin, stdout, _stderr, wait_thr|
-          # pid = wait_thr.pid # pid of the started process.
-          ipmitool_status = wait_thr.value # Process::Status object returned.
-          ipmitool_lines = stdout.readlines
-        end
+        shell_out = Utils.shell_out('/usr/bin/ipmitool -I open bmc info', timeout: 120)
 
-        if ipmitool_status == 0
-          ipmitool_lines.each do |line|
+        if shell_out.exitstatus == 0
+          shell_out.stdout.each_line do |line|
             return Regexp.last_match(1) if line =~ /^Firmware Revision\s+\:\s+(.+)$/
           end
         end
-      rescue Errno::ENOENT
+      rescue StandardError
         nil
       end
     end

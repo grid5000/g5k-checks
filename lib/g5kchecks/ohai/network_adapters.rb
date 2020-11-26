@@ -99,7 +99,7 @@ Ohai.plugin(:NetworkAdapters) do
       shell_out = nil
       begin
         try += 1
-        shell_out = Utils.shell_out('/usr/bin/ipmitool lan print')
+        shell_out = Utils.shell_out('/usr/bin/ipmitool lan print', timeout: 120)
         raise 'ipmitool returned an error' if shell_out.stderr.chomp != ''
       rescue StandardError
         if try < 5
@@ -109,6 +109,7 @@ Ohai.plugin(:NetworkAdapters) do
           raise 'Failed to get IP/MAC for BMC (ipmitool error)'
         end
       end
+
       shell_out.stdout.each_line do |line|
         if line =~ /^[[:blank:]]*MAC Address/
           interfaces['bmc'] ||= {}
