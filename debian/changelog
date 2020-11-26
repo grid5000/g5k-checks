@@ -1,3 +1,10 @@
+g5k-checks (0.10.5) unstable; urgency=low
+
+  * 202501a Replace Open3 by Utils.shell_out for shell commands
+  * 8978460 Increase the ipmitool commands timeout to 120s (bug 12512)
+
+ -- Baptiste Jonglez <baptiste.jonglez@imag.fr>  Thu, 26 Nov 2020 11:16:29 +0100
+
 g5k-checks (0.10.4) unstable; urgency=low
 
   * cf651c0 [cpu] Simplify POWER8 version: '1.0' vs '1.0 (pvr 004c 0100)'
