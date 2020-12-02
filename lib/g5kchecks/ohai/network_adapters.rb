@@ -26,6 +26,7 @@ Ohai.plugin(:NetworkAdapters) do
 
     # Process all but bridge, infiniband and loopback
     interfaces.reject { |d, i| %w[ib br].include?(i[:type]) || d == 'lo' }.each do |dev, iface|
+      was_down = false
       # Likely not a management interface if it is accessible from the OS.
       iface[:management] = false
 
@@ -43,6 +44,7 @@ Ohai.plugin(:NetworkAdapters) do
       if ifaceStatus != 'up'
         # Bring interface up to allow correct rate/enabled report
         Utils.shell_out("/sbin/ip link set dev #{dev} up")
+        was_down = true
       end
       now = Time.now.to_i
       timeout = if ifaceStatus == 'down'
@@ -90,6 +92,12 @@ Ohai.plugin(:NetworkAdapters) do
         iface[:ip6] = ip6[0][0] unless ip6.empty?
       end
       iface[:mounted] = !iface[:ip].nil?
+
+      if was_down
+        Utils.shell_out("/sbin/ip link set dev #{dev} down")
+        Utils.shell_out("/sbin/ip route flush dev #{dev}")
+        Utils.shell_out("/sbin/ip -6 route flush dev #{dev}")
+      end
     end
 
     # Process management interface
