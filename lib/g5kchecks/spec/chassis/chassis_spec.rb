@@ -3,11 +3,7 @@
 describe 'Chassis' do
   before(:all) do
     @api = RSpec.configuration.node.api_description['chassis']
-    @system = if Utils.dmi_supported?
-                RSpec.configuration.node.ohai_description['dmi']['system']
-              else
-                RSpec.configuration.node.ohai_description['devicetree']['chassis']
-              end
+    @system = RSpec.configuration.node.ohai_description['chassis']
   end
 
   it 'should have the correct serial number' do
