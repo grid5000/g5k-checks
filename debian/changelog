@@ -1,3 +1,10 @@
+g5k-checks (0.10.6) unstable; urgency=low
+
+  * f189aea Ensure originally down interfaces are putted down after detection
+  * 304d532 Launch ipmitool commmand with differents timeout and retries number
+
+ -- Samir Noir <samir.noir@inria.fr>  Tue, 08 Dec 2020 17:06:40 +0100
+
 g5k-checks (0.10.5) unstable; urgency=low
 
   * 202501a Replace Open3 by Utils.shell_out for shell commands
