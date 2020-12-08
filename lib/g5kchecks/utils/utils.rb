@@ -332,4 +332,36 @@ module Utils
     end
     json
   end
+
+  # According to chassis product name, we launch the ipmitool command with a
+  # specific timeout and number of retries
+  def self.ipmitool_shell_out(args, chassis)
+    timeout, retries = case chassis[:product_name]
+                       when '8335-GTB'
+                         [80, 3]
+                       else
+                         [nil, 5]
+                       end
+
+    try = 0
+    shell_out = nil
+    begin
+      try += 1
+      shell_out = if timeout
+                    Utils.shell_out("/usr/bin/ipmitool #{args}", timeout: timeout)
+                  else
+                    Utils.shell_out("/usr/bin/ipmitool #{args}")
+                  end
+      raise 'ipmitool returned an error' if shell_out.stderr.chomp != ''
+    rescue StandardError
+      if try < retries
+        sleep 1
+        retry
+      else
+        raise "Failed to get data from ipmitool (args: #{args})"
+      end
+    end
+
+    shell_out
+  end
 end

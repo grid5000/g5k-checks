@@ -16,11 +16,11 @@ Ohai.plugin(:Bios) do
   def bios_lshw
     bios Mash.new
     firmware_id = case devicetree[:chassis][:product_name]
-          when '8335-GTB'
-            0
-          else
-            return nil
-          end
+                  when '8335-GTB'
+                    0
+                  else
+                    return nil
+                  end
 
     xml_node = "firmware:#{firmware_id}"
     lshw_xml_output = Utils.shell_out('lshw -xml -C generic', environment: { 'LC_ALL' => 'C' }).stdout
