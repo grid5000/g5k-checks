@@ -14,9 +14,10 @@ Gem::Specification.new do |s|
   s.bindir = 'bin'
 
   s.add_runtime_dependency('ffi-yajl', ['2.3.0'])
-  s.add_runtime_dependency('mixlib-cli', ['~> 1.7.0'])
-  s.add_runtime_dependency('mixlib-shellout', ['= 2.2.7'])
-  s.add_runtime_dependency('ohai', ['~> 16.5.6'])
+  s.add_runtime_dependency('mixlib-cli', ['~> 2.1.8'])
+  s.add_runtime_dependency('mixlib-shellout', ['~> 3.2.2'])
+  s.add_runtime_dependency('ohai', ['~> 16.5.0'])
+  s.add_runtime_dependency('chef-config', ['= 16.5.64'])
   s.add_runtime_dependency('peach', ['~> 0.5.1'])
   s.add_runtime_dependency('rest-client', ['>= 0.0.0'])
   s.add_runtime_dependency('rspec', ['~> 3.5.0'])
