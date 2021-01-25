@@ -47,4 +47,14 @@ describe 'BMC' do
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
+
+  it 'should not report errors' do
+    if Grid5000::BMC.new.fetch_racadm.nil?
+      expect(true).to be(true), "Node without iDrac, not testing"
+    else
+      idrac_errors = Grid5000::BMC.new.get_idrac_errors
+      expect(idrac_errors.empty?).to be(true), "iDrac reported the following error(s) : "+idrac_errors.join(', ')
+    end
+  end
+
 end

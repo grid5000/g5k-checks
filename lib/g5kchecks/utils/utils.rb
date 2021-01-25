@@ -2,6 +2,7 @@
 
 require 'g5kchecks/utils/dmidecode'
 require 'g5kchecks/utils/lshw'
+require 'ohai/mixin/command'
 
 class String
   def force_encoding(_enc)

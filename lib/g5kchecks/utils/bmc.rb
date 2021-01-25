@@ -2,6 +2,8 @@
 
 require 'json'
 require 'yaml'
+require 'socket'
+require 'g5kchecks/utils/utils'
 
 module Grid5000
   # Class helping to collect BMC version
@@ -33,6 +35,26 @@ module Grid5000
         end
       rescue StandardError
         nil
+      end
+    end
+
+    def get_idrac_errors
+      # List of ignored error taken from jenkins openmanage test
+      log_to_ignore = [
+        [ /^(econome|grcinq|dahu|grvingt|paranoia)-/, /^UNKNOWN: Storage Error! No controllers found/ ], # storage controllers are not detected on C6220 and C6420
+        [ /^(nova|grcinq)-/, /^CRITICAL: Voltage sensor .* is \[N\/A\]$/ ],
+        [ /^(taurus|orion)-/, /^CRITICAL: Power Supply 1 \[AC\]: Presence Detected, AC Lost$/ ],
+        [ /.*/, /^WARNING: Controller 0 \[PERC .*\]: Firmware '.*' is out of date$/ ],
+        [ /.*/, /^UNKNOWN: / ], # Ignore all UNKNOWN errors
+        [ /.*/, /^OK - / ], # Ignore OK lines
+        [/^(orion|taurus)-/, /^WARNING: Physical Disk .* is Online, Failure Predicted$/], # old cluster
+        [/^taurus-(12|10)/, /^WARNING: Chassis intrusion 0 detected: Chassis is open$/] # The chassis is closed, the sensor is broken
+      ]
+      hostname = Socket.gethostname
+      check_openmanage = File.expand_path('/bin/sh ../data/check_openmanage', File.dirname(__FILE__))
+      check_openmanage_stdout = Utils.shell_out("#{check_openmanage} -s").stdout
+      if not fetch_racadm.nil?
+        check_openmanage_stdout.split(/(?:\n|<br\/>)/).reject { |l| not log_to_ignore.select { |e| e[0] =~ hostname and e[1] =~ l }.empty? }
       end
     end
 
