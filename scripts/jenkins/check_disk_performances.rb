@@ -109,7 +109,7 @@ def deployment_ok?(deployment)
              rescue StandardError
                0
              end
-  nodes_ok.to_f / deployment['nodes'].length >= 100 / 100
+  nodes_ok.to_f / deployment['nodes'].length >= 1
 end
 
 def cleanup!(job = nil, deployment = nil)
