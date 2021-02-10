@@ -114,5 +114,13 @@ describe 'Disk' do
         end
       end
     end
+
+    it 'should have the storage type' do
+      model_api = get_api_value(api, ohai, k, 'storage')
+      model_ohai = get_ohai_value(api, ohai, k, 'storage')
+      Utils.test(model_ohai, model_api, "storage_devices/#{k}/storage") do |v_ohai, v_api, error_msg|
+        expect(v_ohai).to eql(v_api), error_msg
+      end
+    end
   end
 end

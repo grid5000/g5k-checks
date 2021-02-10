@@ -25,5 +25,9 @@ Ohai.plugin(:Blockdevice) do
         v['rev'] = rev_from_hdparm if rev_from_hdparm.include?(v['rev'])
       end
     end
+
+    block_device.each do |_name, value|
+      value['storage'] = value['rotational'].to_i.zero? ? 'SSD' : 'HDD'
+    end
   end
 end
