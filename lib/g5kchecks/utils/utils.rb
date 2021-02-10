@@ -339,6 +339,8 @@ module Utils
     timeout, retries = case chassis[:product_name]
                        when '8335-GTB'
                          [80, 3]
+                       when 'PowerEdge C6220 II'
+                         [60, 5]
                        else
                          [nil, 5]
                        end
