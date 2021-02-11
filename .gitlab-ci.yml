@@ -75,6 +75,31 @@ build-buster:ppc64:
   tags:
     - grid5000-docker-ppc64
 
+.build-bullseye: &build-bullseye
+  <<: *build
+  variables:
+    TARGETDIR: "bullseye"
+  artifacts: # generate artifacts for files we want to publish
+     paths:
+      - bullseye
+     expire_in: '1 month'
+
+build-bullseye:amd64:
+  <<: *build-bullseye
+  image: debian:bullseye
+
+build-bullseye:arm64:
+  <<: *build-bullseye
+  image: arm64v8/debian:bullseye
+  tags:
+    - grid5000-docker-arm64
+
+build-bullseye:ppc64:
+  <<: *build-bullseye
+  image: ppc64le/debian:bullseye
+  tags:
+    - grid5000-docker-ppc64
+
 test-buster:
   stage: deploy_and_test
   variables:
@@ -97,3 +122,4 @@ push-package:
   script:
     - g5k-deploy-files --only-if-tag --files 'stretch/*.deb' --directory deb/g5k-checks/stretch
     - g5k-deploy-files --only-if-tag --files 'buster/*.deb' --directory deb/g5k-checks/buster
+    - g5k-deploy-files --only-if-tag --files 'bullseye/*.deb' --directory deb/g5k-checks/bullseye
