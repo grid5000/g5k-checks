@@ -1,3 +1,12 @@
+g5k-checks (0.10.7) unstable; urgency=low
+
+  * 167a13e Add block device storage type detection (HDD or SSD)
+  * e4b1eea Increase ipmitool commands timeout to 60s on PowerEdge C6220 II
+  * 86943b0 Systemctl test from status to failed units
+  * fda6c48 [rsyslog] syntax deprecation
+
+ -- Nicolas Perrin <nicolas.perrin@inria.fr>  Mon, 15 Feb 2021 15:38:06 +0100
+
 g5k-checks (0.10.6) unstable; urgency=low
 
   * f189aea Ensure originally down interfaces are putted down after detection
