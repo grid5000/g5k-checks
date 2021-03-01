@@ -1,3 +1,9 @@
+g5k-checks (0.10.8) unstable; urgency=low
+
+  * e93e6b8 Systemctl test improvements
+
+ -- Nicolas Perrin <nicolas.perrin@inria.fr>  Mon, 01 Mar 2021 09:25:56 +0100
+
 g5k-checks (0.10.7) unstable; urgency=low
 
   * 167a13e Add block device storage type detection (HDD or SSD)
