@@ -6,6 +6,7 @@ require 'rexml/document'
 Ohai.plugin(:Cpu) do
   provides 'cpu/improve'
   depends 'cpu'
+  depends 'sysconf'
 
   # Read a file. Return an array if the file constains multiple lines. Return nil if the file does not exist.
   def fileread(filename)
@@ -103,12 +104,10 @@ Ohai.plugin(:Cpu) do
                 end
     cpu[:mhz] = (cpu[:mhz] * 1_000_000_000).to_i
 
-    lscpu.each do |line|
-      cpu[:L1d] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1d/
-      cpu[:L1i] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1i/
-      cpu[:L2] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L2/
-      cpu[:L3] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L3/
-    end
+    cpu[:L1d] = sysconf['LEVEL1_DCACHE_SIZE']
+    cpu[:L1i] = sysconf['LEVEL1_ICACHE_SIZE']
+    cpu[:L2]  = sysconf['LEVEL2_CACHE_SIZE']
+    cpu[:L3]  = sysconf['LEVEL3_CACHE_SIZE']
 
     # Parsing 'lscpu -p' output to retrieve :nb_procs, :nb_cores and :nb_threads
     # 'lscpu -p' output format :

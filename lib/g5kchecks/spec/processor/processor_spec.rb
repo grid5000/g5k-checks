@@ -54,7 +54,7 @@ describe 'Processor' do
   it 'should have the correct L1i' do
     l1i_api = ''
     l1i_api = @api['cache_l1i'] if @api
-    l1i_ohai = @system[:cpu][:L1i].to_i * 1024
+    l1i_ohai = @system[:cpu][:L1i].to_i
     Utils.test(l1i_ohai, l1i_api, 'processor/cache_l1i') do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
@@ -63,7 +63,7 @@ describe 'Processor' do
   it 'should have the correct L1d' do
     l1d_api = ''
     l1d_api = @api['cache_l1d'] if @api
-    l1d_ohai = @system[:cpu][:L1d].to_i * 1024
+    l1d_ohai = @system[:cpu][:L1d].to_i
     Utils.test(l1d_ohai, l1d_api, 'processor/cache_l1d') do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
@@ -72,7 +72,7 @@ describe 'Processor' do
   it 'should have the correct L2' do
     l2_api = ''
     l2_api = @api['cache_l2'] if @api
-    l2_ohai = @system[:cpu][:L2].to_i * 1024
+    l2_ohai = @system[:cpu][:L2].to_i
     Utils.test(l2_ohai, l2_api, 'processor/cache_l2') do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
@@ -81,7 +81,7 @@ describe 'Processor' do
   it 'should have the correct L3' do
     l3_api = ''
     l3_api = @api['cache_l3'] if @api
-    l3_ohai = @system[:cpu][:L3].to_i * 1024
+    l3_ohai = @system[:cpu][:L3].to_i
     Utils.test(l3_ohai, l3_api, 'processor/cache_l3') do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
