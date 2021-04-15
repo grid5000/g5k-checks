@@ -30,11 +30,11 @@ module Grid5000
     end
 
     def get_cpu_from_numa_node(numa_node)
-      cmd = "lscpu -e=node,socket|grep ^#{numa_node}|sort -u"
+      cmd = "lscpu -e=node,socket|grep -E \"^\s*#{numa_node}\"|sort -u"
       cpu = nil
       shell_out = Utils.shell_out(cmd)
       shell_out.stdout.each_line do |line|
-        cpu = line.match(/^.*\s+(\d+)$/).captures[0] if line =~ /#{numa_node}\s+\d+/
+        cpu = line.match(/^.*\s*(\d+)$/).captures[0] if line =~ /#{numa_node}\s+\d+/
       end
       cpu
     end
