@@ -170,10 +170,8 @@ module Utils
 
   def self.fstab
     filesystem = {}
-    file_fstab = File.open('/etc/fstab')
-    fstab = file_fstab.read
-    file_fstab.close
-    fstab.each_line do |line|
+    fstab = Utils.fileread('/etc/fstab')
+    fstab.each do |line|
       parsed_line = Utils.parse_line_fstab(line)
       filesystem.merge!(parsed_line) unless parsed_line.nil?
     end
@@ -250,8 +248,8 @@ module Utils
   def self.meminfo_total_memory(type)
     case type
     when :dram
-      File.read('/proc/meminfo').split("\n").
-        grep(/MemTotal:/)[0].gsub(/^MemTotal:\s*([0-9]*) kB/, '\1').to_i * KIBI
+      Utils.fileread('/proc/meminfo').grep(/MemTotal:/)[0].
+        gsub(/^MemTotal:\s*([0-9]*) kB/, '\1').to_i * KIBI
     when :pmem
       # Not yet supported
       nil
@@ -365,5 +363,17 @@ module Utils
     end
 
     shell_out
+  end
+
+  # Read a file. Return an array if the file constains multiple lines. Return nil if the file does not exist.
+  def self.fileread(filename)
+    begin
+      output = File.readlines(filename, chomp: true)
+      output = output.size == 1 ? output[0] : output
+    rescue
+      output = nil
+    end
+
+    output
   end
 end

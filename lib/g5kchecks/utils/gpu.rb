@@ -10,13 +10,7 @@ module Grid5000
     NVIDIA_DRIVER_MAJOR_MODE = 195
 
     def detect_numa_node(complete_pci_bus_id)
-      cmd = 'cat /sys/class/pci_bus/' + complete_pci_bus_id.downcase + '/device/numa_node '
-      numa_node = nil
-      shell_out = Utils.shell_out(cmd)
-      shell_out.stdout.each_line do |line|
-        numa_node = line.strip
-      end
-      numa_node
+      Utils.fileread("/sys/class/pci_bus/#{complete_pci_bus_id.downcase}/device/numa_node")
     end
 
     def detect_gpu_file_device(minor_number)
