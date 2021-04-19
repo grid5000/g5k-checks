@@ -6,6 +6,7 @@ require 'rexml/document'
 Ohai.plugin(:Cpu) do
   provides 'cpu/improve'
   depends 'cpu'
+  depends 'lsb'
 
   # Read a file. Return an array if the file constains multiple lines. Return nil if the file does not exist.
   def fileread(filename)
@@ -103,11 +104,25 @@ Ohai.plugin(:Cpu) do
                 end
     cpu[:mhz] = (cpu[:mhz] * 1_000_000_000).to_i
 
-    lscpu.each do |line|
-      cpu[:L1d] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1d/
-      cpu[:L1i] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1i/
-      cpu[:L2] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L2/
-      cpu[:L3] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L3/
+    # TODO: remove condition when switching to Debian Bullseye
+    if lsb[:codename] == 'bullseye'
+      lscpu_caches = execute('lscpu --caches -B')
+      lscpu_caches.each do |line|
+        cpu[:L1d] = line.chomp.split[1].lstrip.to_i if line =~ /^L1d/
+        cpu[:L1i] = line.chomp.split[1].lstrip.to_i if line =~ /^L1i/
+        cpu[:L2] = line.chomp.split[1].lstrip.to_i if line =~ /^L2/
+        cpu[:L3] = line.chomp.split[1].lstrip.to_i if line =~ /^L3/
+      end
+    else
+      lscpu.each do |line|
+        cpu[:L1d] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1d/
+        cpu[:L1i] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1i/
+        cpu[:L2] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L2/
+        cpu[:L3] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L3/
+      end
+      [:L1d, :L1i, :L2, :L3].each do |c|
+        cpu[c] = cpu[c].to_i * 1024
+      end
     end
 
     # Parsing 'lscpu -p' output to retrieve :nb_procs, :nb_cores and :nb_threads
