@@ -199,7 +199,7 @@ Ohai.plugin(:Cpu) do
     end
 
     # :turboboost_enabled
-    if cpu[:pstate_driver] == 'intel_pstate'
+    if cpu[:pstate_driver] == 'intel_pstate' || cpu[:pstate_driver] == 'intel_cpufreq'
       cpu[:turboboost_enabled] = begin
                                    (fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == '0')
                                  rescue StandardError
