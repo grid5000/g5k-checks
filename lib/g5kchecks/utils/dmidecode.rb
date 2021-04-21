@@ -56,15 +56,15 @@ module DmiDecode
     memory_technology =
       case type
       when :dram
-        'DRAM'
+        /^DRAM$/
       when :pmem
-        'Intel persistent memory'
+        /^Intel.*persistent memory$/
       end
 
     # On the oldest clusters dmidecode does not print the Memory Technology for
     # the DIMMs. When it's the case, we assume that DIMMs are always DRAM
     dmi_data['Memory Device'].each do |mem_dev|
-      unless mem_dev['Memory Technology'] == memory_technology ||
+      unless mem_dev['Memory Technology']&.match?(memory_technology) ||
              (type == :dram && mem_dev['Memory Technology'].nil?)
         next
       end
