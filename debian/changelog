@@ -1,3 +1,15 @@
+g5k-checks (0.10.9) unstable; urgency=low
+
+  * 4d8c56f [utils] fix fileread method by removing the nil return
+  * 6ab5285 [gpu] get cpu from numa node in a more Ruby way
+  * fc4ed96 [utils] move fileread method from ohai cpu plugin to Utils
+  * bb6953f [gpu] fix cpu affinity detection with new version of lscpu
+  * d6613fa [os] detect if turboboost is enabled when pstate_driver is intel_cpufreq
+  * b17ec0b [memory] detect persitent memory with recent version of dmidecode
+  * e5a5c2e [cpu] make cache detection working on Debian Bullseye
+
+ -- Samir Noir <samir.noir@inria.fr>  Thu, 22 Apr 2021 15:23:12 +0200
+
 g5k-checks (0.10.8) unstable; urgency=low
 
   * e93e6b8 Systemctl test improvements
