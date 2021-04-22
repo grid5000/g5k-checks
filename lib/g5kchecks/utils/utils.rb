@@ -365,15 +365,9 @@ module Utils
     shell_out
   end
 
-  # Read a file. Return an array if the file constains multiple lines. Return nil if the file does not exist.
+  # Read a file. Return an array if the file constains multiple lines.
   def self.fileread(filename)
-    begin
-      output = File.readlines(filename, chomp: true)
-      output = output.size == 1 ? output[0] : output
-    rescue
-      output = nil
-    end
-
-    output
+    output = File.readlines(filename, chomp: true)
+    output.size == 1 ? output[0] : output
   end
 end
