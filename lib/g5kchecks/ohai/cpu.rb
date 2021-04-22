@@ -8,12 +8,6 @@ Ohai.plugin(:Cpu) do
   depends 'cpu'
   depends 'lsb'
 
-  # Read a file. Return an array if the file constains multiple lines. Return nil if the file does not exist.
-  def fileread(filename)
-    output = File.read(filename).split("\n")
-    output.size == 1 ? output[0] : output
-  end
-
   # Execute an external program
   def execute(cmd)
     res = Utils.shell_out(cmd)
@@ -75,7 +69,7 @@ Ohai.plugin(:Cpu) do
         end
       end
     elsif arch == 'ppc64le'
-      cpu[:vendor] = File.read('/proc/device-tree/vendor').strip
+      cpu[:vendor] = Utils.fileread('/proc/device-tree/vendor').strip
       cpu[:'0'][:model_name] = lscpu.grep(/Model name/).first.split(':')[1].strip
       if cpu[:'0'][:model_name] =~ /^POWER8NVL/
         cpu[:model] = 'POWER8NVL'
@@ -87,9 +81,7 @@ Ohai.plugin(:Cpu) do
     end
 
     if File.exist?('/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq')
-      file = File.open('/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq', 'r')
-      freq = file.read
-      file.close
+      freq = Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq')
       # frequence en khz
       cpu[:mhz] = freq.to_i * 1000 if freq
     else
@@ -175,24 +167,24 @@ Ohai.plugin(:Cpu) do
 
     # pstate
     cpu[:pstate_driver] = begin
-                            fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_driver')
+                            Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_driver')
                           rescue StandardError
                             'none'
                           end
     cpu[:pstate_governor] = begin
-                              fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor')
+                              Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor')
                             rescue StandardError
                               'none'
                             end
 
     if cpu[:pstate_driver] != 'none'
       cpu[:pstate_max_cpu_speed] = begin
-                                     fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq').to_i
+                                     Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq').to_i
                                    rescue StandardError
                                      nil
                                    end
       cpu[:pstate_min_cpu_speed] = begin
-                                     fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq').to_i
+                                     Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq').to_i
                                    rescue StandardError
                                      nil
                                    end
@@ -201,13 +193,13 @@ Ohai.plugin(:Cpu) do
     # :turboboost_enabled
     if cpu[:pstate_driver] == 'intel_pstate' || cpu[:pstate_driver] == 'intel_cpufreq'
       cpu[:turboboost_enabled] = begin
-                                   (fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == '0')
+                                   (Utils.fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == '0')
                                  rescue StandardError
                                    false
                                  end
     elsif cpu[:pstate_driver] == 'acpi-cpufreq'
       cpu[:turboboost_enabled] = begin
-                                   (fileread('/sys/devices/system/cpu/cpufreq/boost') == '1')
+                                   (Utils.fileread('/sys/devices/system/cpu/cpufreq/boost') == '1')
                                  rescue StandardError
                                    false
                                  end
@@ -217,19 +209,19 @@ Ohai.plugin(:Cpu) do
 
     # cstate
     cpu[:cstate_driver] = begin
-                            fileread('/sys/devices/system/cpu/cpuidle/current_driver')
+                            Utils.fileread('/sys/devices/system/cpu/cpuidle/current_driver')
                           rescue StandardError
                             'none'
                           end
     cpu[:cstate_governor] = begin
-                              fileread('/sys/devices/system/cpu/cpuidle/current_governor_ro')
+                              Utils.fileread('/sys/devices/system/cpu/cpuidle/current_governor_ro')
                             rescue StandardError
                               'none'
                             end
 
     # microcode version
     cpu[:microcode] = begin
-                        fileread('/proc/cpuinfo').grep(/microcode\t: /)[0].split(': ')[1]
+                        Utils.fileread('/proc/cpuinfo').grep(/microcode\t: /)[0].split(': ')[1]
                       rescue StandardError
                         'unknown'
                       end
