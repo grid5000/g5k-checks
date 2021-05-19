@@ -23,17 +23,22 @@ Ohai.plugin(:FileSystem) do
       cmdline = file.read
       file.close
 
-      if cmdline =~ /.*root=([^\d]*)(\d).*/
-        root_device = Regexp.last_match(1)
+      if cmdline =~ /.*root=([\S]+).*/
+        root_partition = Regexp.last_match(1)
+        # the cmdline can be of the form "root=/dev/sda3" or "root=UUID=...", 
+        # we need to convert the second form to a path.
+        root_partition.gsub!(/^UUID=/,'/dev/disk/by-uuid/')
+        # we get the disk from the partition with "lsblk -o pkname" 
+        root_device = Utils.shell_out("lsblk -no pkname #{root_partition}").stdout.chomp
         layout = {}
-        stdout = Utils.shell_out("parted #{root_device} print").stdout
+        stdout = Utils.shell_out("parted /dev/#{root_device} print").stdout
         stdout.each_line do |line|
           num, tmp_layout = Utils.parse_line_layout(line)
           next if tmp_layout.nil?
 
           layout.merge!(tmp_layout)
           if (num == '2') || (num == '3') || (num == '5')
-            stdout = Utils.shell_out("tune2fs -l #{root_device}#{num}").stdout
+            stdout = Utils.shell_out("tune2fs -l /dev/#{root_device}#{num}").stdout
             stdout.each_line do |line2|
               layout[num][:state] = line.chomp.split(': ').last.strip if line2 =~ /^Filesystem state:/
             end
