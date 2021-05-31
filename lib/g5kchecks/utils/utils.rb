@@ -135,7 +135,8 @@ module Utils
   @@data_layout = nil
   def self.layout
     layout = {}
-    @@data_layout = `parted /dev/sda print 2>/dev/null` if @@data_layout.nil?
+    primary_disk = JSON.parse(`lsblk --json`)["blockdevices"].select{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/'}}.first['name']
+    @@data_layout = `parted /dev/#{primary_disk} print 2>/dev/null` if @@data_layout.nil?
     @@data_layout.each_line do |line|
       _num, parsed_line = Utils.parse_line_layout(line)
       layout.merge!(parsed_line) unless parsed_line.nil?
