@@ -23,6 +23,51 @@ module Grid5000
     end
   end
 
+  # Class helping to detect the list of AMD GPU on a node
+  class AmdGpu < Gpu
+
+    def fetch_amdgpu_cards_info
+      cmd = 'rocm-smi -a --json'
+      cards = {}
+      shell_out = Utils.shell_out(cmd)
+      # Do not check return code as rocm-smi may return non zero values with valid output
+      return {} if shell_out.stdout == ""
+      gpus = JSON.parse(shell_out.stdout)
+      gpus.each do |gpu_id, gpu|
+        next if gpu_id == "system"
+        card = {}
+        card[:vendor] = 'AMD'
+        card[:model] = gpu['Card series']
+        card[:vbios_version] = gpu['VBIOS version']
+        card[:power_default_limit] = gpu['Max Graphics Package Power (W)']
+        card[:memory] = case card[:model]
+                        when "Radeon Instinct MI50 32GB"
+                          32*1024**3
+                        else
+                          raise "g5kchecks does not supports this AMD GPU #{card[:model]}"
+                        end
+        card[:device] = "/dev/dri/#{gpu_id}"
+        bus = gpu['PCI Bus'].split(':')[0..1].join(':').downcase
+        card[:cpu_affinity] = get_cpu_from_numa_node(detect_numa_node(bus))
+        cards[gpu_id] = card
+      end
+      return cards
+    rescue Ohai::Exceptions::Exec => e
+      if e.message == "No such file or directory - rocm-smi"
+        {}
+      else
+        raise e
+      end
+    end
+
+    def get_json
+      fetch_amdgpu_cards_info.to_json
+    end
+
+    def get_yaml
+      fetch_amdgpu_cards_info.to_yaml
+    end
+  end
   # Class helping to detect the list of Nvidia devices on a node
   class NvidiaGpu < Gpu
 

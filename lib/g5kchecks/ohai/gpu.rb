@@ -8,6 +8,7 @@ Ohai.plugin(:Gpu) do
 
   collect_data do
     cards = Grid5000::NvidiaGpu.new.fetch_nvidia_cards_info
+    cards.merge!(Grid5000::AmdGpu.new.fetch_amdgpu_cards_info)
     gpu_devices Mash.new(cards)
     gpu_devices
   end
