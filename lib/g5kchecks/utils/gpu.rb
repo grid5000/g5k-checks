@@ -100,7 +100,7 @@ module Grid5000
           card[:model] = gpu.elements['product_name'].text
           card[:vbios_version] = gpu.elements['vbios_version'].text
           card[:power_default_limit] = gpu.elements['power_readings'].elements['default_power_limit'].text
-          mem = gpu.elements['fb_memory_usage'].elements['total'].text.split(' ')[0].to_i * 1_000_000
+          mem = gpu.elements['fb_memory_usage'].elements['total'].text.split(' ')[0].to_i * 1024 * 1024
           card[:memory] = mem
           card[:device] = device_file_path
           bus = gpu.attributes['id'].split(':')
