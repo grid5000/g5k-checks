@@ -127,9 +127,3 @@ module Grid5000
     end
   end
 end
-
-# To test the above class in command line
-if $PROGRAM_NAME == __FILE__
-  cards = Grid5000::NvidiaGpu.new
-  puts cards.get_json
-end
