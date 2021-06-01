@@ -5,22 +5,11 @@ require 'yaml'
 require 'rexml/document'
 
 module Grid5000
-  # Class helping to detect the list of Nvidia devices on a node
-  class NvidiaGpu
-    NVIDIA_DRIVER_MAJOR_MODE = 195
+
+  class Gpu
 
     def detect_numa_node(complete_pci_bus_id)
       Utils.fileread("/sys/class/pci_bus/#{complete_pci_bus_id.downcase}/device/numa_node")
-    end
-
-    def detect_gpu_file_device(minor_number)
-      cmd = 'ls -lha /dev/nvidia[0-9]*'
-      device_file_path = nil
-      shell_out = Utils.shell_out(cmd)
-      shell_out.stdout.each_line do |line|
-        device_file_path = %r{/dev.*}.match(line).to_s if line =~ /#{NVIDIA_DRIVER_MAJOR_MODE},\s+#{minor_number}/
-      end
-      device_file_path
     end
 
     def get_cpu_from_numa_node(numa_node)
@@ -31,6 +20,22 @@ module Grid5000
         cpu = line.match(/^.*\s*(\d+)$/).captures[0] if line =~ /#{numa_node}\s+\d+/
       end
       cpu
+    end
+  end
+
+  # Class helping to detect the list of Nvidia devices on a node
+  class NvidiaGpu < Gpu
+
+    NVIDIA_DRIVER_MAJOR_MODE = 195
+
+    def detect_gpu_file_device(minor_number)
+      cmd = 'ls -lha /dev/nvidia[0-9]*'
+      device_file_path = nil
+      shell_out = Utils.shell_out(cmd)
+      shell_out.stdout.each_line do |line|
+        device_file_path = %r{/dev.*}.match(line).to_s if line =~ /#{NVIDIA_DRIVER_MAJOR_MODE},\s+#{minor_number}/
+      end
+      device_file_path
     end
 
     def fetch_nvidia_cards_info
