@@ -1,3 +1,13 @@
+g5k-checks (0.11.0) unstable; urgency=low
+
+  * 8b3222e [gpu] fix a bug in gpu memory calculation (MiB vs MB)
+  * b0161d7 [gpu] Remove test code which does not work
+  * 929d139 [gpu] Add support for AMD GPUs
+  * 70770bb [gpu] Move factorizable functions out of nvidia class
+  * 910ffac [utils] Support getting layout for disks not nammed sda
+
+ -- Simon Delamare <simon.delamare@ens-lyon.fr>  Wed, 02 Jun 2021 10:00:00 +0200
+
 g5k-checks (0.10.10) unstable; urgency=low
 
   * d90ea9a [ohai/disk] fix getting disk from /proc/cmdline for UUID
