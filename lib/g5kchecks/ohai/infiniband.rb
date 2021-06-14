@@ -44,9 +44,11 @@ Ohai.plugin(:NetworkInfiniband) do
 
       # Get MAC address
       iface[:mac] = iface[:addresses].select { |_key, value| value[:family] == 'lladdr' }.keys[0]
+      ## Only keep last 8 bytes, as prefix depends on QPN and SM (see RFC4391)
+      iface[:mac] = iface[:mac].split(":").last(8).join(":")
 
       # Get Port UID from MAC address
-      port_guid = "0x#{iface[:mac].split(':')[12..19].join.downcase}"
+      port_guid = "0x#{iface[:mac].split(':').join.downcase}"
 
       # Get the interface name and the port number
       ibstat_iface_name = guid_interfaces[port_guid][:interface]
