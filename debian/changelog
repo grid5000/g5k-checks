@@ -1,3 +1,9 @@
+g5k-checks (0.11.1) unstable; urgency=low
+
+  * [infiniband] Only keep last 8 bytes for IPoIB iface MAC
+
+ -- Simon Delamare <simon.delamare@ens-lyon.fr>  Mon, 14 Jun 2021 16:00:00 +0200
+
 g5k-checks (0.11.0) unstable; urgency=low
 
   * 8b3222e [gpu] fix a bug in gpu memory calculation (MiB vs MB)
