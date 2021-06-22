@@ -132,6 +132,25 @@ module Utils
     Ohai::Mixin::Command.shell_out(command, options)
   end
 
+  def self.shell_out_with_retries(command, retries, **options)
+    try = 0
+    shell_out = nil
+    begin
+      try += 1
+      shell_out = Utils.shell_out(command, options)
+      raise "Command #{command} returned an error'" if shell_out.stderr.chomp != ''
+    rescue StandardError
+      if try < retries
+        sleep 1
+        retry
+      else
+        raise "Failed to get data from command: #{command}"
+      end
+    end
+
+    shell_out
+  end
+
   @@data_layout = nil
   def self.layout
     layout = {}
@@ -344,24 +363,7 @@ module Utils
                          [nil, 5]
                        end
 
-    try = 0
-    shell_out = nil
-    begin
-      try += 1
-      shell_out = if timeout
-                    Utils.shell_out("/usr/bin/ipmitool #{args}", timeout: timeout)
-                  else
-                    Utils.shell_out("/usr/bin/ipmitool #{args}")
-                  end
-      raise 'ipmitool returned an error' if shell_out.stderr.chomp != ''
-    rescue StandardError
-      if try < retries
-        sleep 1
-        retry
-      else
-        raise "Failed to get data from ipmitool (args: #{args})"
-      end
-    end
+    shell_out = Utils.shell_out_with_retries("/usr/bin/ipmitool #{args}", retries, timeout: timeout)
 
     shell_out
   end

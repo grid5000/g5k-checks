@@ -7,14 +7,18 @@ module Grid5000
   # Class helping to collect BMC version
   class BMC
     def fetch_info(chassis)
-      version = fetch_racadm || fetch_ipmitool(chassis)
+      version = if chassis[:manufacturer] == 'Dell Inc.'
+                  fetch_racadm || fetch_ipmitool(chassis)
+                else
+                  fetch_ipmitool(chassis)
+                end
 
       version ? { 'version' => version } : { 'version' => 'unknown' }
     end
 
     def fetch_racadm
       begin
-        shell_out = Utils.shell_out('racadm get iDRAC.Info.version')
+        shell_out = Utils.shell_out_with_retries('racadm get iDRAC.Info.version', 3)
         racadm_lines = shell_out.stdout.split
         racadm_lines[1].chomp.split('=')[1] if shell_out.exitstatus == 0
       rescue StandardError
