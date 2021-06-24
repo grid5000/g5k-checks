@@ -3,18 +3,26 @@
 describe 'MountPoint' do
   RSpec.configuration.node.get_wanted_mountpoint.each do |m|
     it 'should have the correct mount point' do
-      line = Utils.mount_grep(m)
-      Utils.test(line, 0, 'mount point exists', true) do |v_system, v_api, error_msg|
+      line_mount = Utils.mount_filter(m, :dest)
+      Utils.test(line_mount, 1, 'mount point exists', true) do |v_system, v_api, error_msg|
         expect(v_system).not_to eql(v_api), error_msg
       end
     end
   end
 
-  Utils.fstab.reject { |_key, value| value['fs_type'] == 'swap' }.each do |_k, v|
+  swap_list = Utils.swap_list
+  Utils.fstab.each_value do |v|
     it 'should be mounted' do
-      type_fstab = Utils.mount_grep(v['file_system'])
-      Utils.test(type_fstab, 0, "#{v['file_system']} mounted", true) do |v_system, v_api, error_msg|
-        expect(v_system).not_to eql(v_api), error_msg
+      message = "#{v['file_system']} not mounted (type #{v['fs_type']} on #{v['mount_point']})"
+      nb_mount = if v['fs_type'] == 'swap'
+                   swap_list.include?(v['file_system']) ? 1 : 0
+                 else
+                   message += ', or mounted more than once'
+                   Utils.mount_filter(v['file_system'], :source).length
+                 end
+
+      Utils.test(nb_mount, 1, message, true) do |v_system, v_api, error_msg|
+        expect(v_system).to eql(v_api), error_msg
       end
     end
   end

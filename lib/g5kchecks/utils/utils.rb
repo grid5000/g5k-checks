@@ -180,40 +180,26 @@ module Utils
   end
 
   def self.parse_line_fstab(line)
-    return if line =~ /^#/
+    return if line =~ /^(#|$)/
 
     filesystem = {}
     if line =~ /([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*/
-      filesys = Regexp.last_match(1)
+      line_match = Regexp.last_match
+      filesys = if line_match[1] =~ /^UUID=(.*)$/
+                  blk_node = Utils.shell_out("blkid --uuid #{$1}").stdout.chomp
+                  blk_node.empty? ? line_match[1] : blk_node
+                else
+                  line_match[1]
+                end
       filesystem[filesys] = Mash.new unless filesystem.key?(filesys)
-      filesystem[filesys]['fs_type'] = Regexp.last_match(3)
-      filesystem[filesys]['dump'] = Regexp.last_match(5)
-      filesystem[filesys]['pass'] = Regexp.last_match(6)
-      filesystem[filesys]['options'] = Regexp.last_match(4).split(',')
-      filesystem[filesys]['mount_point'] = Regexp.last_match(2)
+      filesystem[filesys]['fs_type'] = line_match[3]
+      filesystem[filesys]['dump'] = line_match[5]
+      filesystem[filesys]['pass'] = line_match[6]
+      filesystem[filesys]['options'] = line_match[4].split(',')
+      filesystem[filesys]['mount_point'] = line_match[2]
       filesystem[filesys]['file_system'] = filesys
     end
     filesystem
-  end
-
-  def self.mount_grep(grep)
-    mount = {}
-    stdout = shell_out("mount | grep '#{grep}'").stdout
-    stdout.each_line do |line|
-      parsed_line = Utils.parse_line_mount(line)
-      mount.merge!(parsed_line) unless parsed_line.nil?
-    end
-    mount
-  end
-
-  def self.mount
-    mount = {}
-    stdout = shell_out('mount').stdout
-    stdout.each_line do |line|
-      parsed_line = Utils.parse_line_mount(line)
-      mount.merge!(parsed_line) unless parsed_line.nil?
-    end
-    mount
   end
 
   def self.parse_line_mount(line)
@@ -221,13 +207,48 @@ module Utils
 
     filesystem = {}
     if line =~ /([^\s]*)\s*on\s*([^\s]*)\stype*\s*([^\s]*)\s*([^\s]*)\s*/
-      mp = Regexp.last_match(1)
-      filesystem[mp] = Mash.new unless filesystem.key?(mp)
-      filesystem[mp]['on'] = Regexp.last_match(2)
-      filesystem[mp]['type'] = Regexp.last_match(3)
-      filesystem[mp]['options'] = Regexp.last_match(4).gsub(/[()]/, '').split(',')
+      filesystem['device'] = Regexp.last_match(1)
+      filesystem['on'] = Regexp.last_match(2)
+      filesystem['type'] = Regexp.last_match(3)
+      filesystem['options'] = Regexp.last_match(4).gsub(/[()]/, '').split(',')
     end
     filesystem
+  end
+
+  def self.mount_filter(input, field)
+    mount = []
+    stdout = shell_out('mount').stdout
+    input.chomp!('/')
+
+    stdout.each_line do |line|
+      parsed_line = parse_line_mount(line)
+      next if parsed_line.nil?
+      match = case field
+              when :source
+                parsed_line['device'] == input
+              when :dest
+                parsed_line['on'] == input
+              else
+                raise "Mount line field filter '#{field}' not supported"
+              end
+      if match
+        mount << parsed_line
+      end
+    end
+
+    mount
+  end
+
+  def self.swap_list
+    active_swap = []
+    stdout = shell_out('swapon').stdout
+    stdout.each_line do |line|
+      if line =~ /^(\/dev\/[^\s]+).*$/
+        active_swap << $1
+      end
+    end
+
+    active_swap
   end
 
   # Wrap dmidecode methods into Utils
