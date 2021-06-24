@@ -7,7 +7,7 @@ Ohai.plugin(:FileSystem) do
   depends 'filesystem'
 
   collect_data do
-    # complete les infos des sytèmes de fichier avec le fstab
+    # gather infos about filesystem using fstab
     file_fstab = File.open('/etc/fstab')
     fstab = file_fstab.read
     file_fstab.close
@@ -25,10 +25,10 @@ Ohai.plugin(:FileSystem) do
 
       if cmdline =~ /.*root=([\S]+).*/
         root_partition = Regexp.last_match(1)
-        # the cmdline can be of the form "root=/dev/sda3" or "root=UUID=...", 
+        # the cmdline can be of the form "root=/dev/sda3" or "root=UUID=...",
         # we need to convert the second form to a path.
         root_partition.gsub!(/^UUID=/,'/dev/disk/by-uuid/')
-        # we get the disk from the partition with "lsblk -o pkname" 
+        # we get the disk from the partition with "lsblk -o pkname"
         root_device = Utils.shell_out("lsblk -no pkname #{root_partition}").stdout.chomp
         layout = {}
         stdout = Utils.shell_out("parted /dev/#{root_device} print").stdout
