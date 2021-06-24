@@ -12,10 +12,10 @@ Ohai.plugin(:FileSystem) do
     fstab = file_fstab.read
     file_fstab.close
     fstab.each_line do |line|
-      tmp_fs = Utils.parse_line_fstab(line)
-      next if tmp_fs.nil?
+      fs = Utils.parse_line_fstab(line)
+      next if fs.nil?
 
-      filesystem.merge!(tmp_fs)
+      filesystem.merge!(fs)
     end
 
     if File.exist?('/proc/cmdline')
@@ -33,10 +33,10 @@ Ohai.plugin(:FileSystem) do
         layout = {}
         stdout = Utils.shell_out("parted /dev/#{root_device} print").stdout
         stdout.each_line do |line|
-          num, tmp_layout = Utils.parse_line_layout(line)
-          next if tmp_layout.nil?
+          num, current_layout = Utils.parse_line_layout(line)
+          next if current_layout.nil?
 
-          layout.merge!(tmp_layout)
+          layout.merge!(current_layout)
           if (num == '2') || (num == '3') || (num == '5')
             stdout = Utils.shell_out("tune2fs -l /dev/#{root_device}#{num}").stdout
             stdout.each_line do |line2|
