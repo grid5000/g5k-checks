@@ -26,8 +26,21 @@ Ohai.plugin(:NetworkAdapters) do
     end
 
     # Process all but bridge, infiniband and loopback
-    interfaces.reject { |d, i| %w[ib br].include?(i[:type]) || d == 'lo' }.each do |dev, iface|
-      was_down = false
+    interfaces_to_process = interfaces.reject { |d, i| %w[ib br].include?(i[:type]) || d == 'lo' }
+
+    # First, we put the interfaces up
+    was_down = {}
+    interfaces_to_process.each_key do |dev|
+      if Utils.interface_operstate(dev) != 'up'
+        # Bring interface up to allow correct rate/enabled report
+        Utils.shell_out("/sbin/ip link set dev #{dev} up")
+        was_down[dev] = true
+      else
+        was_down[dev] = false
+      end
+    end
+
+    interfaces_to_process.each do |dev, iface|
       # Likely not a management interface if it is accessible from the OS.
       iface[:management] = false
 
@@ -40,15 +53,8 @@ Ohai.plugin(:NetworkAdapters) do
       # true if predictable names are in use
       iface[:use_predictable_name] = iface[:name] == dev
 
-      ifaceStatus = Utils.interface_operstate(dev)
-      ethtool = Utils.interface_ethtool(dev)
-      if ifaceStatus != 'up'
-        # Bring interface up to allow correct rate/enabled report
-        Utils.shell_out("/sbin/ip link set dev #{dev} up")
-        was_down = true
-      end
       now = Time.now.to_i
-      timeout = if ifaceStatus == 'down'
+      timeout = if Utils.interface_operstate(dev) == 'down'
                   15
                 else
                   # If interface was already up, reduce timeout
@@ -57,6 +63,7 @@ Ohai.plugin(:NetworkAdapters) do
 
       # Wait for link negociation after setting iface up
       ethtool_infos = {}
+      ethtool = Utils.interface_ethtool(dev)
       while Time.now.to_i < now + timeout
         sleep(1)
         status = Utils.interface_operstate(dev)
@@ -102,8 +109,11 @@ Ohai.plugin(:NetworkAdapters) do
         iface[:sriov] = false
         iface[:sriov_totalvfs] = 0
       end
+    end
 
-      if was_down
+    # We put down the interfaces which were down before processing
+    was_down.each do |dev, status|
+      if status
         Utils.shell_out("/sbin/ip link set dev #{dev} down")
         Utils.shell_out("/sbin/ip address flush dev #{dev}")
         Utils.shell_out("/sbin/ip route flush dev #{dev}")
