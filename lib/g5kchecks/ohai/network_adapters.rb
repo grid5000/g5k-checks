@@ -40,7 +40,7 @@ Ohai.plugin(:NetworkAdapters) do
       end
     end
 
-    interfaces_to_process.each do |dev, iface|
+    interfaces_to_process.peach do |dev, iface|
       # Likely not a management interface if it is accessible from the OS.
       iface[:management] = false
 

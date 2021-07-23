@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'g5kchecks/utils/utils'
+require 'peach'
 
 Ohai.plugin(:NetworkInfiniband) do
   provides 'network/network_infiniband'
@@ -31,7 +32,7 @@ Ohai.plugin(:NetworkInfiniband) do
 
     # Process ib interfaces
     # note: encapsulation='infiniband' for OPA interfaces as well
-    network[:interfaces].select { |_d, i| %w[infiniband].include?(i[:encapsulation]) }.each do |dev, iface|
+    network[:interfaces].select { |_d, i| %w[infiniband].include?(i[:encapsulation]) }.peach do |dev, iface|
       # Infiniband interfaces can't be management interfaces
       iface[:management] = false
 
