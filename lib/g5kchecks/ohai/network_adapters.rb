@@ -94,6 +94,15 @@ Ohai.plugin(:NetworkAdapters) do
       end
       iface[:mounted] = !iface[:ip].nil?
 
+      # Detect presence of SR-IOV
+      if File.exist?("/sys/class/net/#{dev}/device/sriov_totalvfs")
+        iface[:sriov] = true
+        iface[:sriov_totalvfs] = Utils.fileread("/sys/class/net/#{dev}/device/sriov_totalvfs").to_i
+      else
+        iface[:sriov] = false
+        iface[:sriov_totalvfs] = 0
+      end
+
       if was_down
         Utils.shell_out("/sbin/ip link set dev #{dev} down")
         Utils.shell_out("/sbin/ip address flush dev #{dev}")
