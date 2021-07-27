@@ -142,5 +142,21 @@ describe 'Network' do
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
+
+    it 'should have SR-IOV correctly detected' do
+      sriov_api = api['sriov']
+      sriov_ohai = iface[:sriov]
+      Utils.test(sriov_ohai, sriov_api, "network_adapters/#{dev}/sriov") do |v_ohai, v_api, error_msg|
+        expect(v_ohai).to eql(v_api), error_msg
+      end
+    end
+
+    it 'should have correct number of SR-IOV totalvfs' do
+      sriov_totalvfs_api = api['sriov_totalvfs']
+      sriov_totalvfs_ohai = iface[:sriov_totalvfs]
+      Utils.test(sriov_totalvfs_ohai, sriov_totalvfs_api, "network_adapters/#{dev}/sriov_totalvfs") do |v_ohai, v_api, error_msg|
+        expect(v_ohai).to eql(v_api), error_msg
+      end
+    end
   end
 end
