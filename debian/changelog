@@ -1,3 +1,13 @@
+g5k-checks (0.11.2) unstable; urgency=low
+
+  * 38551e4 [network] fix interfaces' rate detection (caused by ip link set down)
+  * a33f433 [network] detect if SR-IOV is enabled for an interface
+  * 27ab7cb [mount] fix checks of mounted partitions
+  * 93a41fe [disk] rename tmp temporary variables which can be confusing
+  * 0dca209 [disk] convert a comment to English (instead of fixing a typo)
+
+ -- Samir Noir <samir.noir@inria.fr>  Wed, 28 Jul 2021 09:25:34 +0200
+
 g5k-checks (0.11.1) unstable; urgency=low
 
   * [infiniband] Only keep last 8 bytes for IPoIB iface MAC
