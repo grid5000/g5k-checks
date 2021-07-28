@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'g5kchecks/utils/utils'
+require 'peach'
 
 Ohai.plugin(:NetworkInfiniband) do
   provides 'network/network_infiniband'
@@ -21,7 +22,7 @@ Ohai.plugin(:NetworkInfiniband) do
     ibstat_interfaces = Utils.shell_out('ibstat -l').stdout.chomp.gsub(' ', '').gsub("'", '').split
     guid_interfaces = {}
 
-    ibstat_interfaces.each do |i|
+    ibstat_interfaces.peach do |i|
       port = ''
       Utils.shell_out("ibstat #{i}").stdout.each_line do |line|
         port = Regexp.last_match(1) if line =~ /Port\s(\d+)/
