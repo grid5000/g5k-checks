@@ -126,11 +126,11 @@ Ohai.plugin(:NetworkAdapters) do
     shell_out = Utils.ipmitool_shell_out('lan print', chassis)
 
     shell_out.stdout.each_line do |line|
-      if line =~ /^[[:blank:]]*MAC Address/
+      if /^[[:blank:]]*MAC Address/.match?(line)
         interfaces['bmc'] ||= {}
         interfaces['bmc'][:mac] = line.chomp.split(': ').last
       end
-      if line =~ /^[[:blank:]]*IP Address/
+      if /^[[:blank:]]*IP Address/.match?(line)
         interfaces['bmc'] ||= {}
         interfaces['bmc'][:ip] = line.chomp.split(': ').last
       end

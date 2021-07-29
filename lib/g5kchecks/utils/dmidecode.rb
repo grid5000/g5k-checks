@@ -17,7 +17,7 @@ module DmiDecode
     dmi_data = {}
 
     output.split("\n").each do |line|
-      if line =~ /^Handle/
+      if /^Handle/.match?(line)
         if dmi_section && !dmi_section_data.empty?
           dmi_data[dmi_section] ||= []
           dmi_data[dmi_section] << dmi_section_data
@@ -27,7 +27,7 @@ module DmiDecode
         dmi_section_array = nil
         look_for_section_name = true
       elsif look_for_section_name
-        next if line =~ /^\s*DMI type/
+        next if /^\s*DMI type/.match?(line)
 
         if line =~ /^\s*(.*)/
           dmi_section = Regexp.last_match(1)

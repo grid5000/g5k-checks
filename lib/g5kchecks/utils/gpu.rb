@@ -17,7 +17,7 @@ module Grid5000
       cpu = nil
       shell_out = Utils.shell_out(cmd)
       shell_out.stdout.each_line.uniq do |line|
-        cpu = line.match(/^.*\s*(\d+)$/).captures[0] if line =~ /#{numa_node}\s+\d+/
+        cpu = line.match(/^.*\s*(\d+)$/).captures[0] if /#{numa_node}\s+\d+/.match?(line)
       end
       cpu
     end
@@ -78,7 +78,7 @@ module Grid5000
       device_file_path = nil
       shell_out = Utils.shell_out(cmd)
       shell_out.stdout.each_line do |line|
-        device_file_path = %r{/dev.*}.match(line).to_s if line =~ /#{NVIDIA_DRIVER_MAJOR_MODE},\s+#{minor_number}/
+        device_file_path = %r{/dev.*}.match(line).to_s if /#{NVIDIA_DRIVER_MAJOR_MODE},\s+#{minor_number}/.match?(line)
       end
       device_file_path
     end

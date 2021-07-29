@@ -31,10 +31,10 @@ module RSpec
 
             # pas super beau, pour distinguer plusieurs composants
             # typiquement pour disk et network
-            desc = if array[-2] =~ /\d{1,2}/
-                     example.full_description.gsub(' ', '_') + '_' + array[-2]
+            desc = if /\d{1,2}/.match?(array[-2])
+                     example.full_description.tr(' ', '_') + '_' + array[-2]
                    else
-                     example.full_description.gsub(' ', '_')
+                     example.full_description.tr(' ', '_')
                    end
             @yaml_hash[desc] = {}
             @yaml_hash[desc][:attribut] = example.exception.message.split(', ')[-2, 2]

@@ -76,8 +76,8 @@ module Utils
     infos = {}
     stdout = Utils.shell_out("/sbin/ethtool #{dev}; /sbin/ethtool -i #{dev}").stdout
     stdout.each_line do |line|
-      if line =~ /^[[:blank:]]*Speed: /
-        if line =~ /Unknown/
+      if /^[[:blank:]]*Speed: /.match?(line)
+        if /Unknown/.match?(line)
           infos[:rate] = nil
           infos[:enabled] = false
         else
@@ -85,8 +85,8 @@ module Utils
           infos[:enabled] = true
         end
       end
-      infos[:driver] = line.chomp.split(': ').last if line =~ /^\s*driver: /
-      next unless line =~ /^\s*firmware-version:/
+      infos[:driver] = line.chomp.split(': ').last if /^\s*driver: /.match?(line)
+      next unless /^\s*firmware-version:/.match?(line)
 
       split_line = line.chomp.split(': ', 2)
       if split_line && split_line.length > 1
@@ -109,8 +109,8 @@ module Utils
     stdout = Utils.shell_out("/usr/bin/lspci -vmm -d #{vendor_id}:#{device_id}").stdout
     stdout.each_line do |line|
       line = line.chomp
-      pci_infos[:device] = line.gsub(/^Device:/i, '').strip if line =~ /^Device/
-      if line =~ /^Vendor/
+      pci_infos[:device] = line.gsub(/^Device:/i, '').strip if /^Device/.match?(line)
+      if /^Vendor/.match?(line)
         pci_infos[:vendor] = line.gsub(/Vendor:/i, '').sub('Limited', '').sub('Corporation', '').strip
       end
     end
@@ -122,8 +122,8 @@ module Utils
   def self.string_to_object(string)
     return true if string == true || string =~ /true/i
     return false if string == false || string =~ /false/i
-    return string.to_i if string =~ /^[0-9]+$/
-    return string.to_f if string =~ /^[0-9]+\.[0-9]+$/
+    return string.to_i if /^[0-9]+$/.match?(string)
+    return string.to_f if /^[0-9]+\.[0-9]+$/.match?(string)
 
     string.strip
   end
@@ -135,7 +135,7 @@ module Utils
   @@data_layout = nil
   def self.layout
     layout = {}
-    primary_disk = JSON.parse(`lsblk --json`)["blockdevices"].select{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/'}}.first['name']
+    primary_disk = JSON.parse(`lsblk --json`)["blockdevices"].find{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/'}}['name']
     @@data_layout = `parted /dev/#{primary_disk} print 2>/dev/null` if @@data_layout.nil?
     @@data_layout.each_line do |line|
       _num, parsed_line = Utils.parse_line_layout(line)
@@ -145,7 +145,7 @@ module Utils
   end
 
   def self.parse_line_layout(line)
-    return if line =~ /^$/
+    return if /^$/.match?(line)
 
     layout = {}
     if line =~ /^\s([\d]*)[\s]*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)$/
@@ -157,7 +157,7 @@ module Utils
       layout[num][:type] = Regexp.last_match(5)
       six = Regexp.last_match(6)
       sev = Regexp.last_match(7)
-      if Regexp.last_match(5) =~ /extended/
+      if 'extented'.include?(Regexp.last_match(5))
         layout[num][:fs] = ''
         layout[num][:flags] = six
       else
@@ -180,7 +180,7 @@ module Utils
   end
 
   def self.parse_line_fstab(line)
-    return if line =~ /^(#|$)/
+    return if /^(#|$)/.match?(line)
 
     filesystem = {}
     if line =~ /([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*/
@@ -203,7 +203,7 @@ module Utils
   end
 
   def self.parse_line_mount(line)
-    return if line =~ /^#/
+    return if /^#/.match?(line)
 
     filesystem = {}
     if line =~ /([^\s]*)\s*on\s*([^\s]*)\stype*\s*([^\s]*)\s*([^\s]*)\s*/
@@ -318,7 +318,7 @@ module Utils
 
     removetestlist.each do |testRegexp|
       regexp = Regexp.new(testRegexp)
-      return true if regexp =~ test_path
+      return true if regexp&.match?(test_path)
     end
     false
   end
