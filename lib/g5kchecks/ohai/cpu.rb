@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'g5kchecks/utils/utils'
-require 'rexml/document'
+require 'nokogiri'
 
 Ohai.plugin(:Cpu) do
   provides 'cpu/improve'
@@ -229,9 +229,10 @@ Ohai.plugin(:Cpu) do
 
     # cpu core numbering (see bug 11023)
     # See also https://www.grid5000.fr/w/TechTeam:CPU_core_numbering
-    doc = REXML::Document.new(`lstopo --of xml`)
-    packages = REXML::XPath.match(doc, "//object[@type='Package']")
-    pu_ids = packages.first.get_elements("object//object[@type='PU']").map { |pu| pu.attribute('os_index').value.to_i }.sort
+    doc = Nokogiri::XML(`lstopo --of xml`)
+    packages = doc.xpath("//object[@type='Package']")
+    pu_ids = packages.first.xpath("object//object[@type='PU']").map { |pu| pu.attribute('os_index').value.to_i }.sort
+
     cpucount = packages.length
     # Default cpu_core_numbering is contiguous (for mono CPU machines it is by choice)
     cpu[:cpu_core_numbering] = 'contiguous'
@@ -242,8 +243,8 @@ Ohai.plugin(:Cpu) do
       elsif pu_ids.max < pu_ids.length
         # If all PU ids for the first CPU are inferior than the PU ids count of 1 CPU, then all threads
         # are numbered before moving to the next CPU.
-        cores = REXML::XPath.match(doc, "//object[@type='Core']")
-        pu_ids_first_core = cores.first.get_elements("object[@type='PU']").map { |pu| pu.attribute('os_index').value.to_i }.sort
+        cores = doc.xpath("//object[@type='Core']")
+        pu_ids_first_core = cores.first.xpath("object[@type='PU']").map { |pu| pu.attribute('os_index').value.to_i }.sort
         if pu_ids_first_core.select{|pu| [0, 1].include?(pu) } == [0, 1]
           # On POWER CPUs, all threads of a given core are numbered in a contiguous way.
           cpu[:cpu_core_numbering] = 'contiguous-grouped-by-threads'

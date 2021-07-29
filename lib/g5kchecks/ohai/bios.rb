@@ -2,7 +2,7 @@
 # fetch bios infos via ipmi for nodes without dmi
 
 require 'g5kchecks/utils/utils'
-require 'rexml/document'
+require 'nokogiri'
 
 Ohai.plugin(:Bios) do
   provides 'bios'
@@ -24,10 +24,10 @@ Ohai.plugin(:Bios) do
 
     xml_node = "firmware:#{firmware_id}"
     lshw_xml_output = Utils.shell_out('lshw -xml -C generic', environment: { 'LC_ALL' => 'C' }).stdout
-    xml_doc = REXML::Document.new(lshw_xml_output)
+    xml_doc = Nokogiri::XML(lshw_xml_output)
 
-    bios[:version] = REXML::XPath.match(xml_doc, "//node[@id='#{xml_node}']/version")[0][0].to_s
-    bios[:vendor] = REXML::XPath.match(xml_doc, "//node[@id='#{xml_node}']/description")[0][0].to_s
+    bios[:version] = xml_doc.at_xpath("//node[@id='#{xml_node}']/version").text
+    bios[:vendor] = xml_doc.at_xpath("//node[@id='#{xml_node}']/description").text
 
     bios
   end

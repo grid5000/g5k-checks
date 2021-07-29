@@ -2,7 +2,7 @@
 
 require 'json'
 require 'yaml'
-require 'rexml/document'
+require 'nokogiri'
 
 module Grid5000
 
@@ -90,20 +90,20 @@ module Grid5000
       shell_out = Utils.shell_out(cmd)
       stdout = shell_out.stdout
       if shell_out.exitstatus == 0
-        xml = REXML::Document.new(stdout)
-        xml.elements.each('*/gpu') do |gpu|
-          device_file_path = detect_gpu_file_device(gpu.elements['minor_number'].text)
+        xml = Nokogiri::XML(stdout)
+        xml.css('gpu').each do |gpu|
+          device_file_path = detect_gpu_file_device(gpu.css('minor_number').text)
           device_name = device_file_path.split('/')[-1]
           names << device_name.to_sym
           card = {}
           card[:vendor] = 'Nvidia'
-          card[:model] = gpu.elements['product_name'].text
-          card[:vbios_version] = gpu.elements['vbios_version'].text
-          card[:power_default_limit] = gpu.elements['power_readings'].elements['default_power_limit'].text
-          mem = gpu.elements['fb_memory_usage'].elements['total'].text.split(' ')[0].to_i * 1024 * 1024
+          card[:model] = gpu.css('product_name').text
+          card[:vbios_version] = gpu.css('vbios_version').text
+          card[:power_default_limit] = gpu.css('power_readings').css('default_power_limit').text
+          mem = gpu.css('fb_memory_usage').css('total').text.split(' ')[0].to_i * 1024 * 1024
           card[:memory] = mem
           card[:device] = device_file_path
-          bus = gpu.attributes['id'].split(':')
+          bus = gpu.attribute('id').text.split(':')
           prefix_bus = bus[0].gsub(/^.*([0-9A-z]{4})$/, '\1')
           bus_id = bus[1]
           complete_pci_bus_id = prefix_bus + ':' + bus_id
