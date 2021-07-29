@@ -19,7 +19,7 @@ Ohai.plugin(:NetworkInfiniband) do
   collect_data do
     # Get interfaces from ibstat and put them inside a Hash so we can get
     # them by the guid
-    ibstat_interfaces = Utils.shell_out('ibstat -l').stdout.chomp.gsub(' ', '').gsub("'", '').split
+    ibstat_interfaces = Utils.shell_out('ibstat -l').stdout.chomp.delete(' ').delete("'").split
     guid_interfaces = {}
 
     ibstat_interfaces.each do |i|
@@ -67,14 +67,14 @@ Ohai.plugin(:NetworkInfiniband) do
       # Channel adapter
       stdout = Utils.shell_out("ibstat #{ibstat_iface_name}").stdout
       stdout.each_line do |line|
-        iface[:firmware_version] = line.chomp.split(': ')[1] if line =~ /^[[:blank:]]*Firmware version/
+        iface[:firmware_version] = line.chomp.split(': ')[1] if /^[[:blank:]]*Firmware version/.match?(line)
       end
 
       stdout = Utils.shell_out("ibstat #{ibstat_iface_name} #{ibstat_port_num}").stdout
       stdout.each_line do |line|
-        iface[:guid] = line.chomp.split(': ').last if line =~ /Port[[:blank:]]GUID/
-        iface[:rate] = line.chomp.split(': ').last.to_i * 1_000_000_000 if line =~ /Rate/
-        if line =~ /State/
+        iface[:guid] = line.chomp.split(': ').last if /Port[[:blank:]]GUID/.match?(line)
+        iface[:rate] = line.chomp.split(': ').last.to_i * 1_000_000_000 if /Rate/.match?(line)
+        if /State/.match?(line)
           iface[:enabled] = line.chomp.split(': ').last.eql?('Active') # or line.chomp.split(": ").last.eql?('Initializing')) See #7250 and #7244
         end
       end

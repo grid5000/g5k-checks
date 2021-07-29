@@ -22,7 +22,7 @@ describe 'TestDisk' do
         test_file = File.expand_path('../../data/read.fio', File.dirname(__FILE__))
         stdout = Utils.shell_out("fio #{test_file}").stdout
         stdout.each_line do |line|
-          next unless line =~ /READ/
+          next unless /READ/.match?(line)
 
           maxt_read = Hash[line.split(',').collect! { |s| s.strip.split('=') }]['maxt'].scan(/\d+/)[0].to_i
           err = (maxt_read - maxt_read_api).abs
@@ -44,7 +44,7 @@ describe 'TestDisk' do
       test_file = File.expand_path('../../data/write.fio', File.dirname(__FILE__))
       stdout = Utils.shell_out("fio #{test_file}").stdout
       stdout.each_line do |line|
-        next unless line =~ /WRITE/
+        next unless /WRITE/.match?(line)
 
         maxt_write = Hash[line.split(',').collect! { |s| s.strip.split('=') }]['maxt'].scan(/\d+/)[0].to_i
         err = (maxt_write - maxt_write_api).abs

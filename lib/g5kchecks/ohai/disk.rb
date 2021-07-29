@@ -40,7 +40,7 @@ Ohai.plugin(:FileSystem) do
           if (num == '2') || (num == '3') || (num == '5')
             stdout = Utils.shell_out("tune2fs -l /dev/#{root_device}#{num}").stdout
             stdout.each_line do |line2|
-              layout[num][:state] = line.chomp.split(': ').last.strip if line2 =~ /^Filesystem state:/
+              layout[num][:state] = line.chomp.split(': ').last.strip if /^Filesystem state:/.match?(line2)
             end
           end
           layout[num][:state] = 'clean' unless layout[num].key?('state')

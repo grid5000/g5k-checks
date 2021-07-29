@@ -61,7 +61,7 @@ Ohai.plugin(:G5k) do
 
     # If the environment is deployed inside a job
     if !json_status.nil? && json_status['nodes'] != {} && json_status['nodes'][hostname]['hard'] == 'alive' && json_status['nodes'][hostname]['soft'] != 'free'
-      job_id = json_status['nodes'][hostname]['reservations'].select { |e| e['state'] == 'running' }.first['uid']
+      job_id = json_status['nodes'][hostname]['reservations'].find { |e| e['state'] == 'running' }['uid']
       json_job = Utils.api_call(api_base_url + "/sites/#{site_uid}/jobs/#{job_id}")
     else
       json_job = nil

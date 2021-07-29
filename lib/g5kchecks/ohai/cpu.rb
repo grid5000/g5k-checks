@@ -27,12 +27,12 @@ Ohai.plugin(:Cpu) do
     # We assume that every cores have the same values
     # x86: Intel or AMD
     if arch == 'x86_64'
-      if cpu[:'0'][:model_name] =~ /AMD/
+      if /AMD/.match?(cpu[:'0'][:model_name])
         cpu[:vendor] = 'AMD'
-        if cpu[:'0'][:model_name] =~ /Opteron/
+        if cpu[:'0'][:model_name].include?('Opteron')
           cpu[:model] = 'AMD Opteron'
           cpu[:version] = Regexp.last_match(1) if cpu[:'0'][:model_name] =~ /Processor[^\w]*(.*)/
-        elsif cpu[:'0'][:model_name] =~ /EPYC/
+        elsif cpu[:'0'][:model_name].include?('EPYC')
           cpu[:model] = 'AMD EPYC'
           cpu[:version] = Regexp.last_match(1) if cpu[:'0'][:model_name] =~ /AMD EPYC\s+(\d+)\s+(.*)/
         end
@@ -41,12 +41,10 @@ Ohai.plugin(:Cpu) do
         if cpu[:'0'][:model_name] =~ /(Xeon|Atom)/
           cpu[:model] = "Intel #{Regexp.last_match(1)}"
           # All Xeon CPUs before Skylake (e.g. "Intel(R) Xeon(R) CPU X vY @ Z" or "Intel(R) Xeon(R) CPU X 0 @ Z" )
-          if cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\) CPU\s+(.+?)(?:\s0)?\s+@/
+          if cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\) CPU\s+(.+?)(?:\s0)?\s+@/ ||
+             cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\)\s+(.+)\s+CPU?\s+@/
             cpu[:version] = Regexp.last_match(1)
             # Xeon Skylake and after (e.g. "Intel(R) Xeon(R) Gold X CPU @ Z")
-          elsif cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\)\s+(.+)\s+CPU?\s+@/
-            cpu[:version] = Regexp.last_match(1)
-            # TODO: Add Atom regex here...
           end
         end
       end
@@ -71,7 +69,7 @@ Ohai.plugin(:Cpu) do
     elsif arch == 'ppc64le'
       cpu[:vendor] = Utils.fileread('/proc/device-tree/vendor').strip
       cpu[:'0'][:model_name] = lscpu.grep(/Model name/).first.split(':')[1].strip
-      if cpu[:'0'][:model_name] =~ /^POWER8NVL/
+      if /^POWER8NVL/.match?(cpu[:'0'][:model_name])
         cpu[:model] = 'POWER8NVL'
         cpu[:version] = lscpu.grep(/Model:/).first.split(':')[1].strip.split(' ')[0]
       else
@@ -100,20 +98,20 @@ Ohai.plugin(:Cpu) do
     if lsb[:codename] == 'bullseye'
       lscpu_caches = execute('lscpu --caches -B')
       lscpu_caches.each do |line|
-        cpu[:L1d] = line.chomp.split[1].lstrip.to_i if line =~ /^L1d/
-        cpu[:L1i] = line.chomp.split[1].lstrip.to_i if line =~ /^L1i/
-        cpu[:L2] = line.chomp.split[1].lstrip.to_i if line =~ /^L2/
-        cpu[:L3] = line.chomp.split[1].lstrip.to_i if line =~ /^L3/
+        cpu[:L1d] = line.chomp.split[1].lstrip.to_i if /^L1d/.match?(line)
+        cpu[:L1i] = line.chomp.split[1].lstrip.to_i if /^L1i/.match?(line)
+        cpu[:L2] = line.chomp.split[1].lstrip.to_i if /^L2/.match?(line)
+        cpu[:L3] = line.chomp.split[1].lstrip.to_i if /^L3/.match?(line)
       end
       [:L1d, :L1i, :L2, :L3].each do |c|
         cpu[c] = 0 unless cpu.has_key?(c)
       end
     else
       lscpu.each do |line|
-        cpu[:L1d] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1d/
-        cpu[:L1i] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1i/
-        cpu[:L2] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L2/
-        cpu[:L3] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L3/
+        cpu[:L1d] = line.chomp.split(': ').last.lstrip.sub('K', '') if /^L1d/.match?(line)
+        cpu[:L1i] = line.chomp.split(': ').last.lstrip.sub('K', '') if /^L1i/.match?(line)
+        cpu[:L2] = line.chomp.split(': ').last.lstrip.sub('K', '') if /^L2/.match?(line)
+        cpu[:L3] = line.chomp.split(': ').last.lstrip.sub('K', '') if /^L3/.match?(line)
       end
       [:L1d, :L1i, :L2, :L3].each do |c|
         cpu[c] = cpu[c].to_i * 1024
@@ -142,7 +140,7 @@ Ohai.plugin(:Cpu) do
       # We assume that we always have SMT on ppc64 (maybe it will not always be
       # true)
       cpu[:ht_capable] = true
-      cpu[:ht_enabled] = !execute('ppc64_cpu --smt').match?(/SMT is off/)
+      cpu[:ht_enabled] = !execute('ppc64_cpu --smt').include?('SMT is off')
 
       # There is no feature flags on ppc64
       cpu[:'0'][:flags] = 'none'
@@ -165,7 +163,7 @@ Ohai.plugin(:Cpu) do
     #  All [intel] models support [...] Hyper-threading (except E5-1603
     #  v3, E5-1607 v3, E5-2603 v3, E5-2609 v3, E5-2628 v3, E5-2663 v3, E5-2685 v3 and
     #  E5-4627 v3)
-    cpu[:ht_capable] = false if /E5-2603 v3/.match(cpu[:'0'][:model_name])
+    cpu[:ht_capable] = false if /E5-2603 v3/.match?(cpu[:'0'][:model_name])
 
 
     # pstate
