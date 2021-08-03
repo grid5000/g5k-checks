@@ -7,6 +7,7 @@ require 'rest-client'
 require 'json'
 require 'yaml'
 require 'ohai'
+require 'chef-utils'
 require 'g5kchecks/utils/utils'
 
 Ohai.config[:plugin_path] << File.expand_path(File.join(File.dirname(__FILE__), '/../ohai'))
