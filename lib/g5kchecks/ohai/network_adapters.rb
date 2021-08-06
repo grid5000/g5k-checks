@@ -33,7 +33,7 @@ Ohai.plugin(:NetworkAdapters) do
 
       # First, we put the interfaces up
       was_down = {}
-      interfaces_to_process.each_key do |dev|
+      interfaces_to_process.peach do |dev, _|
         if Utils.interface_operstate(dev) != 'up'
           # Bring interface up to allow correct rate/enabled report
           Utils.shell_out("/sbin/ip link set dev #{dev} up")
@@ -114,7 +114,7 @@ Ohai.plugin(:NetworkAdapters) do
       end
 
       # We put down the interfaces which were down before processing
-      was_down.each do |dev, status|
+      was_down.peach do |dev, status|
         if status
           Utils.shell_out("/sbin/ip link set dev #{dev} down")
           Utils.shell_out("/sbin/ip address flush dev #{dev}")
