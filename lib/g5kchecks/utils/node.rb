@@ -7,6 +7,7 @@ require 'rest-client'
 require 'json'
 require 'yaml'
 require 'ohai'
+require 'peach'
 require 'g5kchecks/utils/utils'
 
 Ohai.config[:plugin_path] << File.expand_path(File.join(File.dirname(__FILE__), '/../ohai'))
@@ -42,6 +43,7 @@ module Grid5000
       @ohai_description = nil
       @api_description = nil
       @max_retries = 2
+      @down_interfaces = nil
     end
 
     def api_description
@@ -111,6 +113,13 @@ module Grid5000
 
     def ohai_description
       unless @ohai_description
+        @down_interfaces = JSON.parse(`ip -j link`).select { |i|
+          ['NOTPRESENT', 'LOWERLAYERDOWN', 'DOWN'].include?(i['operstate'])
+        }.map { |h| h['ifname'] }
+        @down_interfaces.peach do |dev|
+          `/sbin/ip link set dev #{dev} up`
+        end
+
         @ohai_description = Ohai::System.new
         # Disable plugins that always fail to run and are not needed by G5K-checks
         Ohai.config.disabled_plugins = %i[Eucalyptus Virtualbox Chef SSHHostKey]
@@ -125,6 +134,9 @@ module Grid5000
           Ohai::Log.level = :debug
         end
         @ohai_description.all_plugins
+        @down_interfaces.peach do |dev|
+          `/sbin/ip link set dev #{dev} down`
+        end
       end
       @ohai_description
     end

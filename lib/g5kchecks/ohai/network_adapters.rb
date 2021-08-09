@@ -32,16 +32,16 @@ Ohai.plugin(:NetworkAdapters) do
       interfaces_to_process = interfaces.reject { |d, i| %w[ib br].include?(i[:type]) || d == 'lo' }
 
       # First, we put the interfaces up
-      was_down = {}
-      interfaces_to_process.peach do |dev, _|
-        if Utils.interface_operstate(dev) != 'up'
-          # Bring interface up to allow correct rate/enabled report
-          Utils.shell_out("/sbin/ip link set dev #{dev} up")
-          was_down[dev] = true
-        else
-          was_down[dev] = false
-        end
-      end
+      #was_down = {}
+      #interfaces_to_process.peach do |dev, _|
+      #  if Utils.interface_operstate(dev) != 'up'
+      #    # Bring interface up to allow correct rate/enabled report
+      #    Utils.shell_out("/sbin/ip link set dev #{dev} up")
+      #    was_down[dev] = true
+      #  else
+      #    was_down[dev] = false
+      #  end
+      #end
 
       interfaces_to_process.peach do |dev, iface|
         # Likely not a management interface if it is accessible from the OS.
@@ -55,32 +55,32 @@ Ohai.plugin(:NetworkAdapters) do
         # true if predictable names are in use
         iface[:use_predictable_name] = iface[:name] == dev
 
-        now = Time.now.to_i
-        timeout = if Utils.interface_operstate(dev) == 'down'
-                    15
-                  else
-                    # If interface was already up, reduce timeout
-                    5
-                  end
+        #now = Time.now.to_i
+        #timeout = if Utils.interface_operstate(dev) == 'down'
+        #            15
+        #          else
+        #            # If interface was already up, reduce timeout
+        #            5
+        #          end
 
         # Wait for link negociation after setting iface up
-        ethtool_infos = {}
-        ethtool = Utils.interface_ethtool(dev)
-        while Time.now.to_i < now + timeout
-          sleep(1)
-          status = Utils.interface_operstate(dev)
-          # Make probing quicker if interface stays down
-          timeout -= 0.5 if status == 'down'
-          # Get infos only if interesting or is last run
-          next unless status != 'down' || Time.now.to_i >= now + timeout
+        #ethtool_infos = {}
+        ethtool_infos = Utils.interface_ethtool(dev)
+        #while Time.now.to_i < now + timeout
+        #  sleep(1)
+        #  status = Utils.interface_operstate(dev)
+        #  # Make probing quicker if interface stays down
+        #  timeout -= 0.5 if status == 'down'
+        #  # Get infos only if interesting or is last run
+        #  next unless status != 'down' || Time.now.to_i >= now + timeout
 
-          ethtool_infos = Utils.interface_ethtool(dev)
-          # exit early if rate changed
-          if !ethtool_infos[:rate].nil? &&
-              (ethtool_infos[:rate] != ethtool[:rate] || ethtool_infos[:rate].to_i != 0)
-            break
-          end
-        end
+        #  ethtool_infos = Utils.interface_ethtool(dev)
+        #  # exit early if rate changed
+        #  if !ethtool_infos[:rate].nil? &&
+        #      (ethtool_infos[:rate] != ethtool[:rate] || ethtool_infos[:rate].to_i != 0)
+        #    break
+        #  end
+        #end
         iface[:rate] = ethtool_infos[:rate]
         iface[:driver] = ethtool_infos[:driver]
         iface[:firmware_version] = ethtool_infos[:firmware_version]
@@ -114,14 +114,14 @@ Ohai.plugin(:NetworkAdapters) do
       end
 
       # We put down the interfaces which were down before processing
-      was_down.peach do |dev, status|
-        if status
-          Utils.shell_out("/sbin/ip link set dev #{dev} down")
-          Utils.shell_out("/sbin/ip address flush dev #{dev}")
-          Utils.shell_out("/sbin/ip route flush dev #{dev}")
-          Utils.shell_out("/sbin/ip -6 route flush dev #{dev}")
-        end
-      end
+      #was_down.peach do |dev, status|
+      #  if status
+      #    Utils.shell_out("/sbin/ip link set dev #{dev} down")
+      #    Utils.shell_out("/sbin/ip address flush dev #{dev}")
+      #    Utils.shell_out("/sbin/ip route flush dev #{dev}")
+      #    Utils.shell_out("/sbin/ip -6 route flush dev #{dev}")
+      #  end
+      #end
     end
 
     # Process management interface
