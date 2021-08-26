@@ -2,6 +2,7 @@
 
 require 'g5kchecks/utils/dmidecode'
 require 'g5kchecks/utils/lshw'
+require 'json'
 
 class String
   def force_encoding(_enc)
@@ -393,5 +394,12 @@ module Utils
   def self.fileread(filename)
     output = File.readlines(filename, chomp: true)
     output.size == 1 ? output[0] : output
+  end
+
+  # Read and parse /etc/grid5000/ref-api.json if exists
+  def self.local_api_description
+    JSON.parse(File.read('/etc/grid5000/ref-api.json'))
+  rescue Errno::ENOENT
+    nil
   end
 end

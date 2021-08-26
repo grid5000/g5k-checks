@@ -53,6 +53,12 @@ Ohai.plugin(:G5k) do
     end
     # end KADEPLOY environments infos
 
+    # Get the local api decription, from the file /etc/grid5000/ref-api.json
+    # (populated by g5k-postinstall).
+    # If g5k-checks is runned in api mode, we don't want to use anything from
+    # the reference api since this mode is made to populate the api.
+    infos['local_api_description'] = conf['mode'] != 'api' ? Utils.local_api_description : nil
+
     # infos['user_deployed'] is true if the environment is deployed
     # inside a job (in particular, this excludes phoenix), and the job
     # is of type 'deploy'
