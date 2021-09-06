@@ -73,10 +73,10 @@ Ohai.plugin(:G5k) do
       # Test if the job is of type 'deploy'
       infos['user_deployed'] = json_job['types'].include?('deploy')
       infos['disks'] = if json_job['resources_by_type']['disks'].nil?
-                         ['sda']
+                         ['disk0']
                        else
-                         # sda + reserved_disks
-                         ['sda'] + json_job['resources_by_type']['disks'].map { |e| e.split('.').first }
+                         # disk0 + reserved_disks
+                         ['disk0'] + json_job['resources_by_type']['disks'].map { |e| e.split('.').first }
                        end
     end
 
