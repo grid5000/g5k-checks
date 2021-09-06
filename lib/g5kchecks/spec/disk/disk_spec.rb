@@ -21,11 +21,11 @@ describe 'Disk' do
   end
 
   api = nil
-  tmpapi = RSpec.configuration.node.api_description['storage_devices']
-  unless tmpapi.nil?
+  tmp_api = RSpec.configuration.node.api_description['storage_devices']
+  unless tmp_api.nil?
     api = {}
-    tmpapi.each do |d|
-      api[d['device']] = d
+    tmp_api.each do |d|
+      api[d['by_path'].split('/').last] = d
     end
   end
 
@@ -35,10 +35,16 @@ describe 'Disk' do
   g5k_ohai = RSpec.configuration.node.ohai_description['g5k']
   if g5k_ohai && g5k_ohai['user_deployed'] == true && RSpec.configuration.node.conf['mode'] != 'api'
     disks = g5k_ohai['disks']
-    api = api.select { |key, _value| disks.include?(key) }
+    api = api.select { |_k, v| disks.include?(v['id']) }
   end
 
-  ohai = RSpec.configuration.node.ohai_description['block_device'].select { |key, value| (key =~ /[sh]d.*/ || key =~ /nvme.*/) && value['model'] != 'vmDisk' }
+  tmp_ohai = RSpec.configuration.node.ohai_description['block_device'].select { |key, value| (key =~ /[sh]d.*/ || key =~ /nvme.*/) && value['model'] != 'vmDisk' }
+  unless tmp_ohai.nil?
+    ohai = {}
+    tmp_ohai.each do |_k, v|
+      ohai[v['by_path'].split('/').last] = v
+    end
+  end
 
   # If g5k-checks is called with "-m api" option, then api = nil
   # and we use ohai as a reference. Else we use api as a reference.
@@ -55,15 +61,6 @@ describe 'Disk' do
   end
 
   reference.each do |k, _v|
-    # Need to check the API value here, in order to generate the key 'device'
-    # in the yaml and json output files
-    it 'should have the correct name' do
-      name_api = api[k] if api
-      Utils.test(k, name_api, "storage_devices/#{k}/device") do |_v_ohai, _v_api, error_msg|
-        expect(name_api).to_not eql(nil), error_msg
-      end
-    end
-
     it 'should have the correct device id' do
       by_id_api = get_api_value(api, ohai, k, 'by_id')
       by_id_ohai = get_ohai_value(api, ohai, k, 'by_id')
@@ -72,16 +69,11 @@ describe 'Disk' do
       end
     end
 
-    it 'should have the correct (optional) device path' do
-      # Check by_path only if we can get it from the system...
+    it 'should have the correct device path' do
       by_path_api = get_api_value(api, ohai, k, 'by_path')
       by_path_ohai = get_ohai_value(api, ohai, k, 'by_path')
       Utils.test(by_path_ohai, by_path_api, "storage_devices/#{k}/by_path") do |v_ohai, v_api, error_msg|
-        if by_path_ohai.nil? || by_path_ohai.empty?
-          expect(true).to be(true), "Device #{k} 'by_path' not available, not testing"
-        else
-          expect(v_ohai).to eql(v_api), error_msg
-        end
+        expect(v_ohai).to eql(v_api), error_msg
       end
     end
 
