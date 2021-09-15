@@ -14,7 +14,7 @@ Ohai.plugin(:Blockdevice) do
     block_device.select { |key, value| (key =~ /[sh]d.*/ || key =~ /nvme.*/) && (value['model'] != 'vmDisk') }.each do |k, v|
       id = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}'").stdout.split("\n").grep(%r{/(wwn-|nvme-eui)}).first
       v['by_id'] = id || '' # empty string if nil
-      v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}'").stdout.split("\n").grep(%r{/pci-}).first
+      v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}'").stdout.split("\n").grep(%r{/pci-}).sort.first
       stdout = Utils.shell_out("hdparm -I /dev/#{k}").stdout.encode!('utf-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       firmware_revision = stdout.split("\n").grep(/Firmware Revision/).first
       next if firmware_revision.nil?
