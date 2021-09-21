@@ -41,6 +41,7 @@ Ohai.plugin(:NetworkInfiniband) do
       pci_infos = Utils.get_pci_infos("/sys/class/net/#{dev}/device/")
       iface[:vendor] = pci_infos[:vendor]
       iface[:model] = pci_infos[:device]
+      iface[:driver] = pci_infos.has_key?(:driver) ? pci_infos[:driver] : nil
 
       # Get MAC address
       iface[:mac] = iface[:addresses].select { |_key, value| value[:family] == 'lladdr' }.keys[0]
@@ -54,15 +55,12 @@ Ohai.plugin(:NetworkInfiniband) do
       ibstat_iface_name = guid_interfaces[port_guid][:interface]
       ibstat_port_num = guid_interfaces[port_guid][:port]
 
-      if ibstat_iface_name =~ /hfi1/
+      # TODO: when Debian 11 is pushed as the standard environment, 'hfi1' and 'mlx'
+      # matches will be removable
+      if ibstat_iface_name =~ /(hfi1|opa)/
         iface[:interface] = 'Omni-Path'
-        iface[:driver] = 'hfi1'
-      elsif ibstat_iface_name =~ /mthca/
+      elsif ibstat_iface_name =~ /(mlx(\d+)|ib)/
         iface[:interface] = 'InfiniBand'
-        iface[:driver] = 'mthca' # Might never be used
-      elsif ibstat_iface_name =~ /mlx(\d+)/
-        iface[:interface] = 'InfiniBand'
-        iface[:driver] = "mlx#{Regexp.last_match(1)}_core"
       end
 
       # Channel adapter

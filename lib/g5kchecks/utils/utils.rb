@@ -106,12 +106,14 @@ module Utils
     pci_infos = {}
     return pci_infos if device_id.empty? || vendor_id.empty?
 
-    stdout = Utils.shell_out("/usr/bin/lspci -vmm -d #{vendor_id}:#{device_id}").stdout
+    stdout = Utils.shell_out("/usr/bin/lspci -vmm -k -d #{vendor_id}:#{device_id}").stdout
     stdout.each_line do |line|
       line = line.chomp
       pci_infos[:device] = line.gsub(/^Device:/i, '').strip if line =~ /^Device/
       if line =~ /^Vendor/
         pci_infos[:vendor] = line.gsub(/Vendor:/i, '').sub('Limited', '').sub('Corporation', '').strip
+      elsif line =~ /^Driver:\s+(.*)$/
+        pci_infos[:driver] = $1.chomp
       end
     end
     pci_infos
