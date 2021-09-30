@@ -69,9 +69,38 @@ module G5kChecks
         # Waiting for kadeploy to end its deployment before starting the tests
         hostname = Socket.gethostname
         state = get_kadeploy_state(hostname)
-        until %w[deployed prod_env rebooted powered].include?(state)
-          sleep 1
-          puts "Waiting for kadeploy to end its deployment (state=#{state})"
+        wait_states = %w[deploying rebooting powering]
+        success_states = %w[deployed rebooted powered]
+        failure_states = %w[deploy_failed reboot_failed power_failed aborted]
+        now = Time.now.to_i
+        wait_timeout = 300
+        unknown_timeout = 45
+        while true
+          if success_states.include?(state)
+            break
+          end
+          if failure_states.include?(state)
+            puts "Exiting with error because of kadeploy deployment state=#{state}"
+            exit 1
+          end
+          if wait_states.include?(state)
+            if Time.now.to_i > now + wait_timeout
+              # The state can be stuck in "deploying" state if the server crashed, see bug 12535
+              puts "Exiting with error because of timeout: deployment has stayed too long in state=#{state} (did the kadeploy server crash?)"
+              exit 1
+            else
+              puts "Waiting for kadeploy to end its deployment (state=#{state})"
+            end
+          else
+            # Unknown state: wait a bit, but not too long
+            if Time.now.to_i > now + unknown_timeout
+              puts "Exiting with error because of unknown state: deployment is in state=#{state}"
+              exit 1
+            else
+              puts "Kadeploy deployment is in unknown state=#{state}, waiting a bit just in case"
+            end
+          end
+          sleep 5
           state = get_kadeploy_state(hostname)
         end
       end
