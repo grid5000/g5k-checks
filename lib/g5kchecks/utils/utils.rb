@@ -254,8 +254,12 @@ module Utils
   end
 
   # Wrap dmidecode methods into Utils
-  def self.dmidecode_total_memory(type)
-    DmiDecode.get_total_memory(type)
+  def self.dmidecode_total_memory
+    DmiDecode.get_total_memory
+  end
+
+  def self.dmidecode_memory_devices
+    DmiDecode.get_memory
   end
 
   def self.lshw_total_memory(type)
@@ -266,6 +270,10 @@ module Utils
       # Not yet supported
       nil
     end
+  end
+
+  def self.lshw_memory_devices
+    LsHw.get_memory_devices
   end
 
   # Memory reported by the OS, dmidecode or lshw are the prefered ways
