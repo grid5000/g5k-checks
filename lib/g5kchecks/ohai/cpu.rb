@@ -105,6 +105,9 @@ Ohai.plugin(:Cpu) do
         cpu[:L2] = line.chomp.split[1].lstrip.to_i if line =~ /^L2/
         cpu[:L3] = line.chomp.split[1].lstrip.to_i if line =~ /^L3/
       end
+      [:L1d, :L1i, :L2, :L3].each do |c|
+        cpu[c] = 0 unless cpu.has_key?(c)
+      end
     else
       lscpu.each do |line|
         cpu[:L1d] = line.chomp.split(': ').last.lstrip.sub('K', '') if line =~ /^L1d/
