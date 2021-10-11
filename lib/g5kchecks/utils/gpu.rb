@@ -42,7 +42,7 @@ module Grid5000
         card[:power_default_limit] = gpu['Max Graphics Package Power (W)']
         card[:memory] = case card[:model]
                         when "Radeon Instinct MI50 32GB"
-                          32*1024**3
+                          32*(1024**3)
                         else
                           raise "g5kchecks does not supports this AMD GPU #{card[:model]}"
                         end

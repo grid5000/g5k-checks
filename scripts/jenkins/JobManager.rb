@@ -57,9 +57,9 @@ class JobManager
     walltime = options[:walltime].split(':')
     sleep_time = if walltime.size > 1
                    if walltime.size > 2
-                     (walltime[0].to_i * 60 + walltime[1].to_i) * 60 + walltime[2].to_i
+                     (((walltime[0].to_i * 60) + walltime[1].to_i) * 60) + walltime[2].to_i
                    else
-                     walltime[0].to_i * 60 + walltime[1].to_i
+                     (walltime[0].to_i * 60) + walltime[1].to_i
                                 end
                  else
                    walltime
