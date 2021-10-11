@@ -1,3 +1,12 @@
+g5k-checks (0.11.3) unstable; urgency=low
+
+  * 940a6ba [disk] use disk pci path to compare between ohai and Grid'5000 API
+  * 7246e31 [cpu] always put each cache's value to 0 if not existant
+  * 0bb71b0 [infiniband] use lspci output to determine the driver in use
+  * da5fd1b [disk] sort the result of find for a block device corresponding by-path
+
+ -- Samir Noir <samir.noir@inria.fr>  Mon, 11 Oct 2021 11:23:00 +0200
+
 g5k-checks (0.11.2) unstable; urgency=low
 
   * 38551e4 [network] fix interfaces' rate detection (caused by ip link set down)
