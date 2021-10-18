@@ -18,6 +18,8 @@ module Utils
   GIBI = MEBI * 1024
   GIGA = MEGA * 1000
 
+  @@local_api_description = nil
+
   def self.convert_storage(value)
     value * GIBI / GIGA / GIGA
   end
@@ -364,17 +366,11 @@ module Utils
     json
   end
 
-  # According to chassis product name, we launch the ipmitool command with a
+  # According to reference-repository, we launch the ipmitool command with a
   # specific timeout and number of retries
-  def self.ipmitool_shell_out(args, chassis)
-    timeout, retries = case chassis[:product_name]
-                       when '8335-GTB'
-                         [80, 3]
-                       when 'PowerEdge C6220 II'
-                         [60, 5]
-                       else
-                         [nil, 5]
-                       end
+  def self.ipmitool_shell_out(args)
+    timeout = Utils.local_api_description['management_tools']['ipmitool']['timeout']
+    retries = Utils.local_api_description['management_tools']['ipmitool']['retries']
 
     try = 0
     shell_out = nil
@@ -406,8 +402,14 @@ module Utils
 
   # Read and parse /etc/grid5000/ref-api.json if exists
   def self.local_api_description
-    JSON.parse(File.read('/etc/grid5000/ref-api.json'))
-  rescue Errno::ENOENT
-    nil
+    if @@local_api_description.nil?
+      @@local_api_description = begin
+                                  JSON.parse(File.read('/etc/grid5000/ref-api.json'))
+                                rescue Errno::ENOENT
+                                  {}
+                                end
+    end
+
+    return @@local_api_description
   end
 end
