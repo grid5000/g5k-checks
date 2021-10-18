@@ -1,3 +1,17 @@
+g5k-checks (0.11.4) unstable; urgency=low
+
+  * 00808ec [gitlab-ci] use apt instead of dpkg to install missing dependencies
+  * cac3407 [all] make rubocop happy by wrapping expression to avoid ambiguity
+  * f4dd964 [cpu] correct model_name regex for Xeon processors
+  * 06ad96f [network] optimize ethtool waiting time for down interfaces
+  * 9458f8d [network] parallelize bmc interface discovery (which use ipmitool)
+  * d1f47fa [ohai/g5k] add an entry containing the local api description
+  * 55bb7a3 [all] migrate to nokogiri in place of rexml
+  * 046e8dd [rubocop] enable all new cops
+  * 60a10fd [lib] use peach when possible to gain speed
+
+ -- Samir Noir <samir.noir@inria.fr>  Mon, 18 Oct 2021 09:01:04 +0200
+
 g5k-checks (0.11.3) unstable; urgency=low
 
   * 940a6ba [disk] use disk pci path to compare between ohai and Grid'5000 API
