@@ -3,7 +3,7 @@
 module LsHw
   def self.get_total_ram_memory
     lshw_xml_output = Utils.shell_out('lshw -xml -C memory').stdout
-    xml_doc = REXML::Document.new(lshw_xml_output)
-    REXML::XPath.match(xml_doc, "//node[@id='memory']/size")[0][0].to_s.to_i
+    xml_doc = Nokogiri::XML(lshw_xml_output)
+    xml_doc.at_xpath("//node[@id='memory']/size").text.to_i
   end
 end

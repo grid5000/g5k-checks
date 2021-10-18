@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require 'peach'
 
 Ohai.plugin(:Blockdevice) do
   provides 'block_device/improve'
@@ -11,7 +12,7 @@ Ohai.plugin(:Blockdevice) do
     # See github issue #6: finding the hard-drive vendor
     # See github issue #6: ohai gets the 'rev' info from /sys/block/sda/device/rev (see ohai/lib/ohai/plugins/linux/block_device.rb) and the data is actually truncated on some clusters
     #
-    block_device.select { |key, value| (key =~ /[sh]d.*/ || key =~ /nvme.*/) && (value['model'] != 'vmDisk') }.each do |k, v|
+    block_device.select { |key, value| (key =~ /[sh]d.*/ || key =~ /nvme.*/) && (value['model'] != 'vmDisk') }.peach do |k, v|
       id = Utils.shell_out("find /dev/disk/by-id/ -lname '*#{k}'").stdout.split("\n").grep(%r{/(wwn-|nvme-eui)}).first
       v['by_id'] = id || '' # empty string if nil
       v['by_path'] = Utils.shell_out("find /dev/disk/by-path/ -lname '*#{k}'").stdout.split("\n").grep(%r{/pci-}).sort.first

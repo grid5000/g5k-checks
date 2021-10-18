@@ -22,7 +22,7 @@ describe 'Bios' do
   it 'should have the correct version' do
     version_api = ''
     version_api = @api['version'] if @api
-    version_ohai = @system['version'].gsub(/'/, '').strip
+    version_ohai = @system['version'].delete("'").strip
     version_ohai = Utils.string_to_object(version_ohai.to_s)
     version_api  = Utils.string_to_object(version_api.to_s)
     Utils.test(version_ohai, version_api, 'bios/version') do |v_ohai, v_api, error_msg|

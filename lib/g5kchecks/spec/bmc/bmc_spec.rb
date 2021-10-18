@@ -3,9 +3,9 @@
 describe 'BMC' do
   before(:all) do
     unless RSpec.configuration.node.api_description.empty?
-      @api = RSpec.configuration.node.api_description['network_adapters'].select do |na|
+      @api = RSpec.configuration.node.api_description['network_adapters'].find do |na|
         na['management'] == true
-      end[0]
+      end
     end
     @ohai = RSpec.configuration.node.ohai_description[:network][:interfaces][:bmc]
   end

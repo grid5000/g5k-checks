@@ -22,7 +22,7 @@ describe 'Network' do
 
   it 'should have the correct number of network interfaces (excluding BMCs)' do
     # 'true' in fourth parameter means that we do not add the result to the API
-    Utils.test(ohai_ifaces.length, net_adapters.reject { |e| e['management'] }.length, 'network_adapters/length', true) do |v_ohai, v_api, error_msg|
+    Utils.test(ohai_ifaces.length, net_adapters.count { |e| !e['management'] }, 'network_adapters/length', true) do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end
@@ -77,7 +77,7 @@ describe 'Network' do
     end
 
     # Omni-Path/Infiniband specific
-    if dev =~ /ib/
+    if /ib/.match?(dev)
       it 'should have the correct guid' do
         mac_api = api['guid']
         mac_ohai = iface[:guid].downcase

@@ -56,7 +56,7 @@ class Merge
             tmpx = x.to_s
             tmpy = y.to_s
           end
-          (tmpx || max + 1) <=> (tmpy || max + 2)
+          (tmpx || (max + 1)) <=> (tmpy || (max + 2))
         end.each { |k| map.add(k, content_hash[k]) }
       end
     end

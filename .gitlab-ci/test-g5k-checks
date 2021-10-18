@@ -35,7 +35,7 @@ if gl.length != 1
 end
 logger.info("Copying and installing artifact")
 scp.upload!(gl.first, "/tmp/g5k-checks.deb")
-ssh.exec3!('sudo dpkg --force-confnew -i /tmp/g5k-checks.deb')
+ssh.exec3!('sudo apt install -y -o Dpkg::Options::="--force-confnew" --allow-downgrades /tmp/g5k-checks.deb')
 logger.info("Running g5k-checks")
 ssh.exec3!('sudo g5k-checks --remove-tests="User used sudo-g5k" -v')
 ssh.close

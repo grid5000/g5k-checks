@@ -53,6 +53,12 @@ Ohai.plugin(:G5k) do
     end
     # end KADEPLOY environments infos
 
+    # Get the local api decription, from the file /etc/grid5000/ref-api.json
+    # (populated by g5k-postinstall).
+    # If g5k-checks is runned in api mode, we don't want to use anything from
+    # the reference api since this mode is made to populate the api.
+    infos['local_api_description'] = conf['mode'] != 'api' ? Utils.local_api_description : nil
+
     # infos['user_deployed'] is true if the environment is deployed
     # inside a job (in particular, this excludes phoenix), and the job
     # is of type 'deploy'
@@ -61,7 +67,7 @@ Ohai.plugin(:G5k) do
 
     # If the environment is deployed inside a job
     if !json_status.nil? && json_status['nodes'] != {} && json_status['nodes'][hostname]['hard'] == 'alive' && json_status['nodes'][hostname]['soft'] != 'free'
-      job_id = json_status['nodes'][hostname]['reservations'].select { |e| e['state'] == 'running' }.first['uid']
+      job_id = json_status['nodes'][hostname]['reservations'].find { |e| e['state'] == 'running' }['uid']
       json_job = Utils.api_call(api_base_url + "/sites/#{site_uid}/jobs/#{job_id}")
     else
       json_job = nil

@@ -10,7 +10,7 @@ module RSpec
 
         def example_failed(failedExampleNotification)
           file_name = failedExampleNotification.example.description.strip
-          file_name = file_name.gsub(%r{/}, '\\').gsub(' ', '_')
+          file_name = file_name.tr('/', '\\').tr(' ', '_')
           File.open(File.join(RSpec.configuration.output_dir, 'OAR_' + file_name), 'w') do |f|
             f.puts failedExampleNotification.example.execution_result.exception.to_json
           end
