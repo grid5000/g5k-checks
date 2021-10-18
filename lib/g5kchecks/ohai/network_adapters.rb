@@ -131,7 +131,7 @@ Ohai.plugin(:NetworkAdapters) do
     # Process management interface
     # Get MAC address from ipmitool if possible
     threads << Thread.new do
-      shell_out = Utils.ipmitool_shell_out('lan print', chassis)
+      shell_out = Utils.ipmitool_shell_out('lan print')
 
       shell_out.stdout.each_line do |line|
         if /^[[:blank:]]*MAC Address/.match?(line)

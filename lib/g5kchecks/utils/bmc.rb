@@ -6,8 +6,17 @@ require 'yaml'
 module Grid5000
   # Class helping to collect BMC version
   class BMC
-    def fetch_info(chassis)
-      version = fetch_racadm || fetch_ipmitool(chassis)
+    def fetch_info
+      bmc_vendor_tool = Utils.local_api_description['management_tools']['bmc_vendor_tool']
+
+      version = case bmc_vendor_tool
+                when 'ipmitool'
+                  fetch_ipmitool
+                when 'racadm'
+                  fetch_racadm
+                else
+                  raise "Unknown BMC vendor tool #{bmc_vendor_tool}!"
+                end
 
       version ? { 'version' => version } : { 'version' => 'unknown' }
     end
@@ -22,9 +31,9 @@ module Grid5000
       end
     end
 
-    def fetch_ipmitool(chassis)
+    def fetch_ipmitool
       begin
-        shell_out = Utils.ipmitool_shell_out('-I open bmc info', chassis)
+        shell_out = Utils.ipmitool_shell_out('-I open bmc info')
 
         if shell_out.exitstatus == 0
           shell_out.stdout.each_line do |line|
