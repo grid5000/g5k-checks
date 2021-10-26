@@ -1,3 +1,13 @@
+g5k-checks (0.11.5) unstable; urgency=low
+
+  * b50aa33 [utils/lshw] add missing require 'nokogiri'
+  * bab7519 [utils/lshw] use nokogiri to parse lshw output to get memory devices
+  * 36ab8dc [bmc] get bmc vendor tool to use and ipmitool parameters from ref-api
+  * 8e0c5a5 [memory] add memory_devices to node description
+  * add1eca [g5kchecks] Improve handling of kadeploy deployment states (bug 12535)
+
+ -- Samir Noir <samir.noir@inria.fr>  Tue, 26 Oct 2021 17:38:33 +0200
+
 g5k-checks (0.11.4) unstable; urgency=low
 
   * 00808ec [gitlab-ci] use apt instead of dpkg to install missing dependencies
