@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'nokogiri'
+
 module LsHw
   def self.get_total_ram_memory
     lshw_xml_output = Utils.shell_out('lshw -xml -C memory').stdout
