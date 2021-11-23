@@ -38,6 +38,9 @@ module Grid5000
         card = {}
         card[:vendor] = 'AMD'
         card[:model] = gpu['Card series']
+        if card[:model] == "deon Instinct MI50 32GB"
+          card[:model] = "Radeon Instinct MI50 32GB"
+        end
         card[:vbios_version] = gpu['VBIOS version']
         card[:power_default_limit] = gpu['Max Graphics Package Power (W)']
         card[:memory] = case card[:model]
