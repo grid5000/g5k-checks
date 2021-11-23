@@ -1,3 +1,9 @@
+g5k-checks (0.11.6) unstable; urgency=low
+
+  * 6651440 [gpu] Workaround incomplete model name for AMD GPU
+
+ -- Simon Delamare <simon.delamare@ens-lyon.fr>  Tue, 23 Nov 2021 13:00:00 +0100
+
 g5k-checks (0.11.5) unstable; urgency=low
 
   * b50aa33 [utils/lshw] add missing require 'nokogiri'
