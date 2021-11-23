@@ -38,6 +38,10 @@ module Grid5000
         card = {}
         card[:vendor] = 'AMD'
         card[:model] = gpu['Card series']
+        # Workaround for incomplete model name from rocm-smi (ROCm 4.5/debian11)
+        if card[:model] == "deon Instinct MI50 32GB"
+          card[:model] = "Radeon Instinct MI50 32GB"
+        end
         card[:vbios_version] = gpu['VBIOS version']
         card[:power_default_limit] = gpu['Max Graphics Package Power (W)']
         card[:memory] = case card[:model]
