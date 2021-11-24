@@ -52,7 +52,12 @@ module Grid5000
                         end
         card[:device] = "/dev/dri/#{gpu_id}"
         bus = gpu['PCI Bus'].split(':')[0..1].join(':').downcase
-        card[:cpu_affinity] = get_cpu_from_numa_node(detect_numa_node(bus))
+        numa_node = detect_numa_node(bus)
+        # Workaround for #13587
+        if numa_node == "-1"
+          numa_node = "0"
+        end
+        card[:cpu_affinity] = get_cpu_from_numa_node(numa_node)
         cards[gpu_id] = card
       end
       return cards
