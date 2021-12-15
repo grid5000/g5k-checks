@@ -7,7 +7,7 @@ module Grid5000
   # Class helping to collect BMC version
   class BMC
     def fetch_info
-      bmc_vendor_tool = Utils.local_api_description['management_tools']['bmc_vendor_tool']
+      bmc_vendor_tool = Utils.local_api_description['management_tools']['bmc_vendor_tool'] rescue 'ipmitool'
 
       version = case bmc_vendor_tool
                 when 'ipmitool'

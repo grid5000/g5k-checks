@@ -369,8 +369,8 @@ module Utils
   # According to reference-repository, we launch the ipmitool command with a
   # specific timeout and number of retries
   def self.ipmitool_shell_out(args)
-    timeout = Utils.local_api_description['management_tools']['ipmitool']['timeout']
-    retries = Utils.local_api_description['management_tools']['ipmitool']['retries']
+    timeout = Utils.local_api_description['management_tools']['ipmitool']['timeout'] rescue nil
+    retries = Utils.local_api_description['management_tools']['ipmitool']['retries'] rescue 5
 
     try = 0
     shell_out = nil
