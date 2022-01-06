@@ -100,10 +100,10 @@ build-bullseye:ppc64:
   tags:
     - grid5000-docker-ppc64
 
-test-buster:
+test-bullseye:
   stage: deploy_and_test
   variables:
-    TARGETDIR: "buster"
+    TARGETDIR: "bullseye"
   tags:
     - grid5000-shell
   script:
