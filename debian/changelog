@@ -1,3 +1,9 @@
+g5k-checks (0.11.7) unstable; urgency=low
+
+  * ca03993 [bmc] set default to use when ref-api.json file is missing
+
+ -- Samir Noir <samir.noir@inria.fr>  Wed, 26 Jan 2022 18:05:25 +0100
+
 g5k-checks (0.11.6) unstable; urgency=low
 
   * 6651440 [gpu] Workaround incomplete model name for AMD GPU
