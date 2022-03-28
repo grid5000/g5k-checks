@@ -15,10 +15,12 @@ describe 'Standard Environment Version' do
     else
       lastV = @g5k['kadeploy']['stdenv']['version']
       lastN = @g5k['kadeploy']['stdenv']['name']
-      lastStd = "#{lastN}-#{lastV}"
+      lastA = @g5k['kadeploy']['stdenv']['alias']
+      lastStdNames = ["#{lastN}-#{lastV}"]
+      lastStdNames << "#{lastA}-#{lastV}" unless lastA.nil? || lastA.empty?
       stdNameVersion = @g5k['env']['name']
-      Utils.test(stdNameVersion, lastStd, 'Standard Environment Version', true) do |v_system, v_api, error_msg|
-        expect(v_system).to eql(v_api), error_msg
+      Utils.test(stdNameVersion, lastStdNames, 'Standard Environment Version', true) do |v_system, v_api, error_msg|
+        expect(v_api).to include(v_system), error_msg
       end
     end
   end
