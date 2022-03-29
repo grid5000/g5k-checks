@@ -1,3 +1,9 @@
+g5k-checks (0.11.8) unstable; urgency=low
+
+  * ca1e968 [stdversion] allow to be equal to the name or alias of kadeploy env
+
+ -- Alexandre MERLIN <alexandre.merlin@inria.fr>  Tue, 29 Mar 2022 10:43:45 +0200
+
 g5k-checks (0.11.7) unstable; urgency=low
 
   * ca03993 [bmc] set default to use when ref-api.json file is missing
