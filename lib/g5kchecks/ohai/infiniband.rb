@@ -39,7 +39,7 @@ Ohai.plugin(:NetworkInfiniband) do
       # Forcing predictable name to device
       iface[:name] = dev
 
-      pci_infos = Utils.get_pci_infos("/sys/class/net/#{dev}/device/")
+      pci_infos = Utils.get_pci_infos_by_sysfs("/sys/class/net/#{dev}/device/")
       iface[:vendor] = pci_infos[:vendor]
       iface[:model] = pci_infos[:device]
       iface[:driver] = pci_infos.has_key?(:driver) ? pci_infos[:driver] : nil

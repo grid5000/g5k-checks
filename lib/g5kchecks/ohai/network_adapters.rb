@@ -89,7 +89,7 @@ Ohai.plugin(:NetworkAdapters) do
         iface[:driver] = ethtool_infos[:driver]
         iface[:firmware_version] = ethtool_infos[:firmware_version]
 
-        pci_infos = Utils.get_pci_infos("/sys/class/net/#{dev}/device/")
+        pci_infos = Utils.get_pci_infos_by_sysfs("/sys/class/net/#{dev}/device/")
         iface[:vendor] = pci_infos[:vendor]
         iface[:model] = pci_infos[:device]
 

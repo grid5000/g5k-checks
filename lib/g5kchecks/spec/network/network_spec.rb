@@ -17,12 +17,24 @@ describe 'Network' do
   end
 
   it 'should not lack any of the interfaces from the API' do
-    expect(net_adapters.reject { |e| !(e['mountable']) || ohai_ifaces.include?(e['name']) || ohai_ifaces.include?(e['device']) }).to be_empty
+    expect(
+      net_adapters.reject do |e|
+          !(e['mountable']) ||
+          e['device'] =~ /^fpga/ ||
+          ohai_ifaces.include?(e['name']) ||
+          ohai_ifaces.include?(e['device'])
+      end
+    ).to be_empty
   end
 
-  it 'should have the correct number of network interfaces (excluding BMCs)' do
+  it 'should have the correct number of network interfaces (excluding BMCs and FPGAs)' do
     # 'true' in fourth parameter means that we do not add the result to the API
-    Utils.test(ohai_ifaces.length, net_adapters.count { |e| !e['management'] }, 'network_adapters/length', true) do |v_ohai, v_api, error_msg|
+    Utils.test(
+      ohai_ifaces.length,
+      net_adapters.count { |e| !e['management'] && e['device'] !~ /^fpga/ },
+      'network_adapters/length',
+      true
+    ) do |v_ohai, v_api, error_msg|
       expect(v_ohai).to eql(v_api), error_msg
     end
   end

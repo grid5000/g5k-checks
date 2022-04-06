@@ -101,25 +101,42 @@ module Utils
   end
 
   # Get vendor/device name from sysfs/lspci
-  def self.get_pci_infos(sys_dev_path)
+  def self.get_pci_infos_by_sysfs(sys_dev_path)
     vendor_id_path = File.join(sys_dev_path, 'vendor').to_s
     device_id_path = File.join(sys_dev_path, 'device').to_s
     vendor_id = Utils.shell_out("cat #{vendor_id_path}").stdout.strip.chomp
     device_id = Utils.shell_out("cat #{device_id_path}").stdout.strip.chomp
-    pci_infos = {}
-    return pci_infos if device_id.empty? || vendor_id.empty?
 
-    stdout = Utils.shell_out("/usr/bin/lspci -vmm -k -d #{vendor_id}:#{device_id}").stdout
+    if device_id.empty? || vendor_id.empty?
+      return {}
+    else
+      return self.get_pci_infos(vendor_id, device_id).first[1]
+    end
+  end
+
+  def self.get_pci_infos(vendor_id = nil, device_id = nil, class_id = nil)
+    pci_infos = {}
+    vendor_id = '' if vendor_id.nil?
+    device_id = '' if device_id.nil?
+    class_id = '' if class_id.nil?
+
+    slot = nil
+    stdout = Utils.shell_out("/usr/bin/lspci -vmm -k -d #{vendor_id}:#{device_id}:#{class_id}").stdout
     stdout.each_line do |line|
       line = line.chomp
-      pci_infos[:device] = line.gsub(/^Device:/i, '').strip if /^Device/.match?(line)
-      if /^Vendor/.match?(line)
-        pci_infos[:vendor] = line.gsub(/Vendor:/i, '').sub('Limited', '').sub('Corporation', '').strip
+      if line =~ /^Slot:\s+(.*)$/
+        slot = $1.chomp
+        pci_infos[slot] = {}
+      elsif /^Device/.match?(line)
+        pci_infos[slot][:device] = line.gsub(/^Device:/i, '').strip
+      elsif /^Vendor/.match?(line)
+        pci_infos[slot][:vendor] = line.gsub(/Vendor:/i, '').sub('Limited', '').sub('Corporation', '').strip
       elsif line =~ /^Driver:\s+(.*)$/
-        pci_infos[:driver] = $1.chomp
+        pci_infos[slot][:driver] = $1.chomp
       end
     end
-    pci_infos
+
+    return pci_infos
   end
 
   # vraiment pas beau mais en ruby 1.9.3 les messages
