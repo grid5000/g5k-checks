@@ -1,3 +1,9 @@
+g5k-checks (0.11.9) unstable; urgency=low
+
+  * 00bdbec [fpga] initial support for Xilinx fpgas detection
+
+ -- Samir Noir <samir.noir@inria.fr>  Tue, 12 Apr 2022 14:01:51 +0200
+
 g5k-checks (0.11.8) unstable; urgency=low
 
   * ca1e968 [stdversion] allow to be equal to the name or alias of kadeploy env
