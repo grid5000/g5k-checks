@@ -24,7 +24,7 @@ Ohai.plugin(:G5k) do
     if conf['mode'] != 'api'
       ref_api = RSpec.configuration.node.api_description['software']
       std_env_name = ref_api['standard-environment']
-      json_envs = Utils.api_call(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&user=deploy&name=#{std_env_name}")
+      json_envs = Utils.api_call(api_base_url + "/sites/#{site_uid}/internal/kadeployapi/environments?last=true&username=deploy&name=#{std_env_name}")
 
       if json_envs.size == 1
         infos['kadeploy']['stdenv'] = json_envs[0]
