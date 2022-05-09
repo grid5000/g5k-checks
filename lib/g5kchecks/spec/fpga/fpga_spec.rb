@@ -21,7 +21,7 @@ describe 'Fpga' do
   end
 
   ohai_fpga_devices.each do |dev, card|
-    %w[vendor model pci_slot type].each do |field|
+    %w[vendor model type].each do |field|
       it "should have information about #{field} for #{dev}" do
         fpga_ohai = card[field.to_sym]
         fpga_api = api_fpga_devices_by_dev[dev].nil? ? nil : api_fpga_devices_by_dev[dev][field]
