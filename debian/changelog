@@ -1,3 +1,10 @@
+g5k-checks (0.11.10) unstable; urgency=low
+
+  * e2cce97 [fpga] fix Xilinx Alveo U200 detection
+  * a54e563 fix url to internal kadeploy api
+
+ -- Samir Noir <samir.noir@inria.fr>  Thu, 12 May 2022 12:01:26 +0200
+
 g5k-checks (0.11.9) unstable; urgency=low
 
   * 00bdbec [fpga] initial support for Xilinx fpgas detection
