@@ -133,6 +133,8 @@ module Utils
         pci_infos[slot][:vendor] = line.gsub(/Vendor:/i, '').sub('Limited', '').sub('Corporation', '').strip
       elsif line =~ /^Driver:\s+(.*)$/
         pci_infos[slot][:driver] = $1.chomp
+      elsif line =~ /^PhySlot:\s+(.*)$/
+        pci_infos[slot][:phy_slot] = $1.chomp
       end
     end
 
