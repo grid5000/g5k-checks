@@ -33,16 +33,6 @@ include:
   except:
      - tags
 
-build-stretch: &build-stretch
-  <<: *build
-  variables:
-    TARGETDIR: "stretch"
-  image: debian:stretch
-  artifacts: # generate artifacts for files we want to publish
-     paths:
-      - stretch
-     expire_in: '1 month'
-
 .build-buster: &build-buster
   <<: *build
   variables:
@@ -113,6 +103,5 @@ push-package:
     - master
   when: manual
   script:
-    - g5k-deploy-files --only-if-tag --files 'stretch/*.deb' --directory deb/g5k-checks/stretch
     - g5k-deploy-files --only-if-tag --files 'buster/*.deb' --directory deb/g5k-checks/buster
     - g5k-deploy-files --only-if-tag --files 'bullseye/*.deb' --directory deb/g5k-checks/bullseye
