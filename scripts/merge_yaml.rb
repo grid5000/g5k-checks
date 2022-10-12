@@ -68,8 +68,8 @@ class Merge
 
     file_check = File.join(@site, @cluster, 'cluster_check.yaml')
     file_merge = File.join(@site, @cluster, 'cluster_merge_with_admin.yaml')
-    File.delete(file_check) if File.exist?(file_check)
-    File.delete(file_merge) if File.exist?(file_merge)
+    FileUtils.rm_f(file_check)
+    FileUtils.rm_f(file_merge)
 
     Dir.foreach(File.join(@site, @cluster)) do |x|
       next if (x == '.') || (x == '..')
