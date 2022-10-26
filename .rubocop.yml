@@ -2,4 +2,3 @@ Lint/RescueException:
   Enabled: false
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.5
