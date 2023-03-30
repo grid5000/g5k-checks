@@ -1,4 +1,17 @@
+g5k-checks (0.11.11) unstable; urgency=low
+
+  * 145b916 Fix signal handling
+  * 82def7a Delete .ruby-gemset
+  * c711aeb Remove TargetRubyVersion from .rubocop.yml
+  * a794a12 Delete .ruby-version
+  * 7821d1d Remove stretch builds from CI
+  * 26426c6 Fix rubocop errors about atomic files deletion in merge_yaml script
+  * 84cae08 Use /stable/ instead of /3.0/ when calling api.grid5000.fr
+
+ -- Alexandre MERLIN <alexandre.merlin@inria.fr>  Thu, 30 Mar 2023 09:24:32 +0200
+
 g5k-checks (0.11.10) unstable; urgency=low
+
 
   * e2cce97 [fpga] fix Xilinx Alveo U200 detection
   * a54e563 fix url to internal kadeploy api
