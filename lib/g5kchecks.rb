@@ -11,10 +11,12 @@ module G5kChecks
     def initialize
       super
       trap('TERM') do
-        RefAPIHelper::G5kRefAPIHelperNode.fatal!('SIGTERM received, stopping', 1)
+        $stderr.puts 'SIGTERM received, stopping'
+        exit!(1)
       end
       trap('INT') do
-        RefAPIHelper::G5kRefAPIHelperNode.fatal!('SIGINT received, stopping', 2)
+        $stderr.puts 'SIGINT received, stopping'
+        exit!(2)
       end
     end
 
