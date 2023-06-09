@@ -48,63 +48,70 @@ module DmiDecode
   end
 
   def self.get_memory
-    dmi_data = get_dmi_data
-
-    return if dmi_data.nil? || dmi_data['Memory Device'].nil?
-
-    if !@@memory_devices.empty?
+    unless @@memory_devices.empty?
       return @@memory_devices
     end
 
-    # On the oldest clusters dmidecode does not print the Memory Technology for
-    # the DIMMs. When it's the case, we assume that DIMMs are always DRAM
-    dmi_data['Memory Device'].each do |mem_dev|
-      memory_type = case mem_dev['Memory Technology']
-                    when /^DRAM$/, nil
-                      :dram
-                    when /^Intel.*persistent memory$/
-                      :pmem
-                    end
+    dmi_data = get_dmi_data
 
-      size = mem_dev['Size']
-      form_factor = mem_dev['Form Factor']
-      firmware = mem_dev['Firmware Version'] == 'Not Specified' ? nil : mem_dev['Firmware Version']
+    return if dmi_data.nil?
+    if dmi_data['Memory Device'].nil?
+      return if dmi_data['Physical Memory Array'].nil?
+      size_u, unit = dmi_data['Physical Memory Array'][0]['Maximum Capacity'].split(' ')
+      physical_memory = size_u.to_i * 1024**(unit == 'GB' ? 3 : 2)
+      @@memory_devices['Platform'] = { size: physical_memory,
+                                   technology: 'DRAM',
+                                   firmware: 'Not Specified' }
+    else
+      # On the oldest clusters dmidecode does not print the Memory Technology for
+      # the DIMMs. When it's the case, we assume that DIMMs are always DRAM
+      dmi_data['Memory Device'].each do |mem_dev|
+        memory_type = case mem_dev['Memory Technology']
+                      when /^DRAM$/, nil
+                        :dram
+                      when /^Intel.*persistent memory$/
+                        :pmem
+                      end
 
-      locator = if mem_dev['Locator'].match(/^DIMM_(.+)$/)
-                  $1
-                elsif mem_dev['Locator'].match(/^DIMM(\d+)$/) && mem_dev['Bank Locator'].match?(/CPU/)
-                  $1.to_i.to_s + '_' + mem_dev['Bank Locator']
-                elsif mem_dev['Bank Locator'].match(/^DIMM(\d+)$/) && mem_dev['Locator'].match?(/CPU/)
-                  $1.to_i.to_s + '_' + mem_dev['Locator']
-                else
-                  mem_dev['Locator']
-                end
+        size = mem_dev['Size']
+        form_factor = mem_dev['Form Factor']
+        firmware = mem_dev['Firmware Version'] == 'Not Specified' ? nil : mem_dev['Firmware Version']
 
-      dev_id = "#{form_factor.downcase}_#{locator.downcase}"
+        locator = if mem_dev['Locator'].match(/^DIMM_(.+)$/)
+                    $1
+                  elsif mem_dev['Locator'].match(/^DIMM(\d+)$/) && mem_dev['Bank Locator'].match?(/CPU/)
+                    $1.to_i.to_s + '_' + mem_dev['Bank Locator']
+                  elsif mem_dev['Bank Locator'].match(/^DIMM(\d+)$/) && mem_dev['Locator'].match?(/CPU/)
+                    $1.to_i.to_s + '_' + mem_dev['Locator']
+                  else
+                    mem_dev['Locator']
+                  end
 
-      if @@memory_devices.has_key?(dev_id)
-        raise "Overlapping detected, the memory device name #{dev_id} (generated) is already present in the data structure"
+        dev_id = "#{form_factor.downcase}_#{locator.downcase}"
+
+        if @@memory_devices.has_key?(dev_id)
+          raise "Overlapping detected, the memory device name #{dev_id} (generated) is already present in the data structure"
+        end
+
+        # Consider <OUT OF SPEC> form factor valid if returned size is valid (ex: see lille/chifflet)
+        unless size != 'No Module Installed' && (form_factor == 'DIMM' || form_factor == 'FB-DIMM' || form_factor == 'SODIMM' || form_factor == '<OUT OF SPEC>')
+          next
+        end
+
+        size_u, unit = size.split(' ')
+
+        if unit == 'GB'
+          physical_memory = (size_u.to_i * 1024)
+        elsif unit == 'MB'
+          physical_memory = size_u.to_i
+        end
+
+        physical_memory = physical_memory * (1024**2) if physical_memory > 0
+        @@memory_devices[dev_id] = { size: physical_memory,
+                                     technology: memory_type,
+                                     firmware: firmware }
       end
-
-      # Consider <OUT OF SPEC> form factor valid if returned size is valid (ex: see lille/chifflet)
-      unless size != 'No Module Installed' && (form_factor == 'DIMM' || form_factor == 'FB-DIMM' || form_factor == 'SODIMM' || form_factor == '<OUT OF SPEC>')
-        next
-      end
-
-      size_u, unit = size.split(' ')
-
-      if unit == 'GB'
-        physical_memory = (size_u.to_i * 1024)
-      elsif unit == 'MB'
-        physical_memory = size_u.to_i
-      end
-
-      physical_memory = physical_memory * (1024**2) if physical_memory > 0
-      @@memory_devices[dev_id] = { size: physical_memory,
-                                   technology: memory_type,
-                                   firmware: firmware }
     end
-
     @@memory_devices
   end
 
