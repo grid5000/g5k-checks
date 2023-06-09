@@ -47,6 +47,11 @@ module DmiDecode
     dmi_data
   end
 
+  def self.get_physical_memory_size(size)
+    size_u, unit = size.split(' ')
+    size_u.to_i * (1024**(unit == 'GB' ? 3 : 2))
+  end
+
   def self.get_memory
     unless @@memory_devices.empty?
       return @@memory_devices
@@ -57,11 +62,11 @@ module DmiDecode
     return if dmi_data.nil?
     if dmi_data['Memory Device'].nil?
       return if dmi_data['Physical Memory Array'].nil?
-      size_u, unit = dmi_data['Physical Memory Array'][0]['Maximum Capacity'].split(' ')
-      physical_memory = size_u.to_i * 1024**(unit == 'GB' ? 3 : 2)
-      @@memory_devices['Platform'] = { size: physical_memory,
-                                   technology: 'DRAM',
-                                   firmware: 'Not Specified' }
+      @@memory_devices['Platform'] = {
+        size: get_physical_memory_size(dmi_data['Physical Memory Array'][0]['Maximum Capacity']),
+        technology: :dram,
+        firmware: 'Not Specified'
+      }
     else
       # On the oldest clusters dmidecode does not print the Memory Technology for
       # the DIMMs. When it's the case, we assume that DIMMs are always DRAM
@@ -98,16 +103,7 @@ module DmiDecode
           next
         end
 
-        size_u, unit = size.split(' ')
-
-        if unit == 'GB'
-          physical_memory = (size_u.to_i * 1024)
-        elsif unit == 'MB'
-          physical_memory = size_u.to_i
-        end
-
-        physical_memory = physical_memory * (1024**2) if physical_memory > 0
-        @@memory_devices[dev_id] = { size: physical_memory,
+        @@memory_devices[dev_id] = { size: get_physical_memory_size(size),
                                      technology: memory_type,
                                      firmware: firmware }
       end
