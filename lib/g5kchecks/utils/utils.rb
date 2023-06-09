@@ -159,8 +159,9 @@ module Utils
   @@data_layout = nil
   def self.layout
     layout = {}
-    primary_disk = JSON.parse(`lsblk --json`)["blockdevices"].find{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/'}}['name']
-    @@data_layout = `parted /dev/#{primary_disk} print 2>/dev/null` if @@data_layout.nil?
+    return layout if Utils.shell_out('findmnt -n -o FSTYPE /').stdout.chomp == 'nfs'
+    primary_disk = JSON.parse(Utils.shell_out("lsblk --json").stdout.chomp)["blockdevices"].find{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/'}}['name']
+    @@data_layout = Utils.shell_out("parted /dev/#{primary_disk} print 2>/dev/null").stdout.chomp if @@data_layout.nil?
     @@data_layout.each_line do |line|
       _num, parsed_line = Utils.parse_line_layout(line)
       layout.merge!(parsed_line) unless parsed_line.nil?
