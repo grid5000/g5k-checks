@@ -197,7 +197,7 @@ module Utils
   def self.fstab
     filesystem = {}
     fstab = Utils.fileread('/etc/fstab')
-    fstab.each do |line|
+    Array(fstab).each do |line|
       parsed_line = Utils.parse_line_fstab(line)
       filesystem.merge!(parsed_line) unless parsed_line.nil?
     end
