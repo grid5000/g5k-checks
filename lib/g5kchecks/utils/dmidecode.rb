@@ -64,7 +64,7 @@ module DmiDecode
       return if dmi_data['Physical Memory Array'].nil?
       @@memory_devices['Platform'] = {
         size: get_physical_memory_size(dmi_data['Physical Memory Array'][0]['Maximum Capacity']),
-        technology: 'DRAM',
+        technology: 'dram',
         firmware: 'Not Specified'
       }
     else
