@@ -105,3 +105,4 @@ push-package:
   script:
     - g5k-deploy-files --only-if-tag --files 'buster/*.deb' --directory deb/g5k-checks/buster
     - g5k-deploy-files --only-if-tag --files 'bullseye/*.deb' --directory deb/g5k-checks/bullseye
+  allow_failure: false
