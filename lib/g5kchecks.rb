@@ -67,7 +67,7 @@ module G5kChecks
         config.output_dir = conf['output_dir']
       end
 
-      if conf['mode'] != 'api'
+      if conf['mode'] != 'api' && !conf['no-wait-deploy']
         # Waiting for kadeploy to end its deployment before starting the tests
         hostname = Socket.gethostname
         state = get_kadeploy_state(hostname)

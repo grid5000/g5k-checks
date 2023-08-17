@@ -65,6 +65,11 @@ optparse = OptionParser.new(USAGE) do |opts|
     $hashconf['apipasswd'] = passwd
   end
 
+  $hashconf['no-wait-deploy'] = false
+  opts.on_tail('-k', '--no-wait-deploy', "Do not check status/wait for the end of the deployment of the node [default: #{$hashconf['no-wait-deploy']}]") do
+    $hashconf['no-wait-deploy'] = true
+  end
+
   $hashconf['verbose'] = false
   opts.on_tail('-v', '--verbose', "Enable verbose mode [default: #{$hashconf['verbose']}]") do
     $hashconf['verbose'] = true
