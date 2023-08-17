@@ -61,8 +61,8 @@ Ohai.plugin(:Cpu) do
             cpu[:model] = 'Cortex'
             cpu[:version] = Regexp.last_match(1)
           else
-            cpu[:model] = 'unknown'
-            cpu[:version] = 'unkown'
+            cpu[:model] = 'Unknown'
+            cpu[:version] = 'Unknown'
           end
         end
       end
@@ -73,8 +73,8 @@ Ohai.plugin(:Cpu) do
         cpu[:model] = 'POWER8NVL'
         cpu[:version] = lscpu.grep(/Model:/).first.split(':')[1].strip.split(' ')[0]
       else
-        cpu[:model] = 'unknown'
-        cpu[:other_description] = 'unknown'
+        cpu[:model] = 'Unknown'
+        cpu[:other_description] = 'Unknown'
       end
     end
 
