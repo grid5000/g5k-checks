@@ -60,6 +60,9 @@ Ohai.plugin(:Cpu) do
           elsif cpu[:'0'][:model_name] =~ /^Cortex-(.+)$/
             cpu[:model] = 'Cortex'
             cpu[:version] = Regexp.last_match(1)
+          elsif cpu[:'0'][:model_name] =~ /^Carmel$/
+            cpu[:model] = 'Carmel'
+            cpu[:version] = 'Unknown'
           else
             cpu[:model] = 'Unknown'
             cpu[:version] = 'Unknown'
