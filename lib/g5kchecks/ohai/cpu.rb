@@ -34,7 +34,7 @@ Ohai.plugin(:Cpu) do
           cpu[:version] = Regexp.last_match(1) if cpu[:'0'][:model_name] =~ /Processor[^\w]*(.*)/
         elsif cpu[:'0'][:model_name].include?('EPYC')
           cpu[:model] = 'AMD EPYC'
-          cpu[:version] = Regexp.last_match(1) if cpu[:'0'][:model_name] =~ /AMD EPYC\s+(\d+)\s+(.*)/
+          cpu[:version] = Regexp.last_match(1) if cpu[:'0'][:model_name] =~ /AMD EPYC\s+([[:alnum:]]+)\s+(.*)/
         end
       else
         cpu[:vendor] = 'Intel'
