@@ -1,3 +1,10 @@
+g5k-checks (0.11.12) unstable; urgency=low
+
+  [ Julien Lelaurain ]
+  * [68a04fb] [cpu] Handle AMD EPYC version whith letters and not only whith numbers
+
+ -- Julien Lelaurain <julien.lelaurain@inria.fr>  Wed, 13 Sep 2023 10:57:49 +0200
+
 g5k-checks (0.11.11) unstable; urgency=low
 
   * 145b916 Fix signal handling
