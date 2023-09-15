@@ -1,3 +1,19 @@
+g5k-checks (0.11.13) unstable; urgency=medium
+
+  * [86f437c] [dmidecode] Support platform where dmidecode does not provide Memory Nodes
+  * [9c28601] [utils] Support nfsroot platform: no disk layout
+  * [439d5c3] [ohai] Support nvme by-path with a platform-*.pcie- prefix
+  * [90927e1] [dmidecode] Rework dmidecode: factorize memory size conversion
+  * [b15fab6] [utils] Fix ugly bug when fstab is a one-liner
+  * [1451ace] [cpu] Fix unknown -> Unknown, same as when reported by dmidecode
+  * [abe2b2c] [cpu] Add support for Arm64 Carmel CPU (AGX Xavier)
+  * [b5c50a1] Add the --no-wait-deploy option
+  * [6ab518a] [bmc] Add support for none as the BMC tool = nada.
+  * [1371c6c] [gpu] Add AGX Xavier to the undetected GPUs
+  * [b10ba2a] [cpu] Force cpu count = 1 for Carmel CPUs
+
+ -- Pierre Neyron <pierre.neyron@imag.fr>  Fri, 15 Sep 2023 10:19:32 +0200
+
 g5k-checks (0.11.12) unstable; urgency=low
 
   [ Julien Lelaurain ]
