@@ -134,8 +134,12 @@ Ohai.plugin(:Cpu) do
     lscpu_p = lscpu_p.transpose # transpose the data
     lscpu_p_count = lscpu_p.map { |line| line.uniq.count } # count
 
-    cpu[:nb_procs]   = lscpu_p_count[2]
-    cpu[:nb_cores]   = lscpu_p_count[1]
+    if cpu[:model] == 'Carmel'
+      cpu[:nb_procs] = 1
+    else
+      cpu[:nb_procs] = lscpu_p_count[2]
+    end
+    cpu[:nb_cores] = lscpu_p_count[1]
     cpu[:nb_threads] = lscpu_p_count[0]
 
     # :ht_capable
