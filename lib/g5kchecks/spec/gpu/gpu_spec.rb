@@ -2,7 +2,8 @@
 
 # List of GPU models for which nvidia-smi is broken on Grid5000
 UNDETECTED_MODELS = [
-  'Tesla M2075' # lyon-orion
+  'Tesla M2075', # lyon-orion
+  'AGX Xavier' # toulouse-estats
 ].freeze
 
 describe 'Gpu' do
