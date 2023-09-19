@@ -60,9 +60,12 @@ Ohai.plugin(:Cpu) do
           elsif cpu[:'0'][:model_name] =~ /^Cortex-(.+)$/
             cpu[:model] = 'Cortex'
             cpu[:version] = Regexp.last_match(1)
+          elsif cpu[:'0'][:model_name] =~ /^Carmel$/
+            cpu[:model] = 'Carmel'
+            cpu[:version] = 'Unknown'
           else
-            cpu[:model] = 'unknown'
-            cpu[:version] = 'unkown'
+            cpu[:model] = 'Unknown'
+            cpu[:version] = 'Unknown'
           end
         end
       end
@@ -73,8 +76,8 @@ Ohai.plugin(:Cpu) do
         cpu[:model] = 'POWER8NVL'
         cpu[:version] = lscpu.grep(/Model:/).first.split(':')[1].strip.split(' ')[0]
       else
-        cpu[:model] = 'unknown'
-        cpu[:other_description] = 'unknown'
+        cpu[:model] = 'Unknown'
+        cpu[:other_description] = 'Unknown'
       end
     end
 
@@ -131,8 +134,12 @@ Ohai.plugin(:Cpu) do
     lscpu_p = lscpu_p.transpose # transpose the data
     lscpu_p_count = lscpu_p.map { |line| line.uniq.count } # count
 
-    cpu[:nb_procs]   = lscpu_p_count[2]
-    cpu[:nb_cores]   = lscpu_p_count[1]
+    if cpu[:model] == 'Carmel'
+      cpu[:nb_procs] = 1
+    else
+      cpu[:nb_procs] = lscpu_p_count[2]
+    end
+    cpu[:nb_cores] = lscpu_p_count[1]
     cpu[:nb_threads] = lscpu_p_count[0]
 
     # :ht_capable
