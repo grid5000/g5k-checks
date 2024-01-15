@@ -99,8 +99,6 @@ push-package:
   # tags must be 'packages' so that we use the runner on packages.grid5000.fr
   tags:
     - grid5000-packages
-  only:
-    - master
   when: manual
   script:
     - g5k-deploy-files --only-if-tag --files 'buster/*.deb' --directory deb/g5k-checks/buster

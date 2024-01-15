@@ -1,3 +1,9 @@
+g5k-checks (0.11.14-beta1) unstable; urgency=medium
+
+  * [1c6045e] [gpu] Update nvidia power readings
+
+ -- Philippe Virouleau <philippe.virouleau@inria.fr>  Mon, 15 Jan 2024 16:02:33 +0100
+
 g5k-checks (0.11.13) unstable; urgency=medium
 
   * [86f437c] [dmidecode] Support platform where dmidecode does not provide Memory Nodes
