@@ -108,7 +108,12 @@ module Grid5000
           card[:vendor] = 'Nvidia'
           card[:model] = gpu.css('product_name').text
           card[:vbios_version] = gpu.css('vbios_version').text
-          card[:power_default_limit] = gpu.css('power_readings').css('default_power_limit').text
+          power_xml_node = gpu.css('power_readings')
+          if power_xml_node.empty?
+            # Driver 535 reports the reading under 'gpu_power_readings'
+            power_xml_node = gpu.css('gpu_power_readings')
+          end
+          card[:power_default_limit] = power_xml_node.css('default_power_limit').text
           mem = gpu.css('fb_memory_usage').css('total').text.split(' ')[0].to_i * 1024 * 1024
           card[:memory] = mem
           card[:device] = device_file_path
