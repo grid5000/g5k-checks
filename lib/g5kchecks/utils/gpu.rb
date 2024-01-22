@@ -106,7 +106,10 @@ module Grid5000
           names << device_name.to_sym
           card = {}
           card[:vendor] = 'Nvidia'
-          card[:model] = gpu.css('product_name').text
+          # It's important to use 'sub' and not 'sub!' here since the presence
+          # of 'NVIDIA ' in front of the product name depends both on the model
+          # and the version of nvidia-smi, and 'sub!' may return nil.
+          card[:model] = gpu.css('product_name').text.sub('NVIDIA ', '')
           card[:vbios_version] = gpu.css('vbios_version').text
           power_xml_node = gpu.css('power_readings')
           if power_xml_node.empty?
