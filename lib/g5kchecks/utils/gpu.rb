@@ -106,9 +106,17 @@ module Grid5000
           names << device_name.to_sym
           card = {}
           card[:vendor] = 'Nvidia'
-          card[:model] = gpu.css('product_name').text
+          # It's important to use 'gsub' and not 'gsub!' here since the presence
+          # of 'NVIDIA ' in front of the product name depends both on the model
+          # and the version of nvidia-smi, and 'gsub!' may return nil.
+          card[:model] = gpu.css('product_name').text.gsub(/^NVIDIA /, '')
           card[:vbios_version] = gpu.css('vbios_version').text
-          card[:power_default_limit] = gpu.css('power_readings').css('default_power_limit').text
+          power_xml_node = gpu.css('power_readings')
+          if power_xml_node.empty?
+            # Driver 535 reports the reading under 'gpu_power_readings'
+            power_xml_node = gpu.css('gpu_power_readings')
+          end
+          card[:power_default_limit] = power_xml_node.css('default_power_limit').text
           mem = gpu.css('fb_memory_usage').css('total').text.split(' ')[0].to_i * 1024 * 1024
           card[:memory] = mem
           card[:device] = device_file_path
