@@ -1,3 +1,9 @@
+g5k-checks (0.11.15) unstable; urgency=medium
+
+  * [adda505] [gpu] Add Tesla K40m and K80 to the undetected GPUs
+
+ -- Nicolas Perrin <nicolas.perrin@inria.fr>  Mon, 29 Jan 2024 08:42:16 +0100
+
 g5k-checks (0.11.14) unstable; urgency=medium
 
   * [ef81420] [gpu] Remove extra 'NVIDIA' in gpu name
