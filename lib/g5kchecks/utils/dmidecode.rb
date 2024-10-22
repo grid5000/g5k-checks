@@ -99,7 +99,7 @@ module DmiDecode
         end
 
         # Consider <OUT OF SPEC> form factor valid if returned size is valid (ex: see lille/chifflet)
-        unless size != 'No Module Installed' && (form_factor == 'DIMM' || form_factor == 'FB-DIMM' || form_factor == 'SODIMM' || form_factor == '<OUT OF SPEC>')
+        unless size != 'No Module Installed' && (form_factor == 'DIMM' || form_factor == 'FB-DIMM' || form_factor == 'SODIMM' || form_factor == 'Die' || form_factor == '<OUT OF SPEC>')
           next
         end
 
