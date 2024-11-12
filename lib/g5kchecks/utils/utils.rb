@@ -46,7 +46,7 @@ module Utils
     when /^en/, 'eth' then 'Ethernet'
     when 'br'        then 'Bridge'
     # ib can be Infiniband or OPA, return the good value defined in ohai plugin
-    when 'ib'        then iface[:interface]
+    when /^ib/        then iface[:interface]
     when 'myri'      then 'Myrinet'
     end
   end
