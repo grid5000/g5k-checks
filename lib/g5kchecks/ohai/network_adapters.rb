@@ -30,7 +30,7 @@ Ohai.plugin(:NetworkAdapters) do
       end
 
       # Process all but bridge, infiniband and loopback
-      interfaces_to_process = interfaces.reject { |d, i| %w[ib br].include?(i[:type]) || d == 'lo' }
+      interfaces_to_process = interfaces.reject { |d, i| %w[ib ibs br].include?(i[:type]) || d == 'lo' }
 
       # First, we put the interfaces up
       was_down = {}
