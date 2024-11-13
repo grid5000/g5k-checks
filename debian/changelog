@@ -1,3 +1,9 @@
+g5k-checks (0.11.16) unstable; urgency=medium
+
+  * [b709974] [Infiniband] add ibs interface
+
+ -- Nathan Paulin <nathan.paulin@inria.fr>  Wed, 13 Nov 2024 14:49:56 +0100
+
 g5k-checks (0.11.15) unstable; urgency=medium
 
   * [adda505] [gpu] Add Tesla K40m and K80 to the undetected GPUs
