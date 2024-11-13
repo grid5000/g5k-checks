@@ -51,7 +51,7 @@ build-bullseye:arm64:
   image: 
     name: arm64v8/debian:bullseye
     docker:
-      platform: arm64/v8
+      platform: aarch64
   tags:
     - grid5000-docker-arm64
 
