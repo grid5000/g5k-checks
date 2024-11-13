@@ -33,31 +33,6 @@ include:
   except:
      - tags
 
-.build-buster: &build-buster
-  <<: *build
-  variables:
-    TARGETDIR: "buster"
-  artifacts: # generate artifacts for files we want to publish
-     paths:
-      - buster
-     expire_in: '1 month'
-
-build-buster:amd64:
-  <<: *build-buster
-  image: debian:buster
-
-build-buster:arm64:
-  <<: *build-buster
-  image: arm64v8/debian:buster
-  tags:
-    - grid5000-docker-arm64
-
-build-buster:ppc64:
-  <<: *build-buster
-  image: ppc64le/debian:buster
-  tags:
-    - grid5000-docker-ppc64
-
 .build-bullseye: &build-bullseye
   <<: *build
   variables:
@@ -73,7 +48,10 @@ build-bullseye:amd64:
 
 build-bullseye:arm64:
   <<: *build-bullseye
-  image: arm64v8/debian:bullseye
+  image: 
+    name: arm64v8/debian:bullseye
+    docker:
+      platform: aarch64
   tags:
     - grid5000-docker-arm64
 
@@ -103,6 +81,5 @@ push-package:
     - master
   when: manual
   script:
-    - g5k-deploy-files --only-if-tag --files 'buster/*.deb' --directory deb/g5k-checks/buster
     - g5k-deploy-files --only-if-tag --files 'bullseye/*.deb' --directory deb/g5k-checks/bullseye
   allow_failure: false
