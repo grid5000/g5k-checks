@@ -42,9 +42,11 @@ Ohai.plugin(:Cpu) do
           cpu[:model] = "Intel #{Regexp.last_match(1)}"
           # All Xeon CPUs before Skylake (e.g. "Intel(R) Xeon(R) CPU X vY @ Z" or "Intel(R) Xeon(R) CPU X 0 @ Z" )
           if cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\) CPU\s+(.+?)(?:\s0)?\s+@/ ||
-             cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\)\s+(.+)\s+CPU\s+@/
+             cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\)\s+(.+)\s+CPU\s+@/ ||
+             cpu[:'0'][:model_name] =~ /Intel\(R\) Xeon\(R\)\s+(.+\s+.+)/
             cpu[:version] = Regexp.last_match(1)
             # Xeon Skylake and after (e.g. "Intel(R) Xeon(R) Gold X CPU @ Z")
+            # Intel(R) Xeon(R) Gold XXXX (e.g. "Intel(R) Xeon(R) Gold 6430")
           end
         end
       end
