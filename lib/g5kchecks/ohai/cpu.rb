@@ -65,6 +65,11 @@ Ohai.plugin(:Cpu) do
           elsif cpu[:'0'][:model_name] =~ /^Carmel$/
             cpu[:model] = 'Carmel'
             cpu[:version] = 'Unknown'
+          elsif line =~ /^Model name:\s+Neoverse-V2/
+            cpu[:model] = 'Grace A02  CPU'
+            cpu[:version] = 'Unknown'
+            cpu[:other_description] = 'Neoverse-V2'
+            cpu[:vendor] = 'NVIDIA/ARM'
           else
             cpu[:model] = 'Unknown'
             cpu[:version] = 'Unknown'
