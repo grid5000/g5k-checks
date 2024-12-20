@@ -1,3 +1,11 @@
+g5k-checks (0.11.18) unstable; urgency=medium
+
+  * [5eee4b1] [hydra] Handle Hydra's case where form_factor is 'Die'
+  * [6c1ec5b] Refactoring
+  * [720b203] [hydra] handle Grace CPU
+
+ -- Pierre Jacquot <pierre.jacquot@inria.fr>  Fri, 20 Dec 2024 14:37:01 +0100
+
 g5k-checks (0.11.17) unstable; urgency=medium
 
   * [659fed3] [cpu] Add Golden Cove CPU
