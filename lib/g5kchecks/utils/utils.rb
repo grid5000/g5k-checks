@@ -160,7 +160,12 @@ module Utils
   def self.layout
     layout = {}
     return layout if Utils.shell_out('findmnt -n -o FSTYPE /').stdout.chomp == 'nfs'
-    primary_disk = JSON.parse(Utils.shell_out("lsblk --json").stdout.chomp)["blockdevices"].find{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/'}}['name']
+    # FIXME: starting from debian 12, util-linux is updated to version 2.38.1
+    #        This version provide a newer libblkid wich makes lsblk --json 
+    #        print 'mountpoints' instead of 'mounpoint' ('s' added).
+    #        This field is now an array of strings, and not a single string anymore.
+    #        So we handle both keys for compatibility.  
+    primary_disk = JSON.parse(Utils.shell_out("lsblk --json").stdout.chomp)["blockdevices"].find{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/' || (p['mountpoints'] != nil && p['mountpoints'].include?('/'))}}['name']
     @@data_layout = Utils.shell_out("parted /dev/#{primary_disk} print 2>/dev/null").stdout.chomp if @@data_layout.nil?
     @@data_layout.each_line do |line|
       _num, parsed_line = Utils.parse_line_layout(line)
