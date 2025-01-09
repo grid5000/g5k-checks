@@ -1,3 +1,9 @@
+g5k-checks (0.11.19) unstable; urgency=medium
+
+  * [3e3348f] Handle lsblk from util-linux 2.38.1
+
+ -- Pierre Jacquot <pierre.jacquot@inria.fr>  Thu, 09 Jan 2025 16:38:20 +0100
+
 g5k-checks (0.11.18) unstable; urgency=medium
 
   * [5eee4b1] [hydra] Handle Hydra's case where form_factor is 'Die'
