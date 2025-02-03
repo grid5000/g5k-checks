@@ -80,7 +80,7 @@ module DmiDecode
 
         size = mem_dev['Size']
         form_factor = mem_dev['Form Factor']
-        firmware = mem_dev['Firmware Version'] == 'Not Specified' ? nil : mem_dev['Firmware Version']
+        firmware = mem_dev['Firmware Version'] == 'Not Specified' ? nil : mem_dev['Firmware Version']&.strip # Some server have firmware version with blank space so we have to strip
 
         locator = if mem_dev['Locator'].match(/^DIMM_(.+)$/)
                     $1
