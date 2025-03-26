@@ -133,17 +133,23 @@ Ohai.plugin(:NetworkAdapters) do
     threads << Thread.new do
       shell_out = Utils.ipmitool_shell_out('lan print')
 
-      shell_out.stdout.each_line do |line|
-        if /^[[:blank:]]*MAC Address/.match?(line)
-          interfaces['bmc'] ||= {}
-          interfaces['bmc'][:mac] = line.chomp.split(': ').last
+      if shell_out == nil
+        interfaces['bmc'] ||= {}
+        interfaces['bmc'][:mac] = "Unknown"
+        interfaces['bmc'][:ip] = "Unknown"
+      else
+        shell_out.stdout.each_line do |line|
+          if /^[[:blank:]]*MAC Address/.match?(line)
+            interfaces['bmc'] ||= {}
+            interfaces['bmc'][:mac] = line.chomp.split(': ').last
+          end
+          if /^[[:blank:]]*IP Address/.match?(line)
+            interfaces['bmc'] ||= {}
+            interfaces['bmc'][:ip] = line.chomp.split(': ').last
+          end
         end
-        if /^[[:blank:]]*IP Address/.match?(line)
-          interfaces['bmc'] ||= {}
-          interfaces['bmc'][:ip] = line.chomp.split(': ').last
-        end
+        interfaces['bmc'][:management] = true if interfaces['bmc']
       end
-      interfaces['bmc'][:management] = true if interfaces['bmc']
     end
 
     threads.each(&:join)

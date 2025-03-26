@@ -412,7 +412,8 @@ module Utils
         sleep 1
         retry
       else
-        raise "Failed to get data from ipmitool (args: #{args})"
+        puts "Failed to get data from ipmitool (args: #{args})"
+        shell_out = nil
       end
     end
 
