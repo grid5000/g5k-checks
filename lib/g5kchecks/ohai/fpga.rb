@@ -11,6 +11,8 @@ Ohai.plugin(:Fpga) do
 
     other_devices_pci_infos Mash.new(Utils.get_pci_infos(nil, nil, '1200'))
     other_devices_pci_infos.each do |slot, dev|
+      # Skip AMD Instinct GPUs that are detected as processing accelerators
+      next if dev['device'] =~ /Aqua Vanjaram \[Instinct MI300X\]/ || dev['device'] =~ /74a1/
       dev['model'] = dev.delete('device')
       dev['type'] = 'fpga'
       dev['pci_slot'] = slot
@@ -20,7 +22,7 @@ Ohai.plugin(:Fpga) do
                      when /Device 500[0-9]/, 'Device d000'
                        'Alveo U200'
                      else
-                       raise 'FPGA model is not supported'
+                       raise "FPGA model is not supported: #{dev['model']} (vendor: #{dev['vendor']})"
                      end
     end
 
