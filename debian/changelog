@@ -1,3 +1,9 @@
+g5k-checks (0.11.21) unstable; urgency=low
+
+  * [98fa919] Skip AMD Instinct GPUs in FPGA detection
+
+ -- Ludovic Schoepps <ludovic.schoepps@uni.lu>  Thu, 03 Apr 2025 11:13:11 +0200
+
 g5k-checks (0.11.20) unstable; urgency=medium
 
   * [cb84164] [dmidecode] strip dimm firmware version to avoid whitespace
