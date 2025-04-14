@@ -14,7 +14,7 @@ module Grid5000
                   fetch_ipmitool
                 when 'racadm'
                   fetch_racadm
-                when 'none'
+                when 'wedge', 'none' 
                   nil
                 else
                   raise "Unknown BMC vendor tool #{bmc_vendor_tool}!"
