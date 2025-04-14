@@ -1,3 +1,9 @@
+g5k-checks (0.11.22) unstable; urgency=low
+
+  * [62c6faf] Add wedge bmc type for engelbourg cluster
+
+ -- Colin Regal-Mezin <colin.regal-mezin@inria.fr>  Mon, 14 Apr 2025 16:42:41 +0200
+
 g5k-checks (0.11.21) unstable; urgency=low
 
   * [98fa919] Skip AMD Instinct GPUs in FPGA detection
