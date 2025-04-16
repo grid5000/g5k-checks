@@ -1,8 +1,9 @@
 g5k-checks (0.11.22) unstable; urgency=low
 
-  * [62c6faf] Add wedge bmc type for engelbourg cluster
+  * [ba609b4] Handle device with BMC that does not support ipmitool
+  * [4d181a1] Add new CPU regex for engelbourg
 
- -- Colin Regal-Mezin <colin.regal-mezin@inria.fr>  Mon, 14 Apr 2025 16:42:41 +0200
+ -- Colin Regal-Mezin <colin.regal-mezin@inria.fr>  Mon, 16 Apr 2025 16:24:41 +0200
 
 g5k-checks (0.11.21) unstable; urgency=low
 
