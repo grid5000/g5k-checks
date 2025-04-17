@@ -130,7 +130,7 @@ Ohai.plugin(:NetworkAdapters) do
 
     # Process management interface
     # Get MAC address from ipmitool if possible
-    if !RSpec.configuration.node.api_description['management_tools'].nil? and RSpec.configuration.node.api_description['management_tools']['bmc_vendor_tool'] != "none"
+    if !RSpec.configuration.node.api_description['management_tools'].nil? && RSpec.configuration.node.api_description['management_tools']['bmc_vendor_tool'] != "none"
       threads << Thread.new do
         shell_out = Utils.ipmitool_shell_out('lan print')
 

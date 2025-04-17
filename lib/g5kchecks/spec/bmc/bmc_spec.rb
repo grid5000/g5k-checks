@@ -10,8 +10,10 @@ describe 'BMC' do
     @ohai = RSpec.configuration.node.ohai_description[:network][:interfaces][:bmc]
   end
 
-  # If the bmc does not support ipmitool, we put its vendor_tool to none and then we have to skip the tests
-  if !RSpec.configuration.node.api_description['management_tools'].nil? and RSpec.configuration.node.api_description['management_tools']['bmc_vendor_tool'] != "none"
+# bmc_vendor_tool is set to 'none' when g5k-check cannot get BMC information from the system.
+# However, BMC information may be set manually in the reference-api.
+# Thus, we skip the tests in that case, because differences between what g5k-check reports (nothing) and the content or the reference-repository (possibly something) are indeed ok.
+  if !RSpec.configuration.node.api_description['management_tools'].nil? && RSpec.configuration.node.api_description['management_tools']['bmc_vendor_tool'] != "none"
 
     it 'should have the correct IPv4' do
       ip_api = ''
