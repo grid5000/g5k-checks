@@ -130,23 +130,22 @@ Ohai.plugin(:NetworkAdapters) do
 
     # Process management interface
     # Get MAC address from ipmitool if possible
-    if !RSpec.configuration.node.api_description['management_tools'].nil? && RSpec.configuration.node.api_description['management_tools']['bmc_vendor_tool'] != "none"
-      threads << Thread.new do
-        shell_out = Utils.ipmitool_shell_out('lan print')
+    threads << Thread.new do
+      shell_out = Utils.ipmitool_shell_out('lan print')
 
-        shell_out.stdout.each_line do |line|
-          if /^[[:blank:]]*MAC Address/.match?(line)
-            interfaces['bmc'] ||= {}
-            interfaces['bmc'][:mac] = line.chomp.split(': ').last
-          end
-          if /^[[:blank:]]*IP Address/.match?(line)
-            interfaces['bmc'] ||= {}
-            interfaces['bmc'][:ip] = line.chomp.split(': ').last
-          end
+      shell_out.stdout.each_line do |line|
+        if /^[[:blank:]]*MAC Address/.match?(line)
+          interfaces['bmc'] ||= {}
+          interfaces['bmc'][:mac] = line.chomp.split(': ').last
         end
-        interfaces['bmc'][:management] = true if interfaces['bmc']
+        if /^[[:blank:]]*IP Address/.match?(line)
+          interfaces['bmc'] ||= {}
+          interfaces['bmc'][:ip] = line.chomp.split(': ').last
+        end
       end
-      threads.each(&:join)
+      interfaces['bmc'][:management] = true if interfaces['bmc']
     end
+
+    threads.each(&:join)
   end
 end
