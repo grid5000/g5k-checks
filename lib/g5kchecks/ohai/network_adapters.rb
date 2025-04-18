@@ -130,6 +130,9 @@ Ohai.plugin(:NetworkAdapters) do
 
     # Process management interface
     # Get MAC address from ipmitool if possible
+    # This assumes that ipmitool's installation is mandatory in the OS.
+    # Thus, on systems where ipmitool is not relevant or not functional, 
+    # it has to be stubbed, e.g. just exit 0 (symlink to /bin/true).
     threads << Thread.new do
       shell_out = Utils.ipmitool_shell_out('lan print')
 
