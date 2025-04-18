@@ -13,7 +13,7 @@ describe 'BMC' do
 # bmc_vendor_tool is set to 'none' when g5k-check cannot get BMC information from the system.
 # However, BMC information may be set manually in the reference-api.
 # Thus, we skip the tests in that case, because differences between what g5k-check reports (nothing) and the content or the reference-repository (possibly something) are indeed ok.
-  # if !RSpec.configuration.node.api_description['management_tools'].nil? && RSpec.configuration.node.api_description['management_tools']['bmc_vendor_tool'] != "none"
+  if RSpec.configuration.node.api_description == {} || RSpec.configuration.node.api_description['management_tools']['bmc_vendor_tool'] != "none"
 
     it 'should have the correct IPv4' do
       ip_api = ''
@@ -52,5 +52,5 @@ describe 'BMC' do
         expect(v_ohai).to eql(v_api), error_msg
       end
     end
-  # end
+  end
 end
