@@ -5,7 +5,8 @@ UNDETECTED_MODELS = [
   'Tesla K40m',  # nancy-grimani
   'Tesla K80',   # rennes-abacus1
   'Tesla M2075', # lyon-orion
-  'AGX Xavier'   # toulouse-estats
+  'AGX Xavier',  # toulouse-estats
+  'GH200'        # lyon-hydra
 ].freeze
 
 describe 'Gpu' do
