@@ -38,6 +38,10 @@ module Grid5000
         card = {}
         card[:vendor] = 'AMD'
         card[:model] = gpu['Card series']
+        # "Card Series" may be used on other systems
+        if card[:model].to_s.empty? then
+          card[:model] = gpu['Card Series']
+        end
         # Workaround for incomplete model name from rocm-smi (ROCm 4.5/debian11)
         if card[:model] == "deon Instinct MI50 32GB"
           card[:model] = "Radeon Instinct MI50 32GB"
@@ -47,6 +51,8 @@ module Grid5000
         card[:memory] = case card[:model]
                         when "Radeon Instinct MI50 32GB"
                           32*(1024**3)
+                        when "AMD Instinct MI300X"
+                          192*(1024**3)
                         else
                           raise "g5kchecks does not supports this AMD GPU #{card[:model]}"
                         end
