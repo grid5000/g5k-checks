@@ -2,11 +2,10 @@
 
 # List of GPU models for which nvidia-smi is broken on Grid5000
 UNDETECTED_MODELS = [
-  'Tesla K40m',  # nancy-grimani
-  'Tesla K80',   # rennes-abacus1
-  'Tesla M2075', # lyon-orion
-  'AGX Xavier',  # toulouse-estats
-  'GH200'        # lyon-hydra
+  'Tesla M2075',         # lyon-orion
+  'AGX Xavier',          # toulouse-estats
+  'GH200',               # lyon-hydra
+  'AMD Instinct MI300X'  # luxembourg-vianden
 ].freeze
 
 describe 'Gpu' do
