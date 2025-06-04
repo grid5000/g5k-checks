@@ -1,3 +1,10 @@
+g5k-checks (0.11.24) unstable; urgency=medium
+
+  [ Pierre Neyron ]
+  * [7dbf374] Add CLI option to specify the branch, same as in g5k-check.conf
+
+ -- Pierre Jacquot <pierre.jacquot@inria.fr>  Wed, 04 Jun 2025 13:47:02 +0200
+
 g5k-checks (0.11.23) unstable; urgency=medium
 
   [ Colin Regal-Mezin ]
