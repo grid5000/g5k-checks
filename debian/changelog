@@ -1,3 +1,21 @@
+g5k-checks (0.11.23) unstable; urgency=medium
+
+  [ Colin Regal-Mezin ]
+  * [b568455] Fix syntax for logical operators
+  * [40527b0] Comment potential misstakes
+  * [b02b031] Modify "none" BMC handling to avoid bad behavior
+  * [19688e5] Add comment for ipmitool
+
+  [ Pierre Jacquot ]
+  * [51dc171] [gpu] Add GH200 to the undetected GPUs
+
+  [ Ludovic Schoepps ]
+  * [6cce125] [gpu] Add vianden GPU to the undetected GPUs
+  * [b2bc917] [gpu] Support for AMD Instinct MI300X gpu
+  * [579c6ed] [gpu] Remove Tesla K40m/K80 from the undetected GPUs as they are no longer in use
+
+ -- Pierre Jacquot <pierre.jacquot@inria.fr>  Wed, 04 Jun 2025 08:48:28 +0200
+
 g5k-checks (0.11.22) unstable; urgency=low
 
   * [ba609b4] Handle device with BMC that does not support ipmitool
