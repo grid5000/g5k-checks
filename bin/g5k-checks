@@ -57,6 +57,10 @@ optparse = OptionParser.new(USAGE) do |opts|
     $hashconf['urlapi'] = u
   end
 
+  opts.on('-b', '--branch <branch>', 'Specify the git branch where g5k-checks retrieves API information (will be added to URI)') do |b|
+    $hashconf['branch'] = b
+  end
+
   opts.on('-l', '--api-login user', 'Specify the user to login with on the API') do |user|
     $hashconf['apiuser'] = user
   end
