@@ -12,11 +12,6 @@ stages:
 include:
   - project: 'grid5000/grid5000-gitlab-templates'
     ref: master
-    file: '/sonarqube.yml'
-
-include:
-  - project: 'grid5000/grid5000-gitlab-templates'
-    ref: master
     file: '/rubocop.yml'
 
 .build: &build
