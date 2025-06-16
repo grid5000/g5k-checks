@@ -16,22 +16,22 @@ describe 'Network' do
     dev =~ /^en/ || %w[eth myri].include?(iface[:type]) || %w[infiniband].include?(iface[:encapsulation])
   end
 
-  it 'should not lack any of the interfaces from the API' do
+  it 'should not lack any of the interfaces from the API (except interfaces with driver = "n/a")' do
     expect(
       net_adapters.reject do |e|
           !(e['mountable']) ||
-          e['device'] =~ /^fpga/ ||
+          e['driver'] == 'n/a' ||
           ohai_ifaces.include?(e['name']) ||
           ohai_ifaces.include?(e['device'])
       end
     ).to be_empty
   end
 
-  it 'should have the correct number of network interfaces (excluding BMCs and FPGAs)' do
+  it 'should have the correct number of network interfaces (excluding management interfaces and interfaces whose drivers = "n/a")' do
     # 'true' in fourth parameter means that we do not add the result to the API
     Utils.test(
       ohai_ifaces.length,
-      net_adapters.count { |e| !e['management'] && e['device'] !~ /^fpga/ },
+      net_adapters.count { |e| !e['management'] && e['driver'] != 'n/a' },
       'network_adapters/length',
       true
     ) do |v_ohai, v_api, error_msg|
