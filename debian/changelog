@@ -1,3 +1,11 @@
+g5k-checks (0.11.25) unstable; urgency=medium
+
+  * [60fea85] [microcode] suppression de la récupération et du test
+  * [da4d0e7] [CPU] Modify regex for g5k-checks to get version when it contains a letter
+  * [75fbace] Update .gitlab-ci.yml file; Removed sonarqube from pipeline.
+
+ -- Lancelot Doan <ldoan@doanpc.loria.fr>  Thu, 03 Jul 2025 15:07:16 +0200
+
 g5k-checks (0.11.24) unstable; urgency=medium
 
   [ Pierre Neyron ]
