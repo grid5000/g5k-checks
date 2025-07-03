@@ -99,12 +99,4 @@ describe 'Processor' do
     end
   end
 
-  it 'should have the correct microcode' do
-    microcode_api = ''
-    microcode_api = @api['microcode'] if @api
-    microcode_ohai = @system[:cpu][:microcode]
-    Utils.test(microcode_ohai, microcode_api, 'processor/microcode') do |v_ohai, v_api, error_msg|
-      expect(v_ohai).to eql(v_api), error_msg
-    end
-  end
 end

@@ -236,13 +236,6 @@ Ohai.plugin(:Cpu) do
                               'none'
                             end
 
-    # microcode version
-    cpu[:microcode] = begin
-                        Utils.fileread('/proc/cpuinfo').grep(/microcode\t: /)[0].split(': ')[1]
-                      rescue StandardError
-                        'unknown'
-                      end
-
     # cpu core numbering (see bug 11023)
     # See also https://www.grid5000.fr/w/TechTeam:CPU_core_numbering
     doc = Nokogiri::XML(`lstopo --of xml`)
