@@ -53,6 +53,8 @@ module Grid5000
                           32*(1024**3)
                         when "AMD Instinct MI300X"
                           192*(1024**3)
+                        when "Instinct MI210"
+                          64*(1024**3)
                         else
                           raise "g5kchecks does not supports this AMD GPU #{card[:model]}"
                         end
