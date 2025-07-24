@@ -38,6 +38,8 @@ Ohai.plugin(:Cpu) do
         end
       else
         cpu[:vendor] = 'Intel'
+        # To support non standard model name like "INTEL(R) XEON(R) PLATINUM 8568Y+", we manually fix the upper case
+        cpu[:'0'][:model_name] = cpu[:'0'][:model_name].sub('INTEL', 'Intel').sub('XEON', 'Xeon').sub('PLATINUM', 'Platinum')
         if cpu[:'0'][:model_name] =~ /(Xeon|Atom|Pentium)/
           cpu[:model] = "Intel #{Regexp.last_match(1)}"
           # All Xeon CPUs before Skylake (e.g. "Intel(R) Xeon(R) CPU X vY @ Z" or "Intel(R) Xeon(R) CPU X 0 @ Z" )
