@@ -1,3 +1,10 @@
+g5k-checks (0.11.26) unstable; urgency=low
+
+  * 3603ffb [cpu] Support for larochette cpu
+  * aff732f [gpu] Support for AMD Instinc MI210
+
+ -- Ludovic Schoepps <ludovic.schoepps@uni.lu>  Thu, 24 Jul 2025 14:48:32 +0200
+
 g5k-checks (0.11.25) unstable; urgency=medium
 
   * [60fea85] [microcode] suppression de la récupération et du test
