@@ -74,6 +74,8 @@ describe 'MemoryDevices' do
 
     it 'should have the correct firmware' do
       firmware_ohai = ohai_devices[name][:firmware]
+      firmware_ohai = firmware_ohai.nil? ? nil : Utils.string_to_object(firmware_ohai)
+      firmware_ohai = firmware_ohai == 0 ? nil : firmware_ohai # for spirou with firmware version of "0000"
       firmware_api = api_devices.nil? ? nil : api_devices[name][:firmware]
       Utils.test(firmware_ohai, firmware_api, "memory_devices/#{name}/firmware") do |v_ohai, v_api, error_msg|
         expect(v_ohai).to eql(v_api), error_msg
