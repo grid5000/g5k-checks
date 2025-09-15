@@ -53,6 +53,9 @@ build-bullseye:arm64:
 build-bullseye:ppc64:
   <<: *build-bullseye
   image: ppc64le/debian:bullseye
+  before_script:
+   - cat /etc/apt/sources.list | grep -v security | sed 's/deb.debian/archive.debian/g' > /tmp/sources.list
+   - mv /tmp/sources.list /etc/apt/sources.list
   tags:
     - grid5000-docker-ppc64
 
