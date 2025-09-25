@@ -170,6 +170,7 @@ Ohai.plugin(:Cpu) do
                   end
       cpu[:ht_capable] = cpu_flags.include?(" ht ")
       cpu[:ht_enabled] = cpu[:nb_threads] != cpu[:nb_cores]
+      cpu[:sev_np_enabled] = cpu_flags.include?(" sev ")
 
       # cpu flags
       cpu[:'0'][:flags] = cpu_flags.split[1..-1]

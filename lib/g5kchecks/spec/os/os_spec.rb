@@ -7,7 +7,7 @@ describe 'OS' do
   end
 
   %i[ht_enabled pstate_driver pstate_governor turboboost_enabled
-     cstate_driver cstate_governor].each do |key|
+     cstate_driver cstate_governor sev_np_enabled].each do |key|
     it "should have the correct value for #{key}" do
       key_ohai = @system[:cpu][key]
       key_api = nil
