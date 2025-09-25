@@ -168,7 +168,7 @@ Ohai.plugin(:Cpu) do
                   rescue StandardError
                     'unknown'
                   end
-      cpu[:ht_capable] = !/ ht /.match(cpu_flags).nil?
+      cpu[:ht_capable] = cpu_flags.include?(" ht ")
       cpu[:ht_enabled] = cpu[:nb_threads] != cpu[:nb_cores]
 
       # cpu flags
