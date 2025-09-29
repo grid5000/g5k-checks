@@ -2,11 +2,15 @@
 
 ### Build docker image
 
-  $ docker build --tag grid5000/g5kchecks-debuilt .
+```bash
+$ docker build -t g5kchecks .
+```
 
 ### Run docker
 
-  $ docker run --rm -v $(pwd):/sources grid5000/g5kchecks-debuilt
+```bash
+$ docker run --rm -it -v $(pwd):/sources g5kchecks
+```
 
 Checks `./build` directory.
 
