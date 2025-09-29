@@ -1,13 +1,8 @@
-FROM debian:jessie
+FROM debian:bullseye
 MAINTAINER support-staff@lists.grid5000.fr
 
-RUN apt-get update
-RUN apt-get -y install build-essential devscripts fakeroot
-RUN apt-get -y install gem2deb ruby
+RUN apt-get update && apt-get -y install build-essential devscripts equivs
 
-VOLUME ["/sources"]
-
-ADD docker_entrypoint.sh /entrypoint.sh
-RUN chmod o+x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-
+WORKDIR /sources
+ADD --chmod=555 build.sh /build.sh
+ENTRYPOINT /build.sh
