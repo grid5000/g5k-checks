@@ -1,3 +1,14 @@
+g5k-checks (0.11.29) unstable; urgency=low
+
+  * [38620fc] Fix Dockerfile so that it's usable.
+  * [687a892] Rename docker_entrypoint.sh into build.sh
+  * [36ac986] Use build.sh to build g5k-checks.
+  * [ba1d67b] Update readme.
+  * [d6fa4e2] [CI] Add debian trixie pipeline
+  * [bfd1ce6] Add deps file(s) check before removal in build script
+
+ -- Nicolas Perrin <nicolas.perrin@inria.fr>  Wed, 18 Feb 2026 09:42:11 +0100
+
 g5k-checks (0.11.28) unstable; urgency=medium
 
   * [4e8c995] Fix sources.list for ppc64 before executing script.
