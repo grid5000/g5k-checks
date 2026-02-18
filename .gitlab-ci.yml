@@ -66,6 +66,39 @@ test-bullseye:
   except:
     - tags
 
+.build-trixie: &build-trixie
+  <<: *build
+  variables:
+    TARGETDIR: "trixie"
+  artifacts: # generate artifacts for files we want to publish
+     paths:
+      - trixie
+     expire_in: '1 month'
+
+build-trixie:amd64:
+  <<: *build-trixie
+  image: debian:trixie
+
+build-trixie:arm64:
+  <<: *build-trixie
+  image:
+    name: arm64v8/debian:trixie
+    docker:
+      platform: aarch64
+  tags:
+    - grid5000-docker-arm64
+
+test-trixie:
+  stage: deploy_and_test
+  variables:
+    TARGETDIR: "trixie"
+  tags:
+    - grid5000-shell
+  script:
+    - .gitlab-ci/test-g5k-checks $TARGETDIR
+  except:
+    - tags
+
 push-package:
   stage: deploy_and_test
   # tags must be 'packages' so that we use the runner on packages.grid5000.fr
@@ -76,4 +109,5 @@ push-package:
   when: manual
   script:
     - g5k-deploy-files --only-if-tag --files 'bullseye/*.deb' --directory deb/g5k-checks/bullseye
+    - g5k-deploy-files --only-if-tag --files 'trixie/*.deb' --directory deb/g5k-checks/trixie
   allow_failure: false
