@@ -92,6 +92,8 @@ test-trixie:
   stage: deploy_and_test
   variables:
     TARGETDIR: "trixie"
+    TARGET_SITE: "grenoble"
+    TARGET_PROPERTIES: "vercors4"
   tags:
     - grid5000-shell
   script:
