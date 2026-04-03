@@ -4,12 +4,13 @@ require 'g5kchecks/utils/utils'
 
 Ohai.plugin(:Fpga) do
   provides 'other_devices'
+  include Utils::Mixin
 
   collect_data do
     # 1200 is the class ID of "Processing accelerators"
     # See: /usr/share/misc/pci.ids
 
-    other_devices_pci_infos Mash.new(Utils.get_pci_infos(nil, nil, '1200'))
+    other_devices_pci_infos Mash.new(get_pci_infos(nil, nil, '1200'))
     other_devices_pci_infos.each do |slot, dev|
       # Skip AMD Instinct GPUs that are detected as processing accelerators
       next if dev['device'] =~ /Aqua Vanjaram \[Instinct MI300X\]/ || dev['device'] =~ /74a1/

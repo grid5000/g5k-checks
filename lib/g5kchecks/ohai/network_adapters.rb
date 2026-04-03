@@ -10,6 +10,8 @@ Ohai.plugin(:NetworkAdapters) do
   depends 'hostname'
   depends 'chassis'
 
+  include Utils::Mixin
+
   collect_data do
     interfaces = network[:interfaces]
 
@@ -23,7 +25,7 @@ Ohai.plugin(:NetworkAdapters) do
         iface[:brif] = []
 
         # Add bridged interfaces information to bridge interface, if any
-        stdout = Utils.shell_out("ls -1 /sys/devices/virtual/net/#{dev}/brif/").stdout
+        stdout = shell_out("ls -1 /sys/devices/virtual/net/#{dev}/brif/").stdout
         stdout.each_line do |line|
           iface[:brif] << line.chomp
         end
@@ -35,9 +37,9 @@ Ohai.plugin(:NetworkAdapters) do
       # First, we put the interfaces up
       was_down = {}
       interfaces_to_process.peach do |dev, _|
-        if Utils.interface_operstate(dev) != 'up'
+        if interface_operstate(dev) != 'up'
           # Bring interface up to allow correct rate/enabled report
-          Utils.shell_out("/sbin/ip link set dev #{dev} up")
+          shell_out("/sbin/ip link set dev #{dev} up")
           was_down[dev] = true
         else
           was_down[dev] = false
@@ -51,17 +53,17 @@ Ohai.plugin(:NetworkAdapters) do
         iface[:mac] = iface[:addresses].select { |_key, value| value[:family] == 'lladdr' }.keys[0]
 
         # Get the predictable name of the interface
-        iface[:name] = Utils.interface_predictable_name(dev)
+        iface[:name] = interface_predictable_name(dev)
 
         # true if predictable names are in use
         iface[:use_predictable_name] = iface[:name] == dev
 
         api_desc = g5k.dig('local_api_description', 'network_adapters')&.select { |i| i['name'] == dev }&.first
-        ethtool_infos = Utils.interface_ethtool(dev)
+        ethtool_infos = interface_ethtool(dev)
 
         if api_desc&.dig('mountable') || api_desc.nil?
           now = Time.now.to_i
-          timeout = if Utils.interface_operstate(dev) == 'down'
+          timeout = if interface_operstate(dev) == 'down'
                       25
                     else
                       # If interface was already up, reduce timeout
@@ -69,14 +71,14 @@ Ohai.plugin(:NetworkAdapters) do
                     end
 
           # Wait for link negociation after setting iface up
-          ethtool = Utils.interface_ethtool(dev)
+          ethtool = interface_ethtool(dev)
           while Time.now.to_i < now + timeout
             sleep(0.5)
-            status = Utils.interface_operstate(dev)
+            status = interface_operstate(dev)
             # Get infos only if interesting or is last run
             next unless status != 'down' || Time.now.to_i >= now + timeout
 
-            ethtool_infos = Utils.interface_ethtool(dev)
+            ethtool_infos = interface_ethtool(dev)
             # exit early if rate changed
             if !ethtool_infos[:rate].nil? &&
                 (ethtool_infos[:rate] != ethtool[:rate] || ethtool_infos[:rate].to_i != 0)
@@ -89,7 +91,7 @@ Ohai.plugin(:NetworkAdapters) do
         iface[:driver] = ethtool_infos[:driver]
         iface[:firmware_version] = ethtool_infos[:firmware_version]
 
-        pci_infos = Utils.get_pci_infos_by_sysfs("/sys/class/net/#{dev}/device/")
+        pci_infos = get_pci_infos_by_sysfs("/sys/class/net/#{dev}/device/")
         iface[:vendor] = pci_infos[:vendor]
         iface[:model] = pci_infos[:device]
 
@@ -110,7 +112,7 @@ Ohai.plugin(:NetworkAdapters) do
         # Detect presence of SR-IOV
         if File.exist?("/sys/class/net/#{dev}/device/sriov_totalvfs")
           iface[:sriov] = true
-          iface[:sriov_totalvfs] = Utils.fileread("/sys/class/net/#{dev}/device/sriov_totalvfs").to_i
+          iface[:sriov_totalvfs] = fileread("/sys/class/net/#{dev}/device/sriov_totalvfs").to_i
         else
           iface[:sriov] = false
           iface[:sriov_totalvfs] = 0
@@ -120,10 +122,10 @@ Ohai.plugin(:NetworkAdapters) do
       # We put down the interfaces which were down before processing
       was_down.peach do |dev, status|
         if status
-          Utils.shell_out("/sbin/ip link set dev #{dev} down")
-          Utils.shell_out("/sbin/ip address flush dev #{dev}")
-          Utils.shell_out("/sbin/ip route flush dev #{dev}")
-          Utils.shell_out("/sbin/ip -6 route flush dev #{dev}")
+          shell_out("/sbin/ip link set dev #{dev} down")
+          shell_out("/sbin/ip address flush dev #{dev}")
+          shell_out("/sbin/ip route flush dev #{dev}")
+          shell_out("/sbin/ip -6 route flush dev #{dev}")
         end
       end
     end
@@ -134,7 +136,7 @@ Ohai.plugin(:NetworkAdapters) do
     # Thus, on systems where ipmitool is not relevant or not functional, 
     # it has to be stubbed, e.g. just exit 0 (symlink to /bin/true).
     threads << Thread.new do
-      shell_out = Utils.ipmitool_shell_out('lan print')
+      shell_out = ipmitool_shell_out('lan print')
 
       shell_out.stdout.each_line do |line|
         if /^[[:blank:]]*MAC Address/.match?(line)

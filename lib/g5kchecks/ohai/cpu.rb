@@ -7,10 +7,11 @@ Ohai.plugin(:Cpu) do
   provides 'cpu/improve'
   depends 'cpu'
   depends 'lsb'
+  include Utils::Mixin
 
   # Execute an external program
   def execute(cmd)
-    res = Utils.shell_out(cmd)
+    res = shell_out(cmd)
     stdout = res.stdout
 
     raise "#{cmd}: #{res.exitstatus}" if res.error?
@@ -81,7 +82,7 @@ Ohai.plugin(:Cpu) do
         end
       end
     elsif arch == 'ppc64le'
-      cpu[:vendor] = Utils.fileread('/proc/device-tree/vendor').strip
+      cpu[:vendor] = fileread('/proc/device-tree/vendor').strip
       cpu[:'0'][:model_name] = lscpu.grep(/Model name/).first.split(':')[1].strip
       if /^POWER8NVL/.match?(cpu[:'0'][:model_name])
         cpu[:model] = 'POWER8NVL'
@@ -93,7 +94,7 @@ Ohai.plugin(:Cpu) do
     end
 
     if File.exist?('/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq')
-      freq = Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq')
+      freq = fileread('/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq')
       # frequence en khz
       cpu[:mhz] = freq.to_i * 1000 if freq
     else
@@ -108,28 +109,15 @@ Ohai.plugin(:Cpu) do
                 end
     cpu[:mhz] = (cpu[:mhz] * 1_000_000_000).to_i
 
-    # TODO: remove condition when switching to Debian Bullseye
-    if lsb[:codename] == 'bullseye'
-      lscpu_caches = execute('lscpu --caches -B')
-      lscpu_caches.each do |line|
-        cpu[:L1d] = line.chomp.split[1].lstrip.to_i if /^L1d/.match?(line)
-        cpu[:L1i] = line.chomp.split[1].lstrip.to_i if /^L1i/.match?(line)
-        cpu[:L2] = line.chomp.split[1].lstrip.to_i if /^L2/.match?(line)
-        cpu[:L3] = line.chomp.split[1].lstrip.to_i if /^L3/.match?(line)
-      end
-      [:L1d, :L1i, :L2, :L3].each do |c|
-        cpu[c] = 0 unless cpu.has_key?(c)
-      end
-    else
-      lscpu.each do |line|
-        cpu[:L1d] = line.chomp.split(': ').last.lstrip.sub('K', '') if /^L1d/.match?(line)
-        cpu[:L1i] = line.chomp.split(': ').last.lstrip.sub('K', '') if /^L1i/.match?(line)
-        cpu[:L2] = line.chomp.split(': ').last.lstrip.sub('K', '') if /^L2/.match?(line)
-        cpu[:L3] = line.chomp.split(': ').last.lstrip.sub('K', '') if /^L3/.match?(line)
-      end
-      [:L1d, :L1i, :L2, :L3].each do |c|
-        cpu[c] = cpu[c].to_i * 1024
-      end
+    lscpu_caches = execute('lscpu --caches -B')
+    lscpu_caches.each do |line|
+      cpu[:L1d] = line.chomp.split[1].lstrip.to_i if /^L1d/.match?(line)
+      cpu[:L1i] = line.chomp.split[1].lstrip.to_i if /^L1i/.match?(line)
+      cpu[:L2] = line.chomp.split[1].lstrip.to_i if /^L2/.match?(line)
+      cpu[:L3] = line.chomp.split[1].lstrip.to_i if /^L3/.match?(line)
+    end
+    [:L1d, :L1i, :L2, :L3].each do |c|
+      cpu[c] = 0 unless cpu.has_key?(c)
     end
 
     # Parsing 'lscpu -p' output to retrieve :nb_procs, :nb_cores and :nb_threads
@@ -186,24 +174,24 @@ Ohai.plugin(:Cpu) do
 
     # pstate
     cpu[:pstate_driver] = begin
-                            Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_driver')
+                            fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_driver')
                           rescue StandardError
                             'none'
                           end
     cpu[:pstate_governor] = begin
-                              Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor')
+                              fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor')
                             rescue StandardError
                               'none'
                             end
 
     if cpu[:pstate_driver] != 'none'
       cpu[:pstate_max_cpu_speed] = begin
-                                     Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq').to_i
+                                     fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq').to_i
                                    rescue StandardError
                                      nil
                                    end
       cpu[:pstate_min_cpu_speed] = begin
-                                     Utils.fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq').to_i
+                                     fileread('/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq').to_i
                                    rescue StandardError
                                      nil
                                    end
@@ -212,13 +200,13 @@ Ohai.plugin(:Cpu) do
     # :turboboost_enabled
     if cpu[:pstate_driver] == 'intel_pstate' || cpu[:pstate_driver] == 'intel_cpufreq'
       cpu[:turboboost_enabled] = begin
-                                   (Utils.fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == '0')
+                                   fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == '0'
                                  rescue StandardError
                                    false
                                  end
     elsif cpu[:pstate_driver] == 'acpi-cpufreq'
       cpu[:turboboost_enabled] = begin
-                                   (Utils.fileread('/sys/devices/system/cpu/cpufreq/boost') == '1')
+                                   fileread('/sys/devices/system/cpu/cpufreq/boost') == '1'
                                  rescue StandardError
                                    false
                                  end
@@ -228,12 +216,12 @@ Ohai.plugin(:Cpu) do
 
     # cstate
     cpu[:cstate_driver] = begin
-                            Utils.fileread('/sys/devices/system/cpu/cpuidle/current_driver')
+                            fileread('/sys/devices/system/cpu/cpuidle/current_driver')
                           rescue StandardError
                             'none'
                           end
     cpu[:cstate_governor] = begin
-                              Utils.fileread('/sys/devices/system/cpu/cpuidle/current_governor_ro')
+                              fileread('/sys/devices/system/cpu/cpuidle/current_governor_ro')
                             rescue StandardError
                               'none'
                             end

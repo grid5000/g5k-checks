@@ -29,16 +29,16 @@ Ohai.plugin(:FileSystem) do
         # we need to convert the second form to a path.
         root_partition.gsub!(/^UUID=/,'/dev/disk/by-uuid/')
         # we get the disk from the partition with "lsblk -o pkname"
-        root_device = Utils.shell_out("lsblk -no pkname #{root_partition}").stdout.chomp
+        root_device = shell_out("lsblk -no pkname #{root_partition}").stdout.chomp
         layout = {}
-        stdout = Utils.shell_out("parted /dev/#{root_device} print").stdout
+        stdout = shell_out("parted /dev/#{root_device} print").stdout
         stdout.each_line do |line|
           num, current_layout = Utils.parse_line_layout(line)
           next if current_layout.nil?
 
           layout.merge!(current_layout)
           if (num == '2') || (num == '3') || (num == '5')
-            stdout = Utils.shell_out("tune2fs -l /dev/#{root_device}#{num}").stdout
+            stdout = shell_out("tune2fs -l /dev/#{root_device}#{num}").stdout
             stdout.each_line do |line2|
               layout[num][:state] = line.chomp.split(': ').last.strip if /^Filesystem state:/.match?(line2)
             end

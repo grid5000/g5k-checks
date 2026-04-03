@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+require 'json'
+require 'open3'
 require 'g5kchecks/utils/dmidecode'
 require 'g5kchecks/utils/lshw'
-require 'json'
 
 class String
   def force_encoding(_enc)
@@ -11,14 +12,13 @@ class String
 end
 
 module Utils
+  ShellResult = Struct.new(:status, :stdout, :stderr)
   KIBI = 1024
   KILO = 1000
   MEBI = 1024 * 1024
   MEGA = 1000 * 1000
   GIBI = MEBI * 1024
   GIGA = MEGA * 1000
-
-  @@local_api_description = nil
 
   def self.convert_storage(value)
     value * GIBI / GIGA / GIGA
@@ -51,96 +51,6 @@ module Utils
     end
   end
 
-  # See https://lists.debian.org/debian-user/2017/02/msg00914.html for details
-  def self.interface_predictable_name(dev)
-    iface_name = nil
-    %w[ID_NET_NAME_ONBOARD ID_NET_NAME_SLOT ID_NET_NAME_PATH].each do |udev_property|
-      iface_name = Utils.shell_out("/sbin/udevadm test 2>&1 /sys/class/net/#{dev} | grep #{udev_property} | cut -d'=' -f2").stdout.chomp
-      break if !iface_name.nil? && iface_name != ''
-    end
-    iface_name = dev if iface_name.nil? || iface_name == ''
-    iface_name
-  end
-
-  # Get the given interface up/down status
-  def self.interface_operstate(dev)
-    ifaceState = 'down'
-    case Utils.shell_out("cat /sys/class/net/#{dev}/operstate").stdout.chomp
-    when 'unknown', 'testing', 'dormant', 'up'
-      ifaceState = 'up'
-    when 'notpresent', 'lowerlayerdown', 'down'
-      ifaceState = 'down'
-    end
-    ifaceState
-  end
-
-  # Get ethtool information on iface rate
-  def self.interface_ethtool(dev)
-    infos = {}
-    stdout = Utils.shell_out("/sbin/ethtool #{dev}; /sbin/ethtool -i #{dev}").stdout
-    stdout.each_line do |line|
-      if /^[[:blank:]]*Speed: /.match?(line)
-        if /Unknown/.match?(line)
-          infos[:rate] = nil
-          infos[:enabled] = false
-        else
-          infos[:rate] = line.chomp.split(': ').last.gsub(%r{([GMK])b/s}) { '000000' }
-          infos[:enabled] = true
-        end
-      end
-      infos[:driver] = line.chomp.split(': ').last if /^\s*driver: /.match?(line)
-      next unless /^\s*firmware-version:/.match?(line)
-
-      split_line = line.chomp.split(': ', 2)
-      if split_line && split_line.length > 1
-        # It is possible that ethtool doesn't return this value
-        infos[:firmware_version] = split_line.last
-      end
-    end
-    infos
-  end
-
-  # Get vendor/device name from sysfs/lspci
-  def self.get_pci_infos_by_sysfs(sys_dev_path)
-    vendor_id_path = File.join(sys_dev_path, 'vendor').to_s
-    device_id_path = File.join(sys_dev_path, 'device').to_s
-    vendor_id = Utils.shell_out("cat #{vendor_id_path}").stdout.strip.chomp
-    device_id = Utils.shell_out("cat #{device_id_path}").stdout.strip.chomp
-
-    if device_id.empty? || vendor_id.empty?
-      return {}
-    else
-      return self.get_pci_infos(vendor_id, device_id).first[1]
-    end
-  end
-
-  def self.get_pci_infos(vendor_id = nil, device_id = nil, class_id = nil)
-    pci_infos = {}
-    vendor_id = '' if vendor_id.nil?
-    device_id = '' if device_id.nil?
-    class_id = '' if class_id.nil?
-
-    slot = nil
-    stdout = Utils.shell_out("/usr/bin/lspci -vmm -k -d #{vendor_id}:#{device_id}:#{class_id}").stdout
-    stdout.each_line do |line|
-      line = line.chomp
-      if line =~ /^Slot:\s+(.*)$/
-        slot = $1.chomp
-        pci_infos[slot] = {}
-      elsif /^Device/.match?(line)
-        pci_infos[slot][:device] = line.gsub(/^Device:/i, '').strip
-      elsif /^Vendor/.match?(line)
-        pci_infos[slot][:vendor] = line.gsub(/Vendor:/i, '').sub('Limited', '').sub('Corporation', '').strip
-      elsif line =~ /^Driver:\s+(.*)$/
-        pci_infos[slot][:driver] = $1.chomp
-      elsif line =~ /^PhySlot:\s+(.*)$/
-        pci_infos[slot][:phy_slot] = $1.chomp
-      end
-    end
-
-    return pci_infos
-  end
-
   # vraiment pas beau mais en ruby 1.9.3 les messages
   # rspec ne peuvent plus être des objets
   def self.string_to_object(string)
@@ -152,23 +62,24 @@ module Utils
     string.strip
   end
 
-  def self.shell_out(command, **options)
-    Ohai::Mixin::Command.shell_out(command, options)
+  def self.o3so(cmd,**opts)
+    stdout, stderr, status = Open3.capture3(cmd, opts)
+    raise "Failed to run command '#{cmd}' (options: #{opts.inspect})" unless status.success?
+    ShellResult.new(status,stdout,stderr)
   end
 
-  @@data_layout = nil
   def self.layout
     layout = {}
-    return layout if Utils.shell_out('findmnt -n -o FSTYPE /').stdout.chomp == 'nfs'
+    return layout if o3so('findmnt -n -o FSTYPE /').stdout.chomp == 'nfs'
     # FIXME: starting from debian 12, util-linux is updated to version 2.38.1
     #        This version provide a newer libblkid wich makes lsblk --json 
     #        print 'mountpoints' instead of 'mounpoint' ('s' added).
     #        This field is now an array of strings, and not a single string anymore.
     #        So we handle both keys for compatibility.  
-    primary_disk = JSON.parse(Utils.shell_out("lsblk --json").stdout.chomp)["blockdevices"].find{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/' || (p['mountpoints'] != nil && p['mountpoints'].include?('/'))}}['name']
-    @@data_layout = Utils.shell_out("parted /dev/#{primary_disk} print 2>/dev/null").stdout.chomp if @@data_layout.nil?
-    @@data_layout.each_line do |line|
-      _num, parsed_line = Utils.parse_line_layout(line)
+    primary_disk = JSON.parse(o3so("lsblk --json").stdout.chomp)["blockdevices"].find{|d| d.fetch('children', []).any?{|p| p['mountpoint'] == '/' || (p['mountpoints'] != nil && p['mountpoints'].include?('/'))}}['name']
+    Utils::Shared.data_layout = o3so("parted /dev/#{primary_disk} print 2>/dev/null").stdout.chomp if Utils::Shared.data_layout.nil?
+    Utils::Shared.data_layout.each_line do |line|
+      _num, parsed_line = parse_line_layout(line)
       layout.merge!(parsed_line) unless parsed_line.nil?
     end
     layout
@@ -201,9 +112,9 @@ module Utils
 
   def self.fstab
     filesystem = {}
-    fstab = Utils.fileread('/etc/fstab')
-    Array(fstab).each do |line|
-      parsed_line = Utils.parse_line_fstab(line)
+    fstab = File.readlines('/etc/fstab', chomp: true)
+    fstab.each do |line|
+      parsed_line = parse_line_fstab(line)
       filesystem.merge!(parsed_line) unless parsed_line.nil?
     end
     filesystem
@@ -216,7 +127,7 @@ module Utils
     if line =~ /([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*([^\s]*)\s*/
       line_match = Regexp.last_match
       filesys = if line_match[1] =~ /^UUID=(.*)$/
-                  blk_node = Utils.shell_out("blkid --uuid #{$1}").stdout.chomp
+                  blk_node = o3so("blkid --uuid #{$1}").stdout.chomp
                   blk_node.empty? ? line_match[1] : blk_node
                 else
                   line_match[1]
@@ -247,7 +158,7 @@ module Utils
 
   def self.mount_filter(input, field)
     mount = []
-    stdout = shell_out('mount').stdout
+    stdout = o3so('mount').stdout
     input.chomp!('/')
 
     stdout.each_line do |line|
@@ -271,7 +182,7 @@ module Utils
 
   def self.swap_list
     active_swap = []
-    stdout = shell_out('swapon').stdout
+    stdout = o3so('swapon').stdout
     stdout.each_line do |line|
       if line =~ /^(\/dev\/[^\s]+).*$/
         active_swap << $1
@@ -288,32 +199,6 @@ module Utils
 
   def self.dmidecode_memory_devices
     DmiDecode.get_memory
-  end
-
-  def self.lshw_total_memory(type)
-    case type
-    when :dram
-      LsHw.get_total_ram_memory
-    when :pmem
-      # Not yet supported
-      nil
-    end
-  end
-
-  def self.lshw_memory_devices
-    LsHw.get_memory_devices
-  end
-
-  # Memory reported by the OS, dmidecode or lshw are the prefered ways
-  def self.meminfo_total_memory(type)
-    case type
-    when :dram
-      Utils.fileread('/proc/meminfo').grep(/MemTotal:/)[0].
-        gsub(/^MemTotal:\s*([0-9]*) kB/, '\1').to_i * KIBI
-    when :pmem
-      # Not yet supported
-      nil
-    end
   end
 
   def self.write_api_files
@@ -391,50 +276,180 @@ module Utils
     json
   end
 
-  # According to reference-repository, we launch the ipmitool command with a
-  # specific timeout and number of retries
-  def self.ipmitool_shell_out(args)
-    timeout = Utils.local_api_description['management_tools']['ipmitool']['timeout'] rescue nil
-    retries = Utils.local_api_description['management_tools']['ipmitool']['retries'] rescue 5
+  module Shared
+    @@local_api_description = nil
+    @@data_layout = nil
 
-    try = 0
-    shell_out = nil
-    begin
-      try += 1
-      shell_out = if timeout
-                    Utils.shell_out("/usr/bin/ipmitool #{args}", timeout: timeout)
-                  else
-                    Utils.shell_out("/usr/bin/ipmitool #{args}")
-                  end
-      raise 'ipmitool returned an error' if shell_out.stderr.chomp != ''
-    rescue StandardError
-      if try < retries
-        sleep 1
-        retry
+    class << self
+      attr_accessor :local_api_description, :data_layout
+    end
+  end
+
+  module Mixin
+
+
+    # See https://lists.debian.org/debian-user/2017/02/msg00914.html for details
+    def interface_predictable_name(dev)
+      iface_name = nil
+      %w[ID_NET_NAME_ONBOARD ID_NET_NAME_SLOT ID_NET_NAME_PATH].each do |udev_property|
+        iface_name = shell_out("/sbin/udevadm test 2>&1 /sys/class/net/#{dev} | grep #{udev_property} | cut -d'=' -f2").stdout.chomp
+        break if !iface_name.nil? && iface_name != ''
+      end
+      iface_name = dev if iface_name.nil? || iface_name == ''
+      iface_name
+    end
+
+    # Get the given interface up/down status
+    def interface_operstate(dev)
+      ifaceState = 'down'
+      case shell_out("cat /sys/class/net/#{dev}/operstate").stdout.chomp
+      when 'unknown', 'testing', 'dormant', 'up'
+        ifaceState = 'up'
+      when 'notpresent', 'lowerlayerdown', 'down'
+        ifaceState = 'down'
+      end
+      ifaceState
+    end
+
+    # Get ethtool information on iface rate
+    def interface_ethtool(dev)
+      infos = {}
+      stdout = shell_out("/sbin/ethtool #{dev}; /sbin/ethtool -i #{dev}").stdout
+      stdout.each_line do |line|
+        if /^[[:blank:]]*Speed: /.match?(line)
+          if /Unknown/.match?(line)
+            infos[:rate] = nil
+            infos[:enabled] = false
+          else
+            infos[:rate] = line.chomp.split(': ').last.gsub(%r{([GMK])b/s}) { '000000' }
+            infos[:enabled] = true
+          end
+        end
+        infos[:driver] = line.chomp.split(': ').last if /^\s*driver: /.match?(line)
+        next unless /^\s*firmware-version:/.match?(line)
+
+        split_line = line.chomp.split(': ', 2)
+        if split_line && split_line.length > 1
+          # It is possible that ethtool doesn't return this value
+          infos[:firmware_version] = split_line.last
+        end
+      end
+      infos
+    end
+
+    # Get vendor/device name from sysfs/lspci
+    def get_pci_infos_by_sysfs(sys_dev_path)
+      vendor_id_path = File.join(sys_dev_path, 'vendor').to_s
+      device_id_path = File.join(sys_dev_path, 'device').to_s
+      vendor_id = shell_out("cat #{vendor_id_path}").stdout.strip.chomp
+      device_id = shell_out("cat #{device_id_path}").stdout.strip.chomp
+
+      if device_id.empty? || vendor_id.empty?
+        return {}
       else
-        raise "Failed to get data from ipmitool (args: #{args})"
+        return get_pci_infos(vendor_id, device_id).first[1]
       end
     end
 
-    shell_out
-  end
+    def get_pci_infos(vendor_id = nil, device_id = nil, class_id = nil)
+      pci_infos = {}
+      vendor_id = '' if vendor_id.nil?
+      device_id = '' if device_id.nil?
+      class_id = '' if class_id.nil?
 
-  # Read a file. Return an array if the file constains multiple lines.
-  def self.fileread(filename)
-    output = File.readlines(filename, chomp: true)
-    output.size == 1 ? output[0] : output
-  end
+      slot = nil
+      stdout = shell_out("/usr/bin/lspci -vmm -k -d #{vendor_id}:#{device_id}:#{class_id}").stdout
+      stdout.each_line do |line|
+        line = line.chomp
+        if line =~ /^Slot:\s+(.*)$/
+          slot = $1.chomp
+          pci_infos[slot] = {}
+        elsif /^Device/.match?(line)
+          pci_infos[slot][:device] = line.gsub(/^Device:/i, '').strip
+        elsif /^Vendor/.match?(line)
+          pci_infos[slot][:vendor] = line.gsub(/Vendor:/i, '').sub('Limited', '').sub('Corporation', '').strip
+        elsif line =~ /^Driver:\s+(.*)$/
+          pci_infos[slot][:driver] = $1.chomp
+        elsif line =~ /^PhySlot:\s+(.*)$/
+          pci_infos[slot][:phy_slot] = $1.chomp
+        end
+      end
 
-  # Read and parse /etc/grid5000/ref-api.json if exists
-  def self.local_api_description
-    if @@local_api_description.nil?
-      @@local_api_description = begin
-                                  JSON.parse(File.read('/etc/grid5000/ref-api.json'))
-                                rescue Errno::ENOENT
-                                  {}
-                                end
+      return pci_infos
     end
 
-    return @@local_api_description
+
+    def lshw_total_memory(type)
+      case type
+      when :dram
+        LsHw.get_total_ram_memory
+      when :pmem
+        # Not yet supported
+        nil
+      end
+    end
+
+    def lshw_memory_devices
+      LsHw.get_memory_devices
+    end
+
+    # Memory reported by the OS, dmidecode or lshw are the prefered ways
+    def meminfo_total_memory(type)
+      case type
+      when :dram
+        fileread('/proc/meminfo').grep(/MemTotal:/)[0].
+          gsub(/^MemTotal:\s*([0-9]*) kB/, '\1').to_i * KIBI
+      when :pmem
+        # Not yet supported
+        nil
+      end
+    end
+
+    # According to reference-repository, we launch the ipmitool command with a
+    # specific timeout and number of retries
+    def ipmitool_shell_out(args)
+      timeout = local_api_description['management_tools']['ipmitool']['timeout'] rescue nil
+      retries = local_api_description['management_tools']['ipmitool']['retries'] rescue 5
+
+      try = 0
+      shell_output = nil
+      begin
+        try += 1
+        shell_output = if timeout
+                      shell_out("/usr/bin/ipmitool #{args}", timeout: timeout)
+                    else
+                      shell_out("/usr/bin/ipmitool #{args}")
+                    end
+        raise 'ipmitool returned an error' if shell_output.stderr.chomp != ''
+      rescue StandardError
+        if try < retries
+          sleep 1
+          retry
+        else
+          raise "Failed to get data from ipmitool (args: #{args})"
+        end
+      end
+
+      shell_output
+    end
+
+    # Read a file. Return an array if the file constains multiple lines.
+    def fileread(filename)
+      output = File.readlines(filename, chomp: true)
+      output.size == 1 ? output[0] : output
+    end
+
+    # Read and parse /etc/grid5000/ref-api.json if exists
+    def local_api_description
+      if Utils::Shared.local_api_description.nil?
+        Utils::Shared.local_api_description = begin
+                                    JSON.parse(File.read('/etc/grid5000/ref-api.json'))
+                                  rescue Errno::ENOENT
+                                    {}
+                                  end
+      end
+
+      return Utils::Shared.local_api_description
+    end
   end
 end

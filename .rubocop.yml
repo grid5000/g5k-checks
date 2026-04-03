@@ -2,3 +2,7 @@ Lint/RescueException:
   Enabled: false
 AllCops:
   NewCops: enable
+  Exclude:
+    - 'vendor/**/*'
+    - 'bundle/**/*'
+    - 'debian/**/*'
