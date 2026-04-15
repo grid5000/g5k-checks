@@ -23,7 +23,7 @@ Ohai.plugin(:Bios) do
                   end
 
     xml_node = "firmware:#{firmware_id}"
-    lshw_xml_output = Utils.shell_out('lshw -xml -C generic', environment: { 'LC_ALL' => 'C' }).stdout
+    lshw_xml_output = shell_out('lshw -xml -C generic', environment: { 'LC_ALL' => 'C' }).stdout
     xml_doc = Nokogiri::XML(lshw_xml_output)
 
     bios[:version] = xml_doc.at_xpath("//node[@id='#{xml_node}']/version").text

@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:trixie
 MAINTAINER support-staff@lists.grid5000.fr
 
 RUN apt-get update && apt-get -y install build-essential devscripts equivs

@@ -7,6 +7,7 @@ Ohai.plugin(:NetworkInfiniband) do
   provides 'network/network_infiniband'
   depends 'network'
   depends 'hostname'
+  include Utils::Mixin
 
   # def get_mac_address(guid, dev)
   #   mac = File.read(File.join('/sys/class/net', dev, 'address'))
@@ -19,12 +20,12 @@ Ohai.plugin(:NetworkInfiniband) do
   collect_data do
     # Get interfaces from ibstat and put them inside a Hash so we can get
     # them by the guid
-    ibstat_interfaces = Utils.shell_out('ibstat -l').stdout.chomp.delete(' ').delete("'").split
+    ibstat_interfaces = shell_out('ibstat -l').stdout.chomp.delete(' ').delete("'").split
     guid_interfaces = {}
 
     ibstat_interfaces.each do |i|
       port = ''
-      Utils.shell_out("ibstat #{i}").stdout.each_line do |line|
+      shell_out("ibstat #{i}").stdout.each_line do |line|
         port = Regexp.last_match(1) if line =~ /Port\s(\d+)/
         guid_interfaces[Regexp.last_match(1)] = { port: port, interface: i } if line =~ /Port\sGUID:\s(.*)$/
       end
@@ -39,7 +40,7 @@ Ohai.plugin(:NetworkInfiniband) do
       # Forcing predictable name to device
       iface[:name] = dev
 
-      pci_infos = Utils.get_pci_infos_by_sysfs("/sys/class/net/#{dev}/device/")
+      pci_infos = get_pci_infos_by_sysfs("/sys/class/net/#{dev}/device/")
       iface[:vendor] = pci_infos[:vendor]
       iface[:model] = pci_infos[:device]
       iface[:driver] = pci_infos.has_key?(:driver) ? pci_infos[:driver] : nil
@@ -65,12 +66,12 @@ Ohai.plugin(:NetworkInfiniband) do
       end
 
       # Channel adapter
-      stdout = Utils.shell_out("ibstat #{ibstat_iface_name}").stdout
+      stdout = shell_out("ibstat #{ibstat_iface_name}").stdout
       stdout.each_line do |line|
         iface[:firmware_version] = line.chomp.split(': ')[1] if /^[[:blank:]]*Firmware version/.match?(line)
       end
 
-      stdout = Utils.shell_out("ibstat #{ibstat_iface_name} #{ibstat_port_num}").stdout
+      stdout = shell_out("ibstat #{ibstat_iface_name} #{ibstat_port_num}").stdout
       stdout.each_line do |line|
         iface[:guid] = line.chomp.split(': ').last if /Port[[:blank:]]GUID/.match?(line)
         iface[:rate] = line.chomp.split(': ').last.to_i * 1_000_000_000 if /Rate/.match?(line)

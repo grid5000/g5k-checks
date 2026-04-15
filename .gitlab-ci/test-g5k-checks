@@ -2,6 +2,8 @@
 
 # This is a script to test g5k-checks on a node, executed from a gitlab-ci runner
 
+# You can alter the ruby-cute query parameters using env variables TARGET_<pararmeter>
+
 gem 'ruby-cute', ">=0.11"
 require 'cute'
 require 'net/scp'
@@ -20,8 +22,26 @@ STDOUT.sync = true
 
 logger.info("Dumping CI_* ENV variables:")
 puts ENV.to_a.select { |e| e[0] =~ /^CI_/ }.map { |e| e.join(' ') }.join("\n")
+logger.info("Dumping TARGET_* ENV variables:")
+puts ENV.to_a.select { |e| e[0] =~ /^TARGET_/ }.map { |e| e.join(' ') }.join("\n")
 logger.info("Reserving node...")
-job = g5k.reserve(:site => 'nancy', :queue => 'production', :nodes => 1, :walltime => '0:15', :type => :allow_classic_ssh, :wait => true, :name => 'gitlab g5k-checks')
+job_attr = {
+  :site => 'nancy',
+  :queue => 'production',
+  :nodes => 1,
+  :walltime => '0:15',
+  :type => :allow_classic_ssh,
+  :wait => true,
+  :name => 'gitlab g5k-checks'
+}
+# Pull modified parameters from environment variables
+ENV.select {|k,_| k.start_with?('TARGET_')}.each do |k,v|
+  sym = k.split('_').last.downcase.to_sym
+  job_attr[sym] = v
+  logger.debug("Updating parameter #{sym} with: #{k}=#{v}")
+end
+logger.info("Job args: #{job_attr}")
+job = g5k.reserve(**job_attr)
 logger.info("Job #{job['uid']} created.")
 node = job['assigned_nodes'].first
 logger.info("Running on: #{node}")

@@ -5,6 +5,7 @@ require 'g5kchecks/utils/utils'
 
 Ohai.plugin(:G5k) do
   provides 'g5k'
+  include Utils::Mixin
 
   collect_data do
     infos = Mash.new
@@ -57,7 +58,7 @@ Ohai.plugin(:G5k) do
     # (populated by g5k-postinstall).
     # If g5k-checks is runned in api mode, we don't want to use anything from
     # the reference api since this mode is made to populate the api.
-    infos['local_api_description'] = conf['mode'] != 'api' ? Utils.local_api_description : nil
+    infos['local_api_description'] = conf['mode'] != 'api' ? local_api_description : nil
 
     # infos['user_deployed'] is true if the environment is deployed
     # inside a job (in particular, this excludes phoenix), and the job
