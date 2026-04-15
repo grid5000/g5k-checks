@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = 'g5k-checks'
-  s.version = '0.1'
+  s.version = '0.12.0'
   s.authors = ["Grid'5000"]
   s.licenses = ['CECILL-B']
   s.email = 'support-staff@lists.grid5000.fr'

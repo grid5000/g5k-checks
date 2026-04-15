@@ -1,3 +1,10 @@
+g5k-checks (0.12.0) unstable; urgency=medium
+
+  * 1090503 Upgrading ohai, refactor around new shell_out disposition.
+  * 0f90fc8 [CI] Added properties selector to CI for tests 
+
+ -- Luke Bertot <luke.bertot@inria.fr>  Wed, 15 Apr 2026 10:52:59 +0200
+
 g5k-checks (0.11.30) unstable; urgency=low
 
   * Remove ntp dependencies
