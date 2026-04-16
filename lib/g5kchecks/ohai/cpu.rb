@@ -79,7 +79,7 @@ Ohai.plugin(:Cpu) do
             cpu[:model] = 'Neoverse-N1'
             cpu[:version] = 'Unknown'
             cpu[:other_description] = 'Neoverse-N1'
-            cpu[:vendor] = 'ARM'
+            cpu[:vendor] = 'Ampere/ARM'
           else
             cpu[:model] = 'Unknown'
             cpu[:version] = 'Unknown'
