@@ -1,3 +1,11 @@
+g5k-checks (0.12.1) unstable; urgency=medium
+
+  [ Colin Regal-Mezin ]
+  * [71] Add support for Neoverse-N1 CPU model detection
+  * [59] Update CPU vendor description to 'Ampere/ARM'
+
+ -- colin <colin.regal-mezin@inria.fr>  Fri, 17 Apr 2026 09:27:54 +0200
+
 g5k-checks (0.12.0) unstable; urgency=medium
 
   * 1090503 Upgrading ohai, refactor around new shell_out disposition.
