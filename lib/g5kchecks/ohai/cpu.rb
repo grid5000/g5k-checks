@@ -61,7 +61,7 @@ Ohai.plugin(:Cpu) do
           cpu[:vendor] = Regexp.last_match(1)
         elsif line =~ /^Model name:\s+ (.+)$/
           cpu[:'0'][:model_name] = Regexp.last_match(1)
-          if cpu[:'0'][:model_name] =~ /^ThunderX2 (.+)$/
+          if cpu[:'0'][:model_name] =~ /^ThunderX2-(.+)$/
             cpu[:model] = 'ThunderX2'
             cpu[:version] = Regexp.last_match(1)
           elsif cpu[:'0'][:model_name] =~ /^Cortex-(.+)$/
