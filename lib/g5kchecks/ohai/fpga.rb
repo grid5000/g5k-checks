@@ -17,14 +17,6 @@ Ohai.plugin(:Fpga) do
       dev['model'] = dev.delete('device')
       dev['type'] = 'fpga'
       dev['pci_slot'] = slot
-
-      # Xilinx FPGA devices ids don't have (yet ?) names in pciutils
-      dev['model'] = case dev['model']
-                     when /Device 500[0-9]/, 'Device d000'
-                       'Alveo U200'
-                     else
-                       raise "FPGA model is not supported: #{dev['model']} (vendor: #{dev['vendor']})"
-                     end
     end
 
     other_devices_by_phy_slot = Mash.new
