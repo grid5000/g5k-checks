@@ -1,3 +1,9 @@
+g5k-checks (0.12.2) unstable; urgency=low
+
+  * [e2c1b23] [fgpa] remove ugly hack because Alveo has now a name
+
+ -- Nicolas Perrin <nicolas.perrin@inria.fr>  Thu, 03 Sep 2026 10:18:31 +0200
+
 g5k-checks (0.12.1) unstable; urgency=medium
 
   [ Colin Regal-Mezin ]
