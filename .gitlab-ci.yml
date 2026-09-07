@@ -36,6 +36,9 @@ include:
 build-bullseye:amd64:
   <<: *build-bullseye
   image: debian:bullseye
+  before_script:
+   - cat /etc/apt/sources.list | grep -v security | sed 's/deb.debian/archive.debian/g' > /tmp/sources.list
+   - mv /tmp/sources.list /etc/apt/sources.list
 
 build-bullseye:arm64:
   <<: *build-bullseye
@@ -43,6 +46,9 @@ build-bullseye:arm64:
     name: arm64v8/debian:bullseye
     docker:
       platform: aarch64
+  before_script:
+   - cat /etc/apt/sources.list | grep -v security | sed 's/deb.debian/archive.debian/g' > /tmp/sources.list
+   - mv /tmp/sources.list /etc/apt/sources.list
   tags:
     - grid5000-docker-arm64
 
