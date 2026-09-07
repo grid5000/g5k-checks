@@ -1,3 +1,9 @@
+g5k-checks (0.12.3) unstable; urgency=low
+
+  * [dcffa54] update regex for ThunderX2 CPUs
+
+ -- Nicolas Perrin <nicolas.perrin@inria.fr>  Mon, 07 Sep 2026 13:37:00 +0200
+
 g5k-checks (0.12.2) unstable; urgency=low
 
   * [e2c1b23] [fgpa] remove ugly hack because Alveo has now a name
