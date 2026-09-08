@@ -1,3 +1,10 @@
+g5k-checks (0.12.4) unstable; urgency=low
+
+  * [baac720] [CI] Update Bullseye repositories to archive
+  * [ef7e56b] [CI] Temporarily remove Debian Bullseye CI (bug #18622)
+
+ -- Nicolas Perrin <nicolas.perrin@inria.fr>  Tue, 08 Sep 2026 09:14:57 +0200
+
 g5k-checks (0.12.3) unstable; urgency=low
 
   * [dcffa54] update regex for ThunderX2 CPUs
