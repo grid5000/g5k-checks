@@ -24,48 +24,6 @@ include:
   except:
      - tags
 
-.build-bullseye: &build-bullseye
-  <<: *build
-  variables:
-    TARGETDIR: "bullseye"
-  artifacts: # generate artifacts for files we want to publish
-     paths:
-      - bullseye
-     expire_in: '1 month'
-
-build-bullseye:amd64:
-  <<: *build-bullseye
-  image: debian:bullseye
-
-build-bullseye:arm64:
-  <<: *build-bullseye
-  image: 
-    name: arm64v8/debian:bullseye
-    docker:
-      platform: aarch64
-  tags:
-    - grid5000-docker-arm64
-
-build-bullseye:ppc64:
-  <<: *build-bullseye
-  image: ppc64le/debian:bullseye
-  before_script:
-   - cat /etc/apt/sources.list | grep -v security | sed 's/deb.debian/archive.debian/g' > /tmp/sources.list
-   - mv /tmp/sources.list /etc/apt/sources.list
-  tags:
-    - grid5000-docker-ppc64
-
-test-bullseye:
-  stage: deploy_and_test
-  variables:
-    TARGETDIR: "bullseye"
-  tags:
-    - grid5000-shell
-  script:
-    - .gitlab-ci/test-g5k-checks $TARGETDIR
-  except:
-    - tags
-
 .build-trixie: &build-trixie
   <<: *build
   variables:
@@ -110,6 +68,5 @@ push-package:
     - master
   when: manual
   script:
-    - g5k-deploy-files --only-if-tag --files 'bullseye/*.deb' --directory deb/g5k-checks/bullseye
     - g5k-deploy-files --only-if-tag --files 'trixie/*.deb' --directory deb/g5k-checks/trixie
   allow_failure: false
