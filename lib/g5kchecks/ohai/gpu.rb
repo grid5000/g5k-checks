@@ -50,7 +50,7 @@ Ohai.plugin(:Gpu) do
       card[:memory] = case card[:model]
                       when "Radeon Instinct MI50 32GB"
                         32*(1024**3)
-                      when "AMD Instinct MI300X"
+                      when "AMD Instinct MI300X OAM"
                         192*(1024**3)
                       when "Instinct MI210"
                         64*(1024**3)
