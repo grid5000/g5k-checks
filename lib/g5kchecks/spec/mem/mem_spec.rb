@@ -36,7 +36,26 @@ describe 'Memory' do
       end
     end
   end
+  it 'should have the correct mapped memory size' do
+    size_api = 0
+    unless @api['pmem_size'].to_i > 0
+      size_api = @api['ram_size'].to_i if @api
+    end
+    size_sys = if Utils.dmi_supported?
+                  Utils.dmidecode_total_memory_mapped
+                else
+                  nil
+                end
+
+    unless size_sys.nil? && (size_api == 0)
+      err = ((size_sys - size_api) / size_api.to_f).abs
+      Utils.test(size_sys, size_api, 'main_memory/mapped_memory_size') do |_v_ohai, _v_api, error_msg|
+        expect(err).to be < 0.15, error_msg
+      end
+    end
+  end
 end
+
 
 
 describe 'MemoryDevices' do
