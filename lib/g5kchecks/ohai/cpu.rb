@@ -203,20 +203,44 @@ Ohai.plugin(:Cpu) do
     end
 
     # :turboboost_enabled
-    if cpu[:pstate_driver] == 'intel_pstate' || cpu[:pstate_driver] == 'intel_cpufreq'
-      cpu[:turboboost_enabled] = begin
-                                   fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == '0'
-                                 rescue StandardError
-                                   false
-                                 end
-    elsif cpu[:pstate_driver] == 'acpi-cpufreq'
-      cpu[:turboboost_enabled] = begin
-                                   fileread('/sys/devices/system/cpu/cpufreq/boost') == '1'
-                                 rescue StandardError
-                                   false
-                                 end
-    else
-      cpu[:turboboost_enabled] = false
+    begin
+      cpupower_output = execute('cpupower freq-info')
+      cpupower_output = [cpupower_output] if cpupower_output.is_a?(String)
+
+      boost_supported = nil
+      boost_active = nil
+      in_boost_section = false
+
+      cpupower_output.each do |line|
+        if line =~ /^\s*boost state support/i
+          in_boost_section = true
+        elsif in_boost_section && line =~ /^\s*Supported:\s+(yes|no)/i
+          boost_supported = (Regexp.last_match(1).downcase == 'yes')
+        elsif in_boost_section && line =~ /^\s*Active:\s+(yes|no)/i
+          boost_active = (Regexp.last_match(1).downcase == 'yes')
+        end
+      end
+
+      raise 'boost section blank' if boost_supported.nil? || boost_active.nil?
+
+      cpu[:turboboost_enabled] = boost_supported && boost_active
+    rescue StandardError
+      if cpu[:pstate_driver] == 'intel_pstate' || cpu[:pstate_driver] == 'intel_cpufreq' ||
+         File.exist?('/sys/devices/system/cpu/intel_pstate/no_turbo')
+        cpu[:turboboost_enabled] = begin
+                                     fileread('/sys/devices/system/cpu/intel_pstate/no_turbo') == '0'
+                                   rescue StandardError
+                                     false
+                                   end
+      elsif cpu[:pstate_driver] == 'acpi-cpufreq' || File.exist?('/sys/devices/system/cpu/cpufreq/boost')
+        cpu[:turboboost_enabled] = begin
+                                     fileread('/sys/devices/system/cpu/cpufreq/boost') == '1'
+                                   rescue StandardError
+                                     false
+                                   end
+      else
+        cpu[:turboboost_enabled] = false
+      end
     end
 
     # cstate
