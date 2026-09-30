@@ -1,3 +1,10 @@
+g5k-checks (0.12.5) unstable; urgency=low
+
+  * [2631007] [gpu] update name for MI300X in gpu memory condition
+  * [8d668d5] Use DMI type 19 (Memory Array Mapped Address) to improve ram size detection
+
+ -- Nicolas Perrin <nicolas.perrin@inria.fr>  Wed, 30 Sep 2026 15:05:39 +0200
+
 g5k-checks (0.12.4) unstable; urgency=low
 
   * [baac720] [CI] Update Bullseye repositories to archive
