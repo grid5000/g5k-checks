@@ -49,7 +49,14 @@ module DmiDecode
 
   def self.get_physical_memory_size(size)
     size_u, unit = size.split(' ')
-    size_u.to_i * (1024**(unit == 'GB' ? 3 : 2))
+    multiplier = case unit
+                 when 'TB' then 1024**4
+                 when 'GB' then 1024**3
+                 when 'MB' then 1024**2
+                 when 'kB', 'KB' then 1024
+                 when 'B' then 1
+                 end
+    size_u.to_i * multiplier
   end
 
   def self.get_memory
@@ -70,6 +77,7 @@ module DmiDecode
     else
       # On the oldest clusters dmidecode does not print the Memory Technology for
       # the DIMMs. When it's the case, we assume that DIMMs are always DRAM
+      
       dmi_data['Memory Device'].each do |mem_dev|
         memory_type = case mem_dev['Memory Technology']
                       when /^DRAM$/, nil
@@ -123,4 +131,22 @@ module DmiDecode
 
     memory_total
   end
+
+  def self.get_total_memory_mapped    
+    memory_total_mapped = 0
+    dmi_data = get_dmi_data
+
+    if dmi_data['Memory Array Mapped Address']
+      dmi_data['Memory Array Mapped Address'].each do |mem_mapped|
+        memory_total_mapped += get_physical_memory_size(mem_mapped['Range Size'])
+      end
+
+      # Convert total to MB, round up to next GB, and convert back to bytes
+      total_mb = memory_total_mapped.to_f / (1024**2)
+      memory_total_mapped = (total_mb / 1024).ceil * (1024**3)
+    end
+    
+    memory_total_mapped
+  end
+
 end # Module DmiDecode

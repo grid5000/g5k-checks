@@ -197,6 +197,10 @@ module Utils
     DmiDecode.get_total_memory
   end
 
+  def self.dmidecode_total_memory_mapped
+    DmiDecode.get_total_memory_mapped
+  end
+
   def self.dmidecode_memory_devices
     DmiDecode.get_memory
   end
